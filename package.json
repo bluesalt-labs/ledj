@@ -1,0 +1,12 @@
+{
+    "name": "lej",
+    "version": "0.1",
+    "description": "Load Elements from JSON - A JavaScript library that creates repeated HTML elements from JSON.",
+    "license": "MIT",
+    "main": "./dist/lej.js",
+    "scripts": {},
+    "author": "BlueSalt Labs",
+    "files": [
+        "dist"
+    ]
+}
