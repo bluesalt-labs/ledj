@@ -1,14 +1,14 @@
 {
   "config": {
     "srcDirs": {
-      "Links": "/assets/app-icons/"
+      "Default": "/docs/assets/images/"
     },
     "type": "link-grid",
     "imgExt": ".png",
     "titleElementLevel": 3
   },
   "data": {
-    "Projecs": [
+    "Projects": [
       {
         "title": "BlueSalt Labs - Ledj",
         "href": "https://github.com/bluesalt-labs/ledj",
@@ -19,17 +19,17 @@
       {
         "title": "GitHub - BlueSalt Labs",
         "href": "https://github.com/bluesalt-labs/",
-        "filename": "github-bluesalt-labs"
+        "filename": "bluesalt-labs"
       },
       {
         "title": "GitHub - Lukerz8",
         "href": "https://github.com/lukerz8",
-        "filename": "github-lukerz8"
+        "filename": "github"
       },
       {
         "title": "CodePen - BlueSalt Labs",
         "href": "https://codepen.io/bluesaltlabs/",
-        "filename": "codepen-bluesalt-labs"
+        "filename": "codepen"
       }
     ]
   }
