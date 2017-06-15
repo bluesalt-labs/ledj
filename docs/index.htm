@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lej.js | Docs</title>
+
+    <!-- Stylesheets -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono" rel="stylesheet" />
+    <link href="../src/lej.css" rel="stylesheet" />
+    <link href="/docs/styles.css" rel="stylesheet" />
+
+    <!-- debug script include paths. change paths once I figure out how to compile stuff. -->
+    <script type="text/javascript" src="../node_modules/lodash/lodash.min.js"></script>
+    <script type="text/javascript" src="../src/lej.js"></script>
+
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function() {
+           Lej.attach('/docs/data/grid-data.json', 'grid-data-container');
+           //Lej.attach('/docs/data/table-data.json', 'table-data-container');
+        });
+    </script>
+</head>
+<body>
+    <div class="example-container">
+        <h2>Grid Example</h2>
+        <div id="grid-data-container"></div>
+    </div>
+    <hr />
+    <div class="example-container">
+        <h2>Table Example</h2>
+        <div id="table-data-container"><code>#todo</code></div>
+    </div>
+
+</body>
+</html>

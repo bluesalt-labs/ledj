@@ -1,0 +1,36 @@
+{
+  "config": {
+    "srcDirs": {
+      "Links": "/assets/app-icons/"
+    },
+    "type": "link-grid",
+    "imgExt": ".png",
+    "titleElementLevel": 3
+  },
+  "data": {
+    "Links": [
+      {
+        "title": "GitHub - BlueSalt Labs",
+        "href": "https://github.com/bluesalt-labs/",
+        "filename": "github-bluesalt-labs"
+      },
+      {
+        "title": "GitHub - Lukerz8",
+        "href": "https://github.com/lukerz8",
+        "filename": "github-lukerz8"
+      },
+      {
+        "title": "CodePen - BlueSalt Labs",
+        "href": "https://codepen.io/bluesaltlabs/",
+        "filename": "codepen-bluesalt-labs"
+      }
+    ],
+    "Misc": [
+      {
+        "title": "Google",
+        "href": "https://www.google.com/",
+        "filename": "google"
+      }
+    ]
+  }
+}
