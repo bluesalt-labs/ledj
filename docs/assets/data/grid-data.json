@@ -1,7 +1,7 @@
 {
   "config": {
     "srcDirs": {
-      "Default": "/docs/assets/images/"
+      "Default": "/assets/images/"
     },
     "type": "link-grid",
     "imgExt": ".png",
