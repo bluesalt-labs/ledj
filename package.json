@@ -5,7 +5,24 @@
   "private": true,
   "main": "/dist/ledj.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean:dist": "rm -rf dist/*",
+    "clean:docs": "rm -rf docs/assets/docs-styles.min.css",
+    "clean": "npm run clean:dist && npm run clean:docs",
+    "uglify-css:dist": "uglifycss --max-line-len 30000 src/ledj.css > dist/ledj.min.css",
+    "uglify-css:docs": "uglifycss --max-line-len 30000 docs/assets/docs-styles.css > docs/assets/docs-styles.min.css",
+    "uglify-js:dist": "uglifyjs src/ledj.js > dist/ledj.min.js",
+    "uglify-css": "npm run uglify-css:dist && npm run uglify-css:docs",
+    "uglify-js": "npm run uglify-js:dist",
+    "uglify": "npm run uglify-css && npm run uglify-js",
+    "copy-css:dist": "cp src/*.css dist/",
+    "copy-js:dist": "cp src/*.js dist/",
+    "copy-css": "npm run copy-css:dist",
+    "copy-js": "npm run copy-js:dist",
+    "copy": "npm run copy-css && npm run copy-js",
+    "build:js": "npm run uglify-js && npm run copy-js",
+    "build:css": "npm run uglify-css && npm run copy-css",
+    "build": "npm run clean && npm run build:js && npm run build:css"
   },
   "repository": {
     "type": "git",
@@ -19,5 +36,9 @@
   "homepage": "http://ledj.bluesaltlabs.com/",
   "dependencies": {
     "lodash": "^4.17.4"
+  },
+  "devDependencies": {
+    "uglify-js": "^3.0.17",
+    "uglifycss": "0.0.27"
   }
 }

@@ -6,17 +6,17 @@
 
     <!-- Stylesheets -->
     <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono" rel="stylesheet" />
-    <link href="assets/ledj.css" rel="stylesheet" />
-    <link href="assets/styles.css" rel="stylesheet" />
+    <link href="https://raw.github.com/bluesalt-labs/ledj/master/dist/ledj.min.css" rel="stylesheet" />
+    <link href="assets/docs-styles.min.css" rel="stylesheet" />
 
     <!-- debug script include paths. change paths once I figure out how to compile stuff. -->
-    <script type="text/javascript" src="assets/lodash.min.js"></script>
-    <script type="text/javascript" src="assets/ledj.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
+    <script type="text/javascript" src="https://raw.github.com/bluesalt-labs/ledj/master/dist/ledj.min.js"></script>
 
     <script type="text/javascript">
         document.addEventListener("DOMContentLoaded", function() {
-           Ledj.attach('/assets/data/grid-data.json', 'grid-data-container');
-           //Ledj.attach('/assets/data/table-data.json', 'table-data-container');
+           Ledj.attach('assets/data/grid-data.json', 'grid-data-container');
+           //Ledj.attach('assets/data/table-data.json', 'table-data-container');
         });
     </script>
 </head>
