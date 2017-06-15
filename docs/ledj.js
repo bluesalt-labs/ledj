@@ -1,26 +1,26 @@
 if (typeof _ === 'undefined') {
-    throw new Error('Lej requires Lodash. Lodash must be included before Lej\'s JavaScript.')
+    throw new Error('Ledj requires Lodash. Lodash must be included before Ledj\'s JavaScript.')
 }
 
 (function(window){
     'use strict';
-    function define_lej() {
-        var Lej = {};
+    function define_ledj() {
+        var Ledj = {};
 
-        Lej.cache = {
+        Ledj.cache = {
             jsonConfig: [],
             jsonData: []
         };
 
         var templates = {
             parent: _.template( // todo: add the ability to modify the parent template (class? title could be an issue).
-                '<div class="lej-container">' +
-                    '<% if(title) { print(title); } %>' + //"<h2 class=\'lej-title\'>" + title + "</h2>"
+                '<div class="ledj-container">' +
+                    '<% if(title) { print(title); } %>' + //"<h2 class=\'ledj-title\'>" + title + "</h2>"
                     '<%= childHTML %>' +
                 '</div>'
             ),
             linkGrid: _.template(
-                '<div class="lej-link-grid">' +
+                '<div class="ledj-link-grid">' +
                 '<% _.forEach(linkItems, function(linkItem) { %>' +
                     '<a class="link-grid-item" href="<%= linkItem[itemHrefKey] %>"<% if(newTab) { %> target="_blank" <% } %>>' +
                         '<img src="<%= linkItem[itemImageKey] %>" title="<%= linkItem[itemTitleKey] %>" />' +
@@ -31,12 +31,12 @@ if (typeof _ === 'undefined') {
                 '</div>'
             ),
             table: _.template(
-                //'<table class="lej-table">' +
+                //'<table class="ledj-table">' +
                 '<span>todo</span>' // +
                 //'</table>' +
             ),
             gifGrid: _.template(
-                //'<div class="lej-gif-grid">' +
+                //'<div class="ledj-gif-grid">' +
                 '<span>todo</span>' // +
                 //'</div>'
             )
@@ -97,8 +97,8 @@ if (typeof _ === 'undefined') {
             getJSONConfig(url, function(err, data) {
                if(err === null) {
                    if (data.hasOwnProperty('config') && data.hasOwnProperty('data')) {
-                       var configIndex = Lej.cache.jsonConfig.push(data.config) - 1;
-                       Lej.cache.jsonData[configIndex] = data.data; // todo make sure this works.
+                       var configIndex = Ledj.cache.jsonConfig.push(data.config) - 1;
+                       Ledj.cache.jsonData[configIndex] = data.data; // todo make sure this works.
 
                        callback(configIndex);
                    } else {
@@ -113,14 +113,14 @@ if (typeof _ === 'undefined') {
         }
 
         function sortJsonDataBy(cacheID, propName) {
-            if(Lej.cache.jsonData[cacheID]) {
-                if( Array.isArray(Lej.cache.jsonData[cacheID]) ) {
-                    Lej.cache.jsonData[cacheID] = _.sortBy(Lej.cache.jsonData[cacheID], propName);
+            if(Ledj.cache.jsonData[cacheID]) {
+                if( Array.isArray(Ledj.cache.jsonData[cacheID]) ) {
+                    Ledj.cache.jsonData[cacheID] = _.sortBy(Ledj.cache.jsonData[cacheID], propName);
                 }
 
-                else if(typeof Lej.cache.jsonData[cacheID] === 'object') {
-                    for(var item in Lej.cache.jsonData[cacheID]) {
-                        Lej.cache.jsonData[cacheID][item] = _.sortBy(Lej.cache.jsonData[cacheID][item], propName);
+                else if(typeof Ledj.cache.jsonData[cacheID] === 'object') {
+                    for(var item in Ledj.cache.jsonData[cacheID]) {
+                        Ledj.cache.jsonData[cacheID][item] = _.sortBy(Ledj.cache.jsonData[cacheID][item], propName);
                     }
                 }
 
@@ -128,7 +128,7 @@ if (typeof _ === 'undefined') {
                     console.warn('Could not sort cache.jsonData[' + cacheID + ']');
                 }
             } else {
-                console.warn('from Lej.sortJsonDataBy(): `cache.jsonData[' + cacheID + ']` does not exist.');
+                console.warn('from Ledj.sortJsonDataBy(): `cache.jsonData[' + cacheID + ']` does not exist.');
             }
         }
 
@@ -139,9 +139,9 @@ if (typeof _ === 'undefined') {
 
         function getLinkItemsData(cacheID, objectKey) {
             if(objectKey) {
-                return Lej.cache.jsonData[cacheID][objectKey];
+                return Ledj.cache.jsonData[cacheID][objectKey];
             } else {
-                return Lej.cache.jsonData[cacheID];
+                return Ledj.cache.jsonData[cacheID];
             }
         }
 
@@ -178,12 +178,12 @@ if (typeof _ === 'undefined') {
             if(!!objectKey && objectKey !== '') {
                 var titleTag = 'h2';
 
-                if( Lej.cache.jsonConfig[configID].hasOwnProperty('titleElementLevel') &&
-                    typeof parseInt(Lej.cache.jsonConfig[configID].titleElementLevel) === 'number') {
-                    titleTag = 'h' + Lej.cache.jsonConfig[configID].titleElementLevel;
+                if( Ledj.cache.jsonConfig[configID].hasOwnProperty('titleElementLevel') &&
+                    typeof parseInt(Ledj.cache.jsonConfig[configID].titleElementLevel) === 'number') {
+                    titleTag = 'h' + Ledj.cache.jsonConfig[configID].titleElementLevel;
                 }
 
-                return '<' + titleTag + 'class="lej-title">' + objectKey + '</' + titleTag + '>';
+                return '<' + titleTag + 'class="ledj-title">' + objectKey + '</' + titleTag + '>';
             } // else
 
             return null;
@@ -203,7 +203,7 @@ if (typeof _ === 'undefined') {
             if(!!element) {
                 var functionToUse = null;
 
-                switch(Lej.cache.jsonConfig[cacheID].type.toLowerCase()) {
+                switch(Ledj.cache.jsonConfig[cacheID].type.toLowerCase()) {
                     case 'link-grid':
                     case 'linkgrid':
                         functionToUse = getLinkGridFromData;
@@ -222,12 +222,12 @@ if (typeof _ === 'undefined') {
                 if(!!functionToUse) {
                     var toAppend = '';
 
-                    if( Array.isArray(Lej.cache.jsonData[cacheID]) ) {
+                    if( Array.isArray(Ledj.cache.jsonData[cacheID]) ) {
                         toAppend = functionToUse(cacheID);
                     }
 
-                    else if(typeof Lej.cache.jsonData[cacheID] === 'object') {
-                        for(var item in Lej.cache.jsonData[cacheID]) {
+                    else if(typeof Ledj.cache.jsonData[cacheID] === 'object') {
+                        for(var item in Ledj.cache.jsonData[cacheID]) {
                             toAppend += functionToUse(cacheID, item);
                         }
                     }
@@ -253,7 +253,7 @@ if (typeof _ === 'undefined') {
         Creates new HTML elements from specified JSON data
         and attaches them to the specified DOM element
          */
-        Lej.loadAndAttachTo = function(jsonUrl, elementID) {
+        Ledj.loadAndAttachTo = function(jsonUrl, elementID) {
             loadConfig(jsonUrl, function(cacheID){
                 sortData(cacheID);
                 addElementsTo(cacheID, elementID);
@@ -261,16 +261,16 @@ if (typeof _ === 'undefined') {
         };
 
         // Alias
-        Lej.attach = Lej.loadAndAttachTo;
+        Ledj.attach = Ledj.loadAndAttachTo;
 
         // Final Statement
-        return Lej;
+        return Ledj;
     }
 
-    if(typeof(Lej) === 'undefined') {
-        window.Lej = define_lej();
-        //window.Lej = define_Lej();
+    if(typeof(Ledj) === 'undefined') {
+        window.Ledj = define_ledj();
+        //window.Ledj = define_Ledj();
     } else {
-        console.log("Lej is already defined.");
+        console.log("Ledj is already defined.");
     }
 })(window);
