@@ -15,7 +15,7 @@ if (typeof _ === 'undefined') {
         var templates = {
             parent: _.template( // todo: add the ability to modify the parent template (class? title could be an issue).
                 '<div class="ledj-container">' +
-                    '<% if(title) { print(title); } %>' + //"<h2 class=\'ledj-title\'>" + title + "</h2>"
+                    '<% if(title) { print(title); } %>' +
                     '<%= childHTML %>' +
                 '</div>'
             ),
@@ -23,8 +23,7 @@ if (typeof _ === 'undefined') {
                 '<div class="ledj-link-grid">' +
                 '<% _.forEach(linkItems, function(linkItem) { %>' +
                     '<a class="link-grid-item" href="<%= linkItem[itemHrefKey] %>"<% if(newTab) { %> target="_blank" <% } %>>' +
-                        '<img src="<%= linkItem[itemImageKey] %>" title="<%= linkItem[itemTitleKey] %>" />' +
-                        '<hr />' +
+                        '<img src="<%= getImageUrl(linkItem[itemImageKey], cacheID, objectKey) %>" title="<%= linkItem[itemTitleKey] %>" />' +
                         '<span><%= linkItem[itemTitleKey] %></span>' +
                     '</a>' +
                 '<% }); %>' +
@@ -148,6 +147,9 @@ if (typeof _ === 'undefined') {
         function getLinkGridFromData(cacheID, objectKey) {
             var templateData = {
                 'linkItems': getLinkItemsData(cacheID, objectKey),
+                'cacheID': cacheID,
+                'objectKey': objectKey,
+                'getImageUrl': getImageUrl, // really?
                 'itemHrefKey': 'href',      // todo set this in json config
                 'newTab': true,             // todo set this in json config
                 'itemImageKey': 'filename', // todo set this in json config
@@ -172,21 +174,6 @@ if (typeof _ === 'undefined') {
             };
 
             return wrapHtmlInParent(templates.gifGrid(templateData), cacheID, objectKey);
-        }
-
-        function getElementTitle(configID, objectKey) {
-            if(!!objectKey && objectKey !== '') {
-                var titleTag = 'h2';
-
-                if( Ledj.cache.jsonConfig[configID].hasOwnProperty('titleElementLevel') &&
-                    typeof parseInt(Ledj.cache.jsonConfig[configID].titleElementLevel) === 'number') {
-                    titleTag = 'h' + Ledj.cache.jsonConfig[configID].titleElementLevel;
-                }
-
-                return '<' + titleTag + 'class="ledj-title">' + objectKey + '</' + titleTag + '>';
-            } // else
-
-            return null;
         }
 
         function wrapHtmlInParent(processedHTML, cacheID, objectKey) {
@@ -245,6 +232,44 @@ if (typeof _ === 'undefined') {
             } else {
                 console.warn('Element ' + (!!elementID ? '#' + elementID : '[undefined]') + ' does not exist.');
             }
+        }
+
+        function getElementTitle(configID, objectKey) {
+            if(!!objectKey && objectKey !== '') {
+                var titleTag = 'h2';
+
+                if( Ledj.cache.jsonConfig[configID].hasOwnProperty('titleElementLevel') &&
+                    typeof parseInt(Ledj.cache.jsonConfig[configID].titleElementLevel) === 'number') {
+                    titleTag = 'h' + Ledj.cache.jsonConfig[configID].titleElementLevel;
+                }
+
+                return '<' + titleTag + ' class="ledj-title">' + objectKey + '</' + titleTag + '>';
+            } // else
+
+            return null;
+        }
+
+        function getImageUrl(imageTitle, cacheID, objectKey) {
+            var srcDir = '/';
+            var ext = (Ledj.cache.jsonConfig[cacheID].hasOwnProperty('imgExt') ? Ledj.cache.jsonConfig[cacheID].imgExt : '');
+
+            if(Ledj.cache.jsonConfig[cacheID].hasOwnProperty('srcDir')) {
+                srcDir = Ledj.cache.jsonConfig[cacheID].srcDir;
+            }
+
+            else if(Ledj.cache.jsonConfig[cacheID].hasOwnProperty('srcDirs')) {
+                if(!!objectKey && Ledj.cache.jsonConfig[cacheID].srcDirs.hasOwnProperty(objectKey)) {
+                    srcDir = Ledj.cache.jsonConfig[cacheID].srcDirs[objectKey];
+                }
+                else if(Ledj.cache.jsonConfig[cacheID].srcDirs.hasOwnProperty('Default')) {
+                    srcDir = Ledj.cache.jsonConfig[cacheID].srcDirs['Default'];
+                }
+                else if(Ledj.cache.jsonConfig[cacheID].srcDirs.hasOwnProperty('default')) {
+                    srcDir = Ledj.cache.jsonConfig[cacheID].srcDirs['default'];
+                }
+            }
+
+            return srcDir + imageTitle + ext;
         }
 
         /* End Private Helper Functions */
