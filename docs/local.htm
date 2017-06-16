@@ -15,9 +15,55 @@
 
     <script type="text/javascript">
         document.addEventListener("DOMContentLoaded", function() {
-            Ledj.attach('/docs/assets/data/grid-data.json', 'grid-data-container');
-            //Ledj.attach('/docs/assets/data/table-data.json', 'table-data-container');
+            resetLedjFor('grid-data');
+            //resetLedjFor('table-data');
         });
+
+        // todo: I'm pretty sure this will make another entry in Ledj's cache.
+        // todo: It should refresh the existing data and regenerate.
+        function reloadLedjFor(elementID) {
+            var jsonObj;
+            try {
+                jsonObj = JSON.parse( document.getElementById(elementID).value );
+            } catch(e) {
+                console.log(e);
+                jsonObj = null;
+                showJsonParseError(elementID, e);
+            }
+
+            if(!!jsonObj) {
+                hideJsonParseError(elementID);
+
+                document.getElementById(elementID + '-output').innerHTML = "";
+            }
+        }
+
+        function resetLedjFor(elementID) {
+            hideJsonParseError(elementID);
+            document.getElementById(elementID + '-output').innerHTML = "";
+
+            var configFile = '/docs/assets/data/' + elementID + '.json';
+
+            Ledj.getJSONConfig(configFile, function(err, data) {
+                document.getElementById(elementID).value = JSON.stringify(data, null, 2);
+
+                Ledj.attach('/docs/assets/data/grid-data.json', elementID + '-output');
+            });
+        }
+
+        function showJsonParseError(elementID, error) {
+            var el = document.getElementById(elementID + '-error');
+            el.innerHTML = 'Invalid JSON: ' + error.message;
+            el.className = 'json-error show';
+        }
+
+        function hideJsonParseError(elementID) {
+            var el = document.getElementById(elementID + '-error');
+            el.innerHTML = '';
+            el.className = 'json-error';
+        }
+
+
     </script>
 </head>
 <body>
@@ -34,14 +80,42 @@
 </div>
 
 <div class="body-container">
+    <h1>Getting Started</h1>
+    <div>
+        <code>#todo</code>
+    </div>
+
+    <hr />
+
+    <h1>Examples</h1>
+
     <div class="example-container">
-        <h1>Grid Example</h1>
-        <div id="grid-data-container"></div>
+        <h2>Grid</h2>
+        <div class="ledj-output-container" id="grid-data-output"></div>
+
+        <h2>JSON Data</h2>
+        <div class="json-data-container">
+            <label class="sr-only" for="grid-data">Grid Data JSON</label>
+            <textarea id="grid-data"></textarea>
+            <button onclick="reloadLedjFor('grid-data');">Reload</button>
+            <button onclick="resetLedjFor('grid-data');">Reset</button>
+            <span class="json-error" id="grid-data-error"></span>
+        </div>
     </div>
     <hr />
+
     <div class="example-container">
         <h1>Table Example</h1>
-        <div id="table-data-container"><code>#todo</code></div>
+        <div class="ledj-output-container" id="table-data-output"><code>#todo</code></div>
+
+        <h2>JSON Data</h2>
+        <div class="json-data-container">
+            <label class="sr-only" for="table-data">Table Data JSON</label>
+            <textarea id="table-data"></textarea>
+            <button onclick="reloadLedjFor('table-data');">Reload</button>
+            <button onclick="resetLedjFor('table-data');">Reset</button>
+            <span class="json-error" id="table-data-error"></span>
+        </div>
     </div>
 </div>
 

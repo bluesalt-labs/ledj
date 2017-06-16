@@ -41,20 +41,10 @@ if (typeof _ === 'undefined') {
             )
         };
 
-        /* Private Helper Functions */
-
-        function getHostName() {
-            return window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
-        }
-
-        function capitalize(string) {
-            return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
-        }
-
         /*
         Checks if a specified URL gives a status of 200
          */
-        function urlExists(url, callbackSuccess, callbackFail, callbackArg) {
+        Ledj.urlExists = function(url, callbackSuccess, callbackFail, callbackArg) {
             var http = new XMLHttpRequest();
             http.open('HEAD', url);
             http.onreadystatechange = function() {
@@ -70,9 +60,9 @@ if (typeof _ === 'undefined') {
                 }
             };
             http.send();
-        }
+        };
 
-        function getJSONConfig(url, callback) {
+        Ledj.getJSONConfig = function(url, callback) {
             if(typeof url === 'string'){
 
                 // Add date param to force clearing the browser cache
@@ -90,10 +80,20 @@ if (typeof _ === 'undefined') {
             } else {
                 callback('[url] must be a string.');
             }
+        };
+
+        /* Private Helper Functions */
+
+        function getHostName() {
+            return window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+        }
+
+        function capitalize(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
         }
 
         function loadConfig(url, callback) {
-            getJSONConfig(url, function(err, data) {
+            Ledj.getJSONConfig(url, function(err, data) {
                if(err === null) {
                    if (data.hasOwnProperty('config') && data.hasOwnProperty('data')) {
                        var configIndex = Ledj.cache.jsonConfig.push(data.config) - 1;
@@ -110,6 +110,29 @@ if (typeof _ === 'undefined') {
                }
             });
         }
+
+        /*
+         function loadConfig(url, callback) {
+         Ledj.getJSONConfig(url, addJsonToCache);
+         }
+
+         function addJsonToCache(err, data) {
+         if(err === null) {
+         if (data.hasOwnProperty('config') && data.hasOwnProperty('data')) {
+         var configIndex = Ledj.cache.jsonConfig.push(data.config) - 1;
+         Ledj.cache.jsonData[configIndex] = data.data; // todo make sure this works.
+
+         callback(configIndex);
+         } else {
+         err = 'JSON data must have `config` and `data` properties.';
+         }
+         }
+
+         if(err !== null) {
+         console.warn('Config file "' + url + '" could not be retrieved. ' + err);
+         }
+         }
+         */
 
         function sortJsonDataBy(cacheID, propName) {
             if(Ledj.cache.jsonData[cacheID]) {
