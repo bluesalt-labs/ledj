@@ -6,4 +6,17 @@
 > [Examples and Documentation](http://ledj.bluesaltlabs.com)
 
 
+-----
+
 `# todo`
+
+
+-----
+
+# To Do List
+
+* Add template and code to create a dynamic table.
+* Add template and code to create a GIF grid.
+
+
+-----

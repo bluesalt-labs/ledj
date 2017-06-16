@@ -1,5 +1,11 @@
-body * { font-family: 'Roboto', sans-serif; color: #222222; }
-body, div { background: #efefef; }
+/* Color Scheme - <http://paletton.com/#uid=7090u0kuPhGk7rhpYmyGvbUTp5w> */
+
+html, body {
+    margin: 0; border: 0; padding: 0; position: relative; top: 0; left: 0;
+}
+
+body * { font-family: 'Roboto', sans-serif; color: #00131C; }
+body, div { background: #f3f3f3; }
 
 code, pre {
     font-family: 'Roboto Mono', monospace;
@@ -20,6 +26,54 @@ a:focus {
     color: #0150C5;
 }
 
-header {
-    height: 50vh
+.body-container {
+    box-sizing: border-box;
+    padding: 15px;
 }
+
+.header {
+    background: rgba(0, 19, 28, 0.5);
+    padding: 60px 0 30px 0;
+
+    -webkit-box-shadow: 0 0 15px 0 rgba(0, 19, 28,0.75);
+    -moz-box-shadow: 0 0 15px 0 rgba(0, 19, 28,0.75);
+    box-shadow: 0 0 15px 0 rgba(0, 19, 28,0.75);
+    margin-bottom: 20px;
+}
+.header > .body-container {
+    background: none;
+    margin: auto;
+}
+
+.header-logo {
+    display: block;
+    max-width: 300px;
+    height: auto;
+    width: 100%;
+}
+
+.header-title, .sub-header-title {
+    text-align: left;
+    color: #f3f3f3;
+}
+
+
+.header-title {
+    font-size: 48px;
+    margin: 15px 0 20px 0;
+}
+.sub-header-title {
+    font-size: 24px;
+    margin: 5px 0 15px 0;
+}
+h3.sub-header-title { font-size: 18px; }
+
+@media(min-width:600px) {
+    .header > .body-container {
+        width: 570px;
+    }
+    .header > .body-container > * {
+        padding-left: 30px;
+    }
+}
+
