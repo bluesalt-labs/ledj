@@ -1,11 +1,11 @@
 {
   "config": {
     "srcDirs": {
-      "Default": "/assets/images/"
+      "Default": "assets/images/"
     },
     "type": "table",
     "imgExt": ".png",
-    "titleElementLevel": 3
+    "titleElementLevel": 2
   },
   "data": {
     "Links": [
