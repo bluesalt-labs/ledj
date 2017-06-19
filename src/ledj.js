@@ -9,7 +9,10 @@ if (typeof _ === 'undefined') {
 
         Ledj.cache = {
             jsonConfig: [],
-            jsonData: []
+            jsonData: [],
+            jsonUrl: [],
+            elementID: [],
+            curCacheID: 0
         };
 
         var templates = {
@@ -97,7 +100,7 @@ if (typeof _ === 'undefined') {
                if(err === null) {
                    if (data.hasOwnProperty('config') && data.hasOwnProperty('data')) {
                        var configIndex = Ledj.cache.jsonConfig.push(data.config) - 1;
-                       Ledj.cache.jsonData[configIndex] = data.data; // todo make sure this works.
+                       Ledj.cache.jsonData[configIndex] = data.data;
 
                        callback(configIndex);
                    } else {
@@ -295,11 +298,16 @@ if (typeof _ === 'undefined') {
             return srcDir + imageTitle + ext;
         }
 
+        function resetElement(elementID) {
+            document.getElementById(elementID).innerHTML = '';
+        }
+
         /* End Private Helper Functions */
 
         /*
-        Creates new HTML elements from specified JSON data
-        and attaches them to the specified DOM element
+        Creates new HTML elements from specified JSON data URL
+        and attaches them to the specified DOM element.
+        This is the primary method for loading data and attaching elements.
          */
         Ledj.loadAndAttachTo = function(jsonUrl, elementID) {
             loadConfig(jsonUrl, function(cacheID){
@@ -308,8 +316,45 @@ if (typeof _ === 'undefined') {
             }.bind(this));
         };
 
-        // Alias
+        /*
+         Creates new HTML elements from specified JSON data object
+         and attaches them to the specified DOM element.
+         */
+        Ledj.loadFromObjAndAttachTo = function(jsonData, elementID) {
+
+        };
+
+        /*
+         If the specified cache ID exists, the associated element is cleared,
+         the data retrieved again, and the HTML elements re-added to that container.
+         */
+        Ledj.reloadFromUrlByID = function(cacheID) {
+            var numCacheID = parseInt(cacheID);
+
+            if(typeof numCacheID === 'number' && !!this.cache.jsonUrl[numCacheID] && !!this.cache.elementID[numCacheID]) {
+                Ledj.resetElement(this.cache.elementID[numCacheID]);
+                this.loadAndAttachTo(this.cache.jsonUrl[numCacheID], this.cache.elementID[numCacheID]);
+            } else {
+                console.log('Could not reload: cacheID ' + cacheID + ' is invalid.');
+            }
+        };
+
+        /*
+         If the specified cache ID exists, the associated element is cleared,
+         the cached data is replaced with the specified data, and the HTML elements re-added to that container.
+         */
+        Ledj.reloadFromObjByID = function(jsonData, cacheID) {
+
+        };
+
+        // Alias for Ledj.loadAndAttachTo
         Ledj.attach = Ledj.loadAndAttachTo;
+        // Alias for Ledj.loadFromObjAndAttachTo
+        Ledj.attachWith = Ledj.loadFromObjAndAttachTo;
+        // Alias for Ledj.reloadFromUrlByID
+        Ledj.reload =  Ledj.reloadFromUrlByID;
+        // Alias for Ledj.reloadFromObjByID
+        Ledj.reloadwith = Ledj.reloadFromObjByID;
 
         // Final Statement
         return Ledj;

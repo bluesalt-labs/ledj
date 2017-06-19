@@ -9,7 +9,6 @@
     <link href="../src/ledj.css" rel="stylesheet" />
     <link href="/docs/assets/docs-styles.css" rel="stylesheet" />
 
-    <!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>-->
     <script type="text/javascript" src="/node_modules/lodash/lodash.js"></script>
     <script type="text/javascript" src="../src/ledj.js"></script>
 
@@ -98,7 +97,7 @@
             <label class="sr-only" for="grid-data">Grid Data JSON</label>
             <textarea id="grid-data"></textarea>
             <button onclick="reloadLedjFor('grid-data');">Reload</button>
-            <button onclick="resetLedjFor('grid-data');">Reset</button>
+            <button class="reset" onclick="resetLedjFor('grid-data');">Reset</button>
             <span class="json-error" id="grid-data-error"></span>
         </div>
     </div>
@@ -113,7 +112,7 @@
             <label class="sr-only" for="table-data">Table Data JSON</label>
             <textarea id="table-data"></textarea>
             <button onclick="reloadLedjFor('table-data');">Reload</button>
-            <button onclick="resetLedjFor('table-data');">Reset</button>
+            <button class="reset" onclick="resetLedjFor('table-data');">Reset</button>
             <span class="json-error" id="table-data-error"></span>
         </div>
     </div>
