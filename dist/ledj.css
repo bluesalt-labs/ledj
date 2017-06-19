@@ -20,9 +20,9 @@
     color: #333;
     cursor: pointer;
     border: 1px solid rgba(225,225,225,0.8);
-    -webkit-border-radius: 2px;
-    -moz-border-radius: 2px;
-    border-radius: 2px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
     -webkit-transition: all 200ms;
     transition: all 200ms;
 }
@@ -58,6 +58,13 @@
     font-size: 14px;
     text-align: center;
 }
+
+/*
+These sizes are based on bootstrap container sizes.
+todo: fix this somehow. I could add a bootstrap class to the parent container that these apply to,
+todo: a default sizing thing, and figure out a way to have custom sizes. Manipulating scss variables via JS
+todo: would be fantastic but I don't know if that's possible
+*/
 @media (max-width: 480px) {
     .ledj-link-grid > .link-grid-item { width: 45%; height: auto; }
     .ledj-link-grid > .link-grid-item:nth-child(odd) { float: left; }

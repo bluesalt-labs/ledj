@@ -9,10 +9,18 @@ if (typeof _ === 'undefined') {
 
         Ledj.cache = {
             jsonConfig: [],
-            jsonData: []
+            jsonData: [],
+            jsonUrl: [],
+            elementID: [],
+            curCacheID: -1
         };
 
-        var templates = {
+        // todo: If I stored all the class and ID names in a config object,
+        // todo: I could add functionality to change those class/ID names.
+
+        // todo: add the ability to expand gifs and images when I get that template working.
+
+        Ledj.templates = {
             parent: _.template( // todo: add the ability to modify the parent template (class? title could be an issue).
                 '<div class="ledj-container">' +
                     '<% if(title) { print(title); } %>' +
@@ -41,20 +49,10 @@ if (typeof _ === 'undefined') {
             )
         };
 
-        /* Private Helper Functions */
-
-        function getHostName() {
-            return window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
-        }
-
-        function capitalize(string) {
-            return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
-        }
-
         /*
         Checks if a specified URL gives a status of 200
          */
-        function urlExists(url, callbackSuccess, callbackFail, callbackArg) {
+        Ledj.urlExists = function(url, callbackSuccess, callbackFail, callbackArg) {
             var http = new XMLHttpRequest();
             http.open('HEAD', url);
             http.onreadystatechange = function() {
@@ -70,9 +68,13 @@ if (typeof _ === 'undefined') {
                 }
             };
             http.send();
-        }
+        };
 
-        function getJSONConfig(url, callback) {
+        Ledj.reset = function(cacheID) {
+            resetElement(Ledj.cache.elementID[cacheID]);
+        };
+
+        Ledj.getJSONConfig = function(url, callback) {
             if(typeof url === 'string'){
 
                 // Add date param to force clearing the browser cache
@@ -90,16 +92,26 @@ if (typeof _ === 'undefined') {
             } else {
                 callback('[url] must be a string.');
             }
+        };
+
+        /* Private Helper Functions */
+
+        function getHostName() {
+            return window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
         }
 
-        function loadConfig(url, callback) {
-            getJSONConfig(url, function(err, data) {
+        function capitalize(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+        }
+
+        function loadConfigFromUrl(url, callback) {
+            Ledj.getJSONConfig(url, function(err, data) {
                if(err === null) {
                    if (data.hasOwnProperty('config') && data.hasOwnProperty('data')) {
-                       var configIndex = Ledj.cache.jsonConfig.push(data.config) - 1;
-                       Ledj.cache.jsonData[configIndex] = data.data; // todo make sure this works.
+                       Ledj.cache.curCacheID = Ledj.cache.jsonConfig.push(data.config) - 1;
+                       Ledj.cache.jsonData[Ledj.cache.curCacheID] = data.data;
 
-                       callback(configIndex);
+                       callback(Ledj.cache.curCacheID);
                    } else {
                        err = 'JSON data must have `config` and `data` properties.';
                    }
@@ -109,6 +121,19 @@ if (typeof _ === 'undefined') {
                    console.warn('Config file "' + url + '" could not be retrieved. ' + err);
                }
             });
+        }
+
+        function loadConfigFromObj(data, callback) {
+            if (data.hasOwnProperty('config') && data.hasOwnProperty('data')) {
+                Ledj.cache.curCacheID = Ledj.cache.jsonConfig.push(data.config) - 1;
+                Ledj.cache.jsonData[Ledj.cache.curCacheID] = data.data;
+
+                callback(Ledj.cache.curCacheID);
+            } else {
+                console.warn('Config object must have `config` and `data` properties.');
+            }
+
+
         }
 
         function sortJsonDataBy(cacheID, propName) {
@@ -157,7 +182,7 @@ if (typeof _ === 'undefined') {
 
             };
 
-            return wrapHtmlInParent(templates.linkGrid(templateData), cacheID, objectKey);
+            return wrapHtmlInParent(Ledj.templates.linkGrid(templateData), cacheID, objectKey);
         }
 
         function getTableFromData(cacheID, objectKey) {
@@ -165,7 +190,7 @@ if (typeof _ === 'undefined') {
                 'linkItems': getLinkItemsData(cacheID, objectKey)
             };
 
-            return wrapHtmlInParent(templates.table(templateData), cacheID, objectKey);
+            return wrapHtmlInParent(Ledj.templates.table(templateData), cacheID, objectKey);
         }
 
         function getGifGridFromData(cacheID, objectKey) {
@@ -173,11 +198,11 @@ if (typeof _ === 'undefined') {
                 'linkItems': getLinkItemsData(cacheID, objectKey)
             };
 
-            return wrapHtmlInParent(templates.gifGrid(templateData), cacheID, objectKey);
+            return wrapHtmlInParent(Ledj.templates.gifGrid(templateData), cacheID, objectKey);
         }
 
         function wrapHtmlInParent(processedHTML, cacheID, objectKey) {
-            return templates.parent({
+            return Ledj.templates.parent({
                 'title': getElementTitle(cacheID, objectKey),
                 'childHTML': processedHTML
             });
@@ -272,21 +297,76 @@ if (typeof _ === 'undefined') {
             return srcDir + imageTitle + ext;
         }
 
+        function resetElement(elementID) {
+            try {
+                document.getElementById(elementID).innerHTML = '';
+            } catch(e) {
+                console.warn(e); // debug?
+            }
+        }
+
         /* End Private Helper Functions */
 
         /*
-        Creates new HTML elements from specified JSON data
-        and attaches them to the specified DOM element
+        Creates new HTML elements from specified JSON data URL
+        and attaches them to the specified DOM element.
+        This is the primary method for loading data and attaching elements.
          */
         Ledj.loadAndAttachTo = function(jsonUrl, elementID) {
-            loadConfig(jsonUrl, function(cacheID){
+            loadConfigFromUrl(jsonUrl, function(cacheID) {
                 sortData(cacheID);
                 addElementsTo(cacheID, elementID);
-            }.bind(this));
+            });
         };
 
-        // Alias
+        /*
+         Creates new HTML elements from specified JSON data object
+         and attaches them to the specified DOM element.
+         */
+        Ledj.loadFromObjAndAttachTo = function(jsonData, elementID) {
+            loadConfigFromObj(jsonData, function(cacheID) {
+                sortData(cacheID);
+                addElementsTo(cacheID, elementID);
+            });
+        };
+
+        /*
+         If the specified cache ID exists, the associated element is cleared,
+         the data retrieved again, and the HTML elements re-added to that container.
+         */
+        Ledj.reloadFromUrlByID = function(cacheID) {
+            var numCacheID = parseInt(cacheID);
+
+            if(typeof numCacheID === 'number' && !!this.cache.jsonUrl[numCacheID] && !!this.cache.elementID[numCacheID]) {
+                this.reset(numCacheID); // todo: make sure this works.
+                this.loadAndAttachTo(this.cache.jsonUrl[numCacheID], this.cache.elementID[numCacheID]);
+            } else {
+                console.log('Could not reload: cacheID ' + cacheID + ' is invalid.');
+            }
+        };
+
+        /*
+         If the specified cache ID exists, the associated element is cleared,
+         the cached data is replaced with the specified data, and the HTML elements re-added to that container.
+         */
+        Ledj.reloadFromObjByID = function(jsonData, cacheID) {
+            var numCacheID = parseInt(cacheID);
+
+            if(typeof numCacheID === 'number' && !!this.cache.elementID[numCacheID]) {
+                this.reset(numCacheID);
+            } else {
+                console.log('Could not reload: cacheID ' + cacheID + ' is invalid.');
+            }
+        };
+
+        // Alias for Ledj.loadAndAttachTo
         Ledj.attach = Ledj.loadAndAttachTo;
+        // Alias for Ledj.loadFromObjAndAttachTo
+        Ledj.attachWith = Ledj.loadFromObjAndAttachTo;
+        // Alias for Ledj.reloadFromUrlByID
+        Ledj.reload =  Ledj.reloadFromUrlByID;
+        // Alias for Ledj.reloadFromObjByID
+        Ledj.reloadwith = Ledj.reloadFromObjByID;
 
         // Final Statement
         return Ledj;
