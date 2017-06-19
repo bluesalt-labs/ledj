@@ -2,10 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#00131C">
+    <link rel="icon" sizes="300x300" href="assets/images/ledj-icon.png">
     <title>Ledj.js | Docs</title>
 
     <!-- Stylesheets -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700|Roboto+Mono" rel="stylesheet" />
     <link href="assets/ledj.min.css" rel="stylesheet" />
     <link href="assets/docs-styles.min.css" rel="stylesheet" />
 
@@ -15,11 +19,9 @@
     <script type="text/javascript">
         document.addEventListener("DOMContentLoaded", function() {
            Ledj.attach('assets/data/grid-data.json', 'grid-data-container');
-           //Ledj.attach('assets/data/table-data.json', 'table-data-container');
         });
     </script>
 </head>
-
 <body>
 
 <div class="header">
@@ -27,24 +29,22 @@
         <img class="header-logo" src="assets/images/ledj.png" />
         <h1 class="header-title">Ledj</h1>
 
-        <h2 class="sub-header-title">Load Elements Dynamically from JSON</h2>
+        <h2 class="sub-header-title">
+            <strong>L</strong>oad <strong>E</strong>lements <strong>D</strong>ynamically from <strong>J</strong>SON
+        </h2>
         <h3 class="sub-header-title">A JavaScript library that creates repeated HTML elements from a JSON file.</h3>
         <h3 class="sub-header-title">Created by BlueSalt Labs</h3>
     </div>
 </div>
 
 <div class="body-container">
+    <h1>Examples</h1>
+
     <div class="example-container">
-        <h1>Grid Example</h1>
-        <div id="grid-data-container"></div>
-    </div>
-    <hr />
-    <div class="example-container">
-        <h1>Table Example</h1>
-        <div id="table-data-container"><code>#todo</code></div>
+        <h2>Grid</h2>
+        <div class="ledj-output-container" id="grid-data-container"></div>
     </div>
 </div>
 
 </body>
-
 </html>

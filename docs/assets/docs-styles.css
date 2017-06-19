@@ -1,7 +1,14 @@
 /* Color Scheme - <http://paletton.com/#uid=7090u0kuPhGk7rhpYmyGvbUTp5w> */
 
 html, body {
-    margin: 0; border: 0; padding: 0; position: relative; top: 0; left: 0;
+    position: relative;
+    width:100%;
+    width:100vw;
+    overflow-x: hidden;
+    top: 0; left: 0;
+    margin: 0;
+    border: 0;
+    padding: 0;
 }
 
 body * { font-family: 'Roboto', sans-serif; color: #00131C; }
@@ -11,9 +18,9 @@ code, pre {
     font-family: 'Roboto Mono', monospace;
     color: #B40E01;
 }
+h1, h2, h3, h4, h5, h6 { font-weight: normal; }
 a:hover code,
 a:active code,
-a:focus code { color: #DD1E0F; }
 a {
     text-decoration: none;
     color: #1B51A0;
@@ -58,7 +65,12 @@ a:focus {
 
 .header-title, .sub-header-title {
     text-align: left;
-    color: #f3f3f3;
+    color: #f0f0f0;
+}
+
+.header-title > strong, .sub-header-title > strong {
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.5);
 }
 
 .header-title {
@@ -90,8 +102,8 @@ h3.sub-header-title { font-size: 18px; }
 
 .json-data-container textarea {
     font-family: 'Roboto Mono', monospace;
+    box-sizing: border-box;
     border: none;
-    overflow: auto;
     outline: none;
     resize: none;
     display: block;

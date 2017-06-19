@@ -2,10 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#00131C">
+    <link rel="icon" sizes="300x300" href="/docs/assets/images/ledj-icon.png">
     <title>Ledj.js | Local Testing</title>
 
     <!-- Stylesheets -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700|Roboto+Mono" rel="stylesheet" />
     <link href="../src/ledj.css" rel="stylesheet" />
     <link href="/docs/assets/docs-styles.css" rel="stylesheet" />
 
@@ -15,11 +19,12 @@
     <script type="text/javascript">
         document.addEventListener("DOMContentLoaded", function() {
             resetLedjFor('grid-data');
-            //resetLedjFor('table-data');
+            resetLedjFor('table-data');
         });
 
         // todo: I'm pretty sure this will make another entry in Ledj's cache.
         // todo: It should refresh the existing data and regenerate.
+
         function reloadLedjFor(elementID) {
             var jsonObj;
             try {
@@ -47,6 +52,8 @@
                 document.getElementById(elementID).value = JSON.stringify(data, null, 2);
 
                 Ledj.attach('/docs/assets/data/grid-data.json', elementID + '-output');
+                //console.log(Ledj.cache.curCacheID); // debug
+
             });
         }
 
@@ -69,10 +76,12 @@
 
 <div class="header">
     <div class="body-container">
-        <img class="header-logo" src="assets/images/ledj.png" />
-        <h1 class="header-title">Ledj</h1>
+        <img class="header-logo" src="/docs/assets/images/ledj.png" />
+        <h1 class="header-title">Ledj.js</h1>
 
-        <h2 class="sub-header-title">Load Elements Dynamically from JSON</h2>
+        <h2 class="sub-header-title">
+            <strong>L</strong>oad <strong>E</strong>lements <strong>D</strong>ynamically from <strong>J</strong>SON
+        </h2>
         <h3 class="sub-header-title">A JavaScript library that creates repeated HTML elements from a JSON file.</h3>
         <h3 class="sub-header-title">Created by BlueSalt Labs</h3>
     </div>

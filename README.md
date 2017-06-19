@@ -1,4 +1,4 @@
-# Ledj
+# Ledj.js
 
 ![Ledj Logo](/docs/assets/images/ledj.png)
 
