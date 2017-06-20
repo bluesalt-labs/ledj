@@ -231,12 +231,20 @@ if (typeof _ === 'undefined') {
         function sortJsonDataBy(cacheID, propName) {
             if(Ledj.cache.jsonData[cacheID]) {
                 if( Array.isArray(Ledj.cache.jsonData[cacheID]) ) {
-                    Ledj.cache.jsonData[cacheID] = _.sortBy(Ledj.cache.jsonData[cacheID], propName);
+                    Ledj.cache.jsonData[cacheID] =
+                        _.sortBy(
+                            Ledj.cache.jsonData[cacheID],
+                            (typeof propName === 'string' ? propName.toLowerCase() : propName)
+                        );
                 }
 
                 else if(typeof Ledj.cache.jsonData[cacheID] === 'object') {
                     for(var item in Ledj.cache.jsonData[cacheID]) {
-                        Ledj.cache.jsonData[cacheID][item] = _.sortBy(Ledj.cache.jsonData[cacheID][item], propName);
+                        Ledj.cache.jsonData[cacheID][item] =
+                            _.sortBy(
+                                Ledj.cache.jsonData[cacheID][item],
+                                (typeof propName === 'string' ? propName.toLowerCase() : propName)
+                            );
                     }
                 }
 
