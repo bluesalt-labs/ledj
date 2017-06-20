@@ -17,8 +17,109 @@
     <script type="text/javascript" src="assets/ledj.min.js"></script>
 
     <script type="text/javascript">
+        var ledjDocs = {
+            config: {
+                baseJsonUrl: 'assets/data/'
+            },
+            // todo: these cacheID's should NOT be hard coded...
+            data: {
+                0: { baseName: 'grid-data',    cacheID: 0 }
+            },
+
+            // Functions
+            getJsonDataUrl: function(ledjID) {
+                return this.config.baseJsonUrl + this.data[ledjID].baseName + '.json';
+            },
+            getContainerID: function(ledjID, type) {
+                if(type === 'output' || type === 'json' || type === 'error') {
+                    return this.data[ledjID].baseName + '-' + type;
+                }
+            },
+            getContainer: function(ledjID, type) {
+                var idName = this.getContainerID(ledjID, type);
+                if(!!idName) {  return document.getElementById(idName);
+                } else {        return null; }
+            },
+            showJsonParseError: function(ledjID, error) {
+                var elError = this.getContainer(ledjID, 'error');
+                elError.innerHTML = 'Invalid JSON: ' + error.message;
+                elError.className = 'json-error show';
+            },
+            hideJsonParseError: function(ledjID) {
+                var elError = this.getContainer(ledjID, 'error');
+                elError.innerHTML = '';
+                elError.className = 'json-error';
+            },
+            resetOutputFor: function(ledjID) {
+                var elOutput = this.getContainer(ledjID, 'output');
+                elOutput.innerHTML = '';
+                Ledj.attach( this.getJsonDataUrl(ledjID), this.getContainerID(ledjID, 'output') );
+            },
+            resetJsonDataFor: function(ledjID) {
+                var elJson = this.getContainer(ledjID, 'json');
+
+                elJson.value = '';
+
+                Ledj.getJSONConfig(this.getJsonDataUrl(ledjID), function(err, data) {
+                    elJson.value = JSON.stringify(data, null, 2);
+                });
+            },
+            reloadLedjFor: function(ledjID) {
+                var jsonObj;
+                try {
+                    var elJson = this.getContainer(ledjID, 'json');
+                    jsonObj = JSON.parse( elJson.value );
+                } catch(e) {
+                    console.log(e);
+                    jsonObj = null;
+                    this.showJsonParseError(ledjID, e);
+                }
+
+                if(!!jsonObj) {
+                    this.hideJsonParseError(ledjID);
+
+                    var elOutput = this.getContainer(ledjID, 'output');
+                    elOutput.innerHTML = '';
+                    Ledj.reloadwith(jsonObj, this.data[ledjID].cacheID);
+                }
+            },
+            resetLedjFor: function(ledjID) {
+                this.hideJsonParseError(ledjID);
+                this.resetOutputFor(ledjID);
+                this.resetJsonDataFor(ledjID);
+            },
+
+            initLedjExamples: function() {
+                for(var i in this.data) {
+                    this.resetLedjFor(i); // todo: we need to change this so that we get a cacheID from Ledj.
+                }
+            }
+        };
+
+        // Load the Ledj examples
         document.addEventListener("DOMContentLoaded", function() {
-           Ledj.attach('assets/data/grid-data.json', 'grid-data-container');
+            ledjDocs.initLedjExamples();
+
+            var textareas = document.getElementsByTagName('textarea');
+
+            for(var i in textareas) {
+                var el = document.getElementById(textareas[i].id);
+                if(!!el) {
+                    el.addEventListener("keydown", function(e) {
+                        var keyCode = e.keyCode || e.which;
+                        if(keyCode === 9) {
+                            e.preventDefault();
+                            // todo for some reason this is firing twice. only fire this once.
+                            var start   = e.target.selectionStart;
+                            var end     = e.target.selectionEnd;
+                            e.target.value = e.target.value.substring(0, start) + '  ' + e.target.value.substring(end);
+                            //e.target.focus();
+                            e.target.setSelectionRange(end+1, end+1);
+                        }
+                    });
+                }
+            }
+
         });
     </script>
 </head>
@@ -27,7 +128,7 @@
 <div class="header">
     <div class="body-container">
         <img class="header-logo" src="assets/images/ledj.png" />
-        <h1 class="header-title">Ledj</h1>
+        <h1 class="header-title">Ledj.js</h1>
 
         <h2 class="sub-header-title">
             <strong>L</strong>oad <strong>E</strong>lements <strong>D</strong>ynamically from <strong>J</strong>SON
@@ -42,7 +143,16 @@
 
     <div class="example-container">
         <h2>Grid</h2>
-        <div class="ledj-output-container" id="grid-data-container"></div>
+        <div class="ledj-output-container" id="grid-data-output"></div>
+
+        <h2>JSON Data</h2>
+        <div class="json-data-container">
+            <label class="sr-only" for="grid-data-json">Grid Data JSON</label>
+            <textarea id="grid-data-json"></textarea>
+            <button onclick="ledjDocs.reloadLedjFor(0);">Reload</button>
+            <button class="reset" onclick="ledjDocs.resetLedjFor(0);">Reset</button>
+            <span class="json-error" id="grid-data-error"></span>
+        </div>
     </div>
 </div>
 

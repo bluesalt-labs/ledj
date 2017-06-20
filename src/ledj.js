@@ -18,8 +18,6 @@ if (typeof _ === 'undefined') {
         // todo: If I stored all the class and ID names in a config object,
         // todo: I could add functionality to change those class/ID names.
 
-        // todo: add the ability to expand gifs and images when I get that template working.
-
         Ledj.templates = {
             parent: _.template( // todo: add the ability to modify the parent template (class? title could be an issue).
                 '<div class="ledj-container">' +
@@ -106,16 +104,17 @@ if (typeof _ === 'undefined') {
 
         function loadConfigFromUrl(url, callback) {
             Ledj.getJSONConfig(url, function(err, data) {
-               if(err === null) {
-                   if (data.hasOwnProperty('config') && data.hasOwnProperty('data')) {
-                       Ledj.cache.curCacheID = Ledj.cache.jsonConfig.push(data.config) - 1;
-                       Ledj.cache.jsonData[Ledj.cache.curCacheID] = data.data;
+                if(err === null) {
+                    if (data.hasOwnProperty('config') && data.hasOwnProperty('data')) {
+                        Ledj.cache.curCacheID = Ledj.cache.jsonConfig.push(data.config) - 1;
+                        Ledj.cache.jsonData[Ledj.cache.curCacheID] = data.data;
+                        Ledj.cache.jsonUrl[Ledj.cache.curCacheID] = url;
 
-                       callback(Ledj.cache.curCacheID);
-                   } else {
-                       err = 'JSON data must have `config` and `data` properties.';
-                   }
-               }
+                        callback(Ledj.cache.curCacheID);
+                    } else {
+                        err = 'JSON data must have `config` and `data` properties.';
+                    }
+                }
 
                if(err !== null) {
                    console.warn('Config file "' + url + '" could not be retrieved. ' + err);
@@ -213,6 +212,9 @@ if (typeof _ === 'undefined') {
 
             // Make sure the DOM element exists
             if(!!element) {
+                // Store the valid elementID
+                Ledj.cache.elementID[cacheID] = elementID;
+
                 var functionToUse = null;
 
                 switch(Ledj.cache.jsonConfig[cacheID].type.toLowerCase()) {
@@ -354,6 +356,7 @@ if (typeof _ === 'undefined') {
 
             if(typeof numCacheID === 'number' && !!this.cache.elementID[numCacheID]) {
                 this.reset(numCacheID);
+                this.loadFromObjAndAttachTo(jsonData, this.cache.elementID[numCacheID]);
             } else {
                 console.log('Could not reload: cacheID ' + cacheID + ' is invalid.');
             }
