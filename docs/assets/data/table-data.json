@@ -4,6 +4,21 @@
       "Default": "assets/images/"
     },
     "type": "table",
+    "headers": {
+      "title": {
+        "name": "Name/URL",
+        "type": "url",
+        "href": "url"
+      },
+      "description": {
+        "name": "Description",
+        "type": "string"
+      },
+      "date": {
+        "name": "Date Added",
+        "type": "date"
+      }
+    },
     "imgExt": ".png",
     "titleElementLevel": 3
   },
@@ -12,16 +27,19 @@
       {
         "title": "GitHub - BlueSalt Labs",
         "href": "https://github.com/bluesalt-labs/",
+        "date": "2017-06-19",
         "filename": "github-bluesalt-labs"
       },
       {
         "title": "GitHub - Lukerz8",
         "href": "https://github.com/lukerz8",
+        "date": "2017-06-18",
         "filename": "github-lukerz8"
       },
       {
         "title": "CodePen - BlueSalt Labs",
         "href": "https://codepen.io/bluesaltlabs/",
+        "date": "2017-06-17",
         "filename": "codepen-bluesalt-labs"
       }
     ]

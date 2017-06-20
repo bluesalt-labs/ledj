@@ -28,6 +28,20 @@
             },
 
             // Functions
+            checkForTab: function(e) {
+                var keyCode = e.keyCode || e.which;
+                if(keyCode === 9) {
+                    e.preventDefault();
+                    var cursorIndex   = e.target.selectionStart;
+                    var text = e.target.value;
+                    e.target.value = (text.substring(0, cursorIndex) + "  " + text.substring(cursorIndex));
+                    e.target.setSelectionRange(cursorIndex + 2, cursorIndex + 2);
+                }
+            },
+            addCheckTabListener: function(ledjID) {
+                var textareaEl = this.getContainer(ledjID, 'json');
+                textareaEl.addEventListener("keydown", ledjDocs.checkForTab);
+            },
             getJsonDataUrl: function(ledjID) {
                 return this.config.baseJsonUrl + this.data[ledjID].baseName + '.json';
             },
@@ -93,6 +107,7 @@
             initLedjExamples: function() {
                 for(var i in this.data) {
                     this.resetLedjFor(i); // todo: we need to change this so that we get a cacheID from Ledj.
+                    this.addCheckTabListener(i);
                 }
             }
         };
@@ -100,27 +115,6 @@
         // Load the Ledj examples
         document.addEventListener("DOMContentLoaded", function() {
             ledjDocs.initLedjExamples();
-
-            var textareas = document.getElementsByTagName('textarea');
-
-            for(var i in textareas) {
-                var el = document.getElementById(textareas[i].id);
-                if(!!el) {
-                    el.addEventListener("keydown", function(e) {
-                        var keyCode = e.keyCode || e.which;
-                        if(keyCode === 9) {
-                            e.preventDefault();
-                            // todo for some reason this is firing twice. only fire this once.
-                            var start   = e.target.selectionStart;
-                            var end     = e.target.selectionEnd;
-                            e.target.value = e.target.value.substring(0, start) + '  ' + e.target.value.substring(end);
-                            //e.target.focus();
-                            e.target.setSelectionRange(end+1, end+1);
-                        }
-                    });
-                }
-            }
-
         });
     </script>
 </head>
