@@ -13,6 +13,10 @@
     <link href="../src/ledj.css" rel="stylesheet" />
     <link href="/docs/assets/docs-styles.css" rel="stylesheet" />
 
+    <!-- debug -- >
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    -->
+
     <script type="text/javascript" src="/node_modules/lodash/lodash.js"></script>
     <script type="text/javascript" src="../src/ledj.js"></script>
 
@@ -28,6 +32,20 @@
             },
 
             // Functions
+            checkForTab: function(e) {
+                var keyCode = e.keyCode || e.which;
+                if(keyCode === 9) {
+                    e.preventDefault();
+                    var cursorIndex   = e.target.selectionStart;
+                    var text = e.target.value;
+                    e.target.value = (text.substring(0, cursorIndex) + "  " + text.substring(cursorIndex));
+                    e.target.setSelectionRange(cursorIndex + 2, cursorIndex + 2);
+                }
+            },
+            addCheckTabListener: function(ledjID) {
+                var textareaEl = this.getContainer(ledjID, 'json');
+                textareaEl.addEventListener("keydown", ledjDocs.checkForTab);
+            },
             getJsonDataUrl: function(ledjID) {
                 return this.config.baseJsonUrl + this.data[ledjID].baseName + '.json';
             },
@@ -93,6 +111,7 @@
             initLedjExamples: function() {
                 for(var i in this.data) {
                     this.resetLedjFor(i); // todo: we need to change this so that we get a cacheID from Ledj.
+                    this.addCheckTabListener(i);
                 }
             }
         };
@@ -100,27 +119,6 @@
         // Load the Ledj examples
         document.addEventListener("DOMContentLoaded", function() {
             ledjDocs.initLedjExamples();
-
-            var textareas = document.getElementsByTagName('textarea');
-
-            for(var i in textareas) {
-                var el = document.getElementById(textareas[i].id);
-                if(!!el) {
-                    el.addEventListener("keydown", function(e) {
-                        var keyCode = e.keyCode || e.which;
-                        if(keyCode === 9) {
-                            e.preventDefault();
-                            // todo for some reason this is firing twice. only fire this once.
-                            var start   = e.target.selectionStart;
-                            var end     = e.target.selectionEnd;
-                            e.target.value = e.target.value.substring(0, start) + '  ' + e.target.value.substring(end);
-                            //e.target.focus();
-                            e.target.setSelectionRange(end+1, end+1);
-                        }
-                    });
-                }
-            }
-
         });
     </script>
 </head>
@@ -162,11 +160,14 @@
             <span class="json-error" id="grid-data-error"></span>
         </div>
     </div>
+
     <hr />
 
     <div class="example-container">
-        <h1>Table Example</h1>
-        <div class="ledj-output-container" id="table-data-output"><code>#todo</code></div>
+        <h2>Table</h2>
+        <span style="color:#B40E01;">Note: This is still under development.</span>
+        <br />
+        <div class="ledj-output-container" id="table-data-output"></div>
 
         <h2>JSON Data</h2>
         <div class="json-data-container">
