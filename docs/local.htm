@@ -17,59 +17,111 @@
     <script type="text/javascript" src="../src/ledj.js"></script>
 
     <script type="text/javascript">
+        var ledjDocs = {
+            config: {
+                baseJsonUrl: '/docs/assets/data/'
+            },
+            // todo: these cacheID's should NOT be hard coded...
+            data: {
+                0: { baseName: 'grid-data',    cacheID: 0 },
+                1: { baseName: 'table-data',   cacheID: 1 }
+            },
+
+            // Functions
+            getJsonDataUrl: function(ledjID) {
+                return this.config.baseJsonUrl + this.data[ledjID].baseName + '.json';
+            },
+            getContainerID: function(ledjID, type) {
+                if(type === 'output' || type === 'json' || type === 'error') {
+                    return this.data[ledjID].baseName + '-' + type;
+                }
+            },
+            getContainer: function(ledjID, type) {
+                var idName = this.getContainerID(ledjID, type);
+                if(!!idName) {  return document.getElementById(idName);
+                } else {        return null; }
+            },
+            showJsonParseError: function(ledjID, error) {
+                var elError = this.getContainer(ledjID, 'error');
+                elError.innerHTML = 'Invalid JSON: ' + error.message;
+                elError.className = 'json-error show';
+            },
+            hideJsonParseError: function(ledjID) {
+                var elError = this.getContainer(ledjID, 'error');
+                elError.innerHTML = '';
+                elError.className = 'json-error';
+            },
+            resetOutputFor: function(ledjID) {
+                var elOutput = this.getContainer(ledjID, 'output');
+                elOutput.innerHTML = '';
+                Ledj.attach( this.getJsonDataUrl(ledjID), this.getContainerID(ledjID, 'output') );
+            },
+            resetJsonDataFor: function(ledjID) {
+                var elJson = this.getContainer(ledjID, 'json');
+
+                elJson.value = '';
+
+                Ledj.getJSONConfig(this.getJsonDataUrl(ledjID), function(err, data) {
+                    elJson.value = JSON.stringify(data, null, 2);
+                });
+            },
+            reloadLedjFor: function(ledjID) {
+                var jsonObj;
+                try {
+                    var elJson = this.getContainer(ledjID, 'json');
+                    jsonObj = JSON.parse( elJson.value );
+                } catch(e) {
+                    console.log(e);
+                    jsonObj = null;
+                    this.showJsonParseError(ledjID, e);
+                }
+
+                if(!!jsonObj) {
+                    this.hideJsonParseError(ledjID);
+
+                    var elOutput = this.getContainer(ledjID, 'output');
+                    elOutput.innerHTML = '';
+                    Ledj.reloadwith(jsonObj, this.data[ledjID].cacheID);
+                }
+            },
+            resetLedjFor: function(ledjID) {
+                this.hideJsonParseError(ledjID);
+                this.resetOutputFor(ledjID);
+                this.resetJsonDataFor(ledjID);
+            },
+
+            initLedjExamples: function() {
+                for(var i in this.data) {
+                    this.resetLedjFor(i); // todo: we need to change this so that we get a cacheID from Ledj.
+                }
+            }
+        };
+
+        // Load the Ledj examples
         document.addEventListener("DOMContentLoaded", function() {
-            resetLedjFor('grid-data');
-            resetLedjFor('table-data');
+            ledjDocs.initLedjExamples();
+
+            var textareas = document.getElementsByTagName('textarea');
+
+            for(var i in textareas) {
+                var el = document.getElementById(textareas[i].id);
+                if(!!el) {
+                    el.addEventListener("keydown", function(e) {
+                        var keyCode = e.keyCode || e.which;
+                        if(keyCode === 9) {
+                            e.preventDefault();
+                            // todo for some reason this is firing twice. only fire this once.
+                            var start   = e.target.selectionStart;
+                            var end     = e.target.selectionEnd;
+                            e.target.value = e.target.value.substring(0, start) + '  ' + e.target.value.substring(end);
+                            //e.target.focus();
+                            e.target.setSelectionRange(end+1, end+1);
+                        }
+                    });
+                }
+            }
+
         });
-
-        // todo: I'm pretty sure this will make another entry in Ledj's cache.
-        // todo: It should refresh the existing data and regenerate.
-
-        function reloadLedjFor(elementID) {
-            var jsonObj;
-            try {
-                jsonObj = JSON.parse( document.getElementById(elementID).value );
-            } catch(e) {
-                console.log(e);
-                jsonObj = null;
-                showJsonParseError(elementID, e);
-            }
-
-            if(!!jsonObj) {
-                hideJsonParseError(elementID);
-
-                document.getElementById(elementID + '-output').innerHTML = "";
-            }
-        }
-
-        function resetLedjFor(elementID) {
-            hideJsonParseError(elementID);
-            document.getElementById(elementID + '-output').innerHTML = "";
-
-            var configFile = '/docs/assets/data/' + elementID + '.json';
-
-            Ledj.getJSONConfig(configFile, function(err, data) {
-                document.getElementById(elementID).value = JSON.stringify(data, null, 2);
-
-                Ledj.attach('/docs/assets/data/grid-data.json', elementID + '-output');
-                //console.log(Ledj.cache.curCacheID); // debug
-
-            });
-        }
-
-        function showJsonParseError(elementID, error) {
-            var el = document.getElementById(elementID + '-error');
-            el.innerHTML = 'Invalid JSON: ' + error.message;
-            el.className = 'json-error show';
-        }
-
-        function hideJsonParseError(elementID) {
-            var el = document.getElementById(elementID + '-error');
-            el.innerHTML = '';
-            el.className = 'json-error';
-        }
-
-
     </script>
 </head>
 <body>
@@ -103,10 +155,10 @@
 
         <h2>JSON Data</h2>
         <div class="json-data-container">
-            <label class="sr-only" for="grid-data">Grid Data JSON</label>
-            <textarea id="grid-data"></textarea>
-            <button onclick="reloadLedjFor('grid-data');">Reload</button>
-            <button class="reset" onclick="resetLedjFor('grid-data');">Reset</button>
+            <label class="sr-only" for="grid-data-json">Grid Data JSON</label>
+            <textarea id="grid-data-json"></textarea>
+            <button onclick="ledjDocs.reloadLedjFor(0);">Reload</button>
+            <button class="reset" onclick="ledjDocs.resetLedjFor(0);">Reset</button>
             <span class="json-error" id="grid-data-error"></span>
         </div>
     </div>
@@ -118,10 +170,10 @@
 
         <h2>JSON Data</h2>
         <div class="json-data-container">
-            <label class="sr-only" for="table-data">Table Data JSON</label>
-            <textarea id="table-data"></textarea>
-            <button onclick="reloadLedjFor('table-data');">Reload</button>
-            <button class="reset" onclick="resetLedjFor('table-data');">Reset</button>
+            <label class="sr-only" for="table-data-json">Table Data JSON</label>
+            <textarea id="table-data-json"></textarea>
+            <button onclick="ledjDocs.reloadLedjFor(1);">Reload</button>
+            <button class="reset" onclick="ledjDocs.resetLedjFor(1);">Reset</button>
             <span class="json-error" id="table-data-error"></span>
         </div>
     </div>

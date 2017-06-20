@@ -19,6 +19,7 @@
 
 * Add template and code to create a dynamic table.
 * Add template and code to create a GIF grid.
+* Add the ability to expand gifs and images when I get that template working.
 
 
 -----
