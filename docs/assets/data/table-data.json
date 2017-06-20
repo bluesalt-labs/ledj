@@ -26,19 +26,22 @@
     "Links": [
       {
         "title": "GitHub - BlueSalt Labs",
-        "href": "https://github.com/bluesalt-labs/",
+        "description": "BlueSalt Labs on Github",
+        "url": "https://github.com/bluesalt-labs/",
         "date": "2017-06-19",
         "filename": "github-bluesalt-labs"
       },
       {
         "title": "GitHub - Lukerz8",
-        "href": "https://github.com/lukerz8",
+        "description": "Lukerz8 on Github",
+        "url": "https://github.com/lukerz8",
         "date": "2017-06-18",
         "filename": "github-lukerz8"
       },
       {
         "title": "CodePen - BlueSalt Labs",
-        "href": "https://codepen.io/bluesaltlabs/",
+        "description": "BlueSalt Labs on Codepen",
+        "url": "https://codepen.io/bluesaltlabs/",
         "date": "2017-06-17",
         "filename": "codepen-bluesalt-labs"
       }

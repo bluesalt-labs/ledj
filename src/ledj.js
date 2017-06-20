@@ -15,6 +15,10 @@ if (typeof _ === 'undefined') {
             curCacheID: -1
         };
 
+        Ledj.defaults = {
+           dateFormat: 'mm/dd/yyyy'
+        };
+
         // todo: If I stored all the class and ID names in a config object,
         // todo: I could add functionality to change those class/ID names.
 
@@ -27,10 +31,10 @@ if (typeof _ === 'undefined') {
             ),
             linkGrid: _.template(
                 '<div class="ledj-link-grid">' +
-                '<% _.forEach(linkItems, function(linkItem) { %>' +
-                    '<a class="link-grid-item" href="<%= linkItem[itemHrefKey] %>"<% if(newTab) { %> target="_blank" <% } %>>' +
-                        '<img src="<%= Ledj.getImageUrl(linkItem[itemImageKey], cacheID, objectKey) %>" title="<%= linkItem[itemTitleKey] %>" />' +
-                        '<span><%= linkItem[itemTitleKey] %></span>' +
+                '<% _.forEach( (objectKey ? Ledj.cache.jsonData[cacheID][objectKey] : Ledj.cache.jsonData[cacheID]), function(dataItem) { %>' +
+                    '<a class="link-grid-item" href="<%= dataItem[itemHrefKey] %>"<% if(newTab) { %> target="_blank" <% } %>>' +
+                        '<img src="<%= Ledj.getImageUrl(dataItem[itemImageKey], cacheID, objectKey) %>" title="<%= dataItem[itemTitleKey] %>" />' +
+                        '<span><%= dataItem[itemTitleKey] %></span>' +
                     '</a>' +
                 '<% }); %>' +
                 '</div>'
@@ -38,13 +42,16 @@ if (typeof _ === 'undefined') {
             table: _.template(
                 '<table class="ledj-table">' +
                     '<thead><tr>' +
-                    '<% _.map(headerItems, function(colConfig, cellName) { %>' +
-                        '<th>' + '<%= colConfig[cellName] %>' + '</th>' +
+                    '<% _.forEach(headerItems, function(colConfig) { %>' +
+                        '<th>' + '<%= colConfig.name %>' + '</th>' +
                     '<% }); %>' +
                     '</tr></thead>' +
-                    '<tbody>' +
-                    '<% _.forEach(headerItems, function(headerItem) { %>' +
-                    '<td>' + '<% Ledj.g %>' + '</td>' +
+                    '<% _.forEach(dataItems, function(dataItem) { %>' +
+                        '<tr>' +
+                            '<% _.forEach(headerItems, function(colConfig, colName) { %>' +
+                            '<td>' + '<%= Ledj.getCellContent(colConfig, colName, dataItem) %>' + '</td>' +
+                            '<% }); %>' +
+                        '</tr>' +
                     '<% }); %>' +
                     '</tbody>' +
                 '</table>'
@@ -56,13 +63,15 @@ if (typeof _ === 'undefined') {
             ),
             data: {
                 url:        _.template('<a href="<%= href %>" target="_blank"><%= text %></a>'),
-                image:      _.template('<img class="image" src="<%= src %>"' + '<% if(alt) { print(' alt="' + '' + '">')  </img>'),
-                date:       _.template('<span class="date"><%= Ledj.formatDateString(date) %></span>'),
+                image:      _.template('<img class="image" src="<%= Ledj.getImageUrl(src, cacheID, objectKey) %>" <% if(alt) { print(\' alt="\' + alt + \'"\'); } %> />'), // todo: make this less confusing/weird.
+                date:       _.template('<span class="date"><%= Ledj.formatDateString(date, dateFormat) %></span>'),
                 string:     _.template('<span class="string"><%= text %></span>'),
                 tagArray:   _.template(
+                    '<div class="tag-container">' +
                     '<% _.forEach(tags, function(tag) { %>' +
-                    '<span class="tag <% print(Ledj.nameToID(tag)) %>"><%= tag %></span>' +
-                    '<% }); %>'
+                        '<span class="tag <%= Ledj.nameToID(tag) %>"><%= tag %></span>' +
+                    '<% }); %>' +
+                    '</div>'
                 )
             }
         };
@@ -124,33 +133,41 @@ if (typeof _ === 'undefined') {
             return name.replace(/\\s/g, "-").toLowerCase();
         };
 
-        Ledj.formatDateString = function(dateString) {
-            var d = new Date(dateString);
-            return d.getMonth() + '/' + d.getDate() + '/' + d.getFullYear();
+        Ledj.formatDateString = function(dateString, dateFormat) {
+            // if the moment library is available, use that to format the string.
+            if(!!window.moment) {
+                var date = moment(dateString);
+                var dateFormat = (dateFormat ? dateFormat : Ledj.defaults.dateFormat);
+                return date.format(dateFormat);
+            } else {
+                var d = new Date(dateString);
+                return d.getMonth() + '/' + d.getDate() + '/' + d.getFullYear();
+            }
         };
 
-        Ledj.getCellContent = function(cellName, dataType) {
+        // todo: make this function more generic somehow ( getHtmlByDataType() )
+        Ledj.getCellContent = function(colConfig, colName, itemData) {
             var cell = '';
 
-            switch(dataType.toLowerCase()) {
+            switch(colConfig.type.toLowerCase()) {
                 case "url":
-                    cell += Ledj.templates.data.url({ 'text': cellData[cellName], 'href': cellData[colConfig.href] });
+                    cell += Ledj.templates.data.url({ 'text': itemData[colName], 'href': itemData[colConfig.href] });
                     break;
                 case "image":
-                    cell += Ledj.templates.data.image({ ''})
+                    cell += Ledj.templates.data.image({ 'src': itemData[colConfig.src], 'alt': itemData[colConfig.alt] });
                     break;
                 case "date":
-                    cell += Ledj.templates.data.date({ 'date': cellData[cellName] });
+                    var dateFormat = (colConfig.hasOwnProperty('dateFormat') ? colConfig.dateFormat : null);
+                    cell += Ledj.templates.data.date({ 'date': itemData[colName], 'dateFormat': dateFormat });
                     break;
                 case "tagarray":
-                    cell += Ledj.templates.data.tagArray({ 'tags': cellData[cellName] });
+                    cell += Ledj.templates.data.tagArray({ 'tags': itemData[colName] });
                     break;
                 case "string":
                 default:
-                    cell += Ledj.templates.data.string({ 'text': cellData[cellName] });
+                    cell += Ledj.templates.data.string({ 'text': itemData[colName] });
                     break;
             }
-
             return cell;
         };
 
@@ -237,7 +254,7 @@ if (typeof _ === 'undefined') {
         }
 
         function getDataHeaderItems(cacheID) {
-            return Ledj.cache.configData[cacheID].headers;
+            return Ledj.cache.jsonConfig[cacheID].headers;
         }
 
         function getDataItems(cacheID, objectKey) {
@@ -250,9 +267,9 @@ if (typeof _ === 'undefined') {
 
         function getLinkGridFromData(cacheID, objectKey) {
             var templateData = {
-                'linkItems': getDataItems(cacheID, objectKey),
                 'cacheID': cacheID,
                 'objectKey': objectKey,
+                //'dataItems': getDataItems(cacheID, objectKey),
                 'itemHrefKey': 'href',      // todo set this in json config
                 'newTab': true,             // todo set this in json config
                 'itemImageKey': 'filename', // todo set this in json config
@@ -265,8 +282,10 @@ if (typeof _ === 'undefined') {
 
         function getTableFromData(cacheID, objectKey) {
             var templateData = {
+                'cacheID': cacheID,
+                'objectKey': objectKey,
                 'headerItems': getDataHeaderItems(cacheID),
-                'tableItems': getDataItems(cacheID, objectKey)
+                'dataItems': getDataItems(cacheID, objectKey)
             };
 
             return wrapHtmlInParent(Ledj.templates.table(templateData), cacheID, objectKey);
@@ -274,7 +293,7 @@ if (typeof _ === 'undefined') {
 
         function getGifGridFromData(cacheID, objectKey) {
             var templateData = {
-                'gifItems': getDataItems(cacheID, objectKey)
+                'dataItems': getDataItems(cacheID, objectKey)
             };
 
             return wrapHtmlInParent(Ledj.templates.gifGrid(templateData), cacheID, objectKey);
