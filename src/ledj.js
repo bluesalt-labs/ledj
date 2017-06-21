@@ -63,7 +63,10 @@ if (typeof _ === 'undefined') {
             ),
             data: {
                 url:        _.template('<a href="<%= href %>" target="_blank"><%= text %></a>'),
-                image:      _.template('<img class="image" src="<%= Ledj.getImageUrl(src, cacheID, objectKey) %>" <% if(alt) { print(\' alt="\' + alt + \'"\'); } %> />'), // todo: make this less confusing/weird.
+                image:      _.template(  // todo: make this less confusing/weird.
+                    '<img class="image" src="<%= Ledj.getImageUrl(src, cacheID, objectKey) %>"' +
+                    '<% if(alt) { print(\' alt="\' + alt + \'"\'); } %> />'
+                ),
                 date:       _.template('<span class="date"><%= Ledj.formatDateString(date, dateFormat) %></span>'),
                 string:     _.template('<span class="string"><%= text %></span>'),
                 tagArray:   _.template(
@@ -160,6 +163,7 @@ if (typeof _ === 'undefined') {
                     var dateFormat = (colConfig.hasOwnProperty('dateFormat') ? colConfig.dateFormat : null);
                     cell += Ledj.templates.data.date({ 'date': itemData[colName], 'dateFormat': dateFormat });
                     break;
+                case "tag-array":
                 case "tagarray":
                     cell += Ledj.templates.data.tagArray({ 'tags': itemData[colName] });
                     break;
