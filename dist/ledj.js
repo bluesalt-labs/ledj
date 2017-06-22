@@ -12,11 +12,16 @@ if (typeof _ === 'undefined') {
             jsonData: [],
             jsonUrl: [],
             elementID: [],
-            curCacheID: -1
+            curCacheID: -1,
+            tagTemplateUsed: false
         };
 
+        // todo: I could set each Ledj.defaults.foo to Ledj.foo and have functions that
+        // todo: set the default on init. Then either the loaded config or just Ledj.foo = bar changes the setting.
+        // todo: add the tag click event listener function as a default in here. 
         Ledj.defaults = {
-           dateFormat: 'mm/dd/yyyy'
+            dateFormat: 'mm/dd/yyyy',
+            selectMultipleTags: true
         };
 
         // todo: If I stored all the class and ID names in a config object,
@@ -24,7 +29,7 @@ if (typeof _ === 'undefined') {
 
         Ledj.templates = {
             parent: _.template(
-                '<div class="ledj-container">' +
+                '<div class="ledj-container" id="ledj-container-<%= cacheID %>">' +
                     '<% if(title) { print(title); } %>' +
                     '<%= childHTML %>' +
                 '</div>'
@@ -148,6 +153,38 @@ if (typeof _ === 'undefined') {
             }
         };
 
+        // Click Event Listener for tag elements (see Ledj.templates.data.tagArray template)
+        Ledj.toggleActiveTagsByClassName = function(e) {
+            var tagClass = e.target.className.replace('tag', '').replace('active', '').trim();
+
+            if(Ledj.defaults.selectMultipleTags) {
+                _.map(document.getElementsByClassName(tagClass), function(el) {
+                    if(el.className.includes('active')) { el.className = 'tag ' + tagClass; }
+                    else { el.className = 'tag active ' + tagClass; }
+                });
+            } else {
+                _.map(document.getElementsByClassName('tag'), function(el) {
+                    var classNames = el.className.split(' ');
+                    if(classNames.includes(tagClass) && !classNames.includes('active')) { el.className = 'tag active ' + tagClass; }
+                    else { el.className = el.className.replace('active', '').trim(); }
+                });
+            }
+        };
+        // Adds click event listener for tag elements (see Ledj.templates.data.tagArray template)
+        // todo: attach this to the tags' parent div and modify the click event
+        Ledj.addTagClickListeners = function() {
+            _.map(document.getElementsByClassName('tag'), function(el) {
+                el.addEventListener("click", Ledj.toggleActiveTagsByClassName);
+            });
+        };
+        // Removes click event listener for tag elements (see Ledj.templates.data.tagArray template)
+        // todo: attach this to the tags' parent div and modify the click event
+        Ledj.removeTagClickListeners = function() {
+            _.map(document.getElementsByClassName('tag'), function(el) {
+                el.removeEventListener("click", Ledj.toggleActiveTagsByClassName);
+            });
+        };
+
         // todo: make this function more generic somehow ( getHtmlByDataType() )
         Ledj.getCellContent = function(colConfig, colName, itemData) {
             var cell = '';
@@ -165,6 +202,7 @@ if (typeof _ === 'undefined') {
                     break;
                 case "tag-array":
                 case "tagarray":
+                    Ledj.cache.tagTemplateUsed = true; // we're using the tag template, so attach click event listeners
                     cell += Ledj.templates.data.tagArray({ 'tags': itemData[colName] });
                     break;
                 case "string":
@@ -314,6 +352,7 @@ if (typeof _ === 'undefined') {
         function wrapHtmlInParent(processedHTML, cacheID, objectKey) {
             return Ledj.templates.parent({
                 'title': getElementTitle(cacheID, objectKey),
+                'cacheID': cacheID,
                 'childHTML': processedHTML
             });
         }
@@ -358,11 +397,17 @@ if (typeof _ === 'undefined') {
                     }
 
                      else { // todo
-                        console.warn('shouldn\'t get here');
+                        console.warn('Couldn\'t find a template to use - Ledj shouldn\'t get here');
                     }
 
                     if(toAppend !== '') {
                         element.innerHTML += toAppend;
+
+                        // Add tag click event listener if tags were attached to the page
+                        if(Ledj.cache.tagTemplateUsed) {
+                            Ledj.removeTagClickListeners(); // prevents duplicate event listeners
+                            Ledj.addTagClickListeners();
+                        }
                     }
                 } else {
                     console.warn('A template could not be identified.');
