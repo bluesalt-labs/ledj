@@ -31,8 +31,7 @@
     <script type="text/javascript">
         var ledjDocs = {
             config: {
-                baseJsonUrl: '/docs/assets/data/',
-                selectMultipleTags: true
+                baseJsonUrl: '/docs/assets/data/'
             },
             // todo: these cacheID's should NOT be hard coded...
             data: {
@@ -41,32 +40,7 @@
             },
 
             // Functions
-            toggleActiveTagsByClassName: function(e) {
-                var tagClass = e.target.className.replace('tag', '').replace('active', '').trim();
 
-                if(this.config.selectMultipleTags) {
-                    _.map(document.getElementsByClassName(tagClass), function(el) {
-                        if(el.className.includes('active')) { el.className = 'tag ' + tagClass; }
-                        else { el.className = 'tag active ' + tagClass; }
-                    });
-                } else {
-                    _.map(document.getElementsByClassName('tag'), function(el) {
-                        var classNames = el.className.split(' ');
-                        if(classNames.includes(tagClass) && !classNames.includes('active')) { el.className = 'tag active ' + tagClass; }
-                        else { el.className = el.className.replace('active', '').trim(); }
-                    });
-                }
-            },
-            addTagClickListeners: function() {
-                _.map(document.getElementsByClassName('tag'), function(el) {
-                    el.addEventListener("click", ledjDocs.toggleActiveTagsByClassName);
-                });
-            },
-            removeTagClickListeners: function() {
-                _.map(document.getElementsByClassName('tag'), function(el) {
-                    el.removeEventListener("click", ledjDocs.toggleActiveTagsByClassName);
-                });
-            },
             checkForTab: function(e) {
                 var keyCode = e.keyCode || e.which;
                 if(keyCode === 9) {
@@ -108,8 +82,6 @@
                 var elOutput = this.getContainer(ledjID, 'output');
                 elOutput.innerHTML = '';
                 Ledj.attach( this.getJsonDataUrl(ledjID), this.getContainerID(ledjID, 'output'));
-                this.removeTagClickListeners();
-                this.addTagClickListeners();
             },
             resetJsonDataFor: function(ledjID) {
                 var elJson = this.getContainer(ledjID, 'json');
@@ -148,7 +120,6 @@
             initLedjExamples: function() {
                 for(var i in this.data) {
                     this.resetLedjFor(i); // todo: we need to change this so that we get a cacheID from Ledj.
-                    this.addCheckTabListener(i);
                 }
             }
         };
