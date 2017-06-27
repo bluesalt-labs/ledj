@@ -1,7 +1,3 @@
-if (typeof _ === 'undefined') {
-    throw new Error('Ledj requires Lodash. Lodash must be included before Ledj\'s JavaScript.')
-}
-
 (function(window){
     'use strict';
     function define_ledj() {
@@ -9,9 +5,9 @@ if (typeof _ === 'undefined') {
 
         Ledj.cache = {
             jsonConfig: [],
-            jsonData: [],
-            jsonUrl: [],
-            elementID: [],
+            jsonData:   [],
+            jsonUrl:    [],
+            elementID:  [],
             curCacheID: -1,
             tagTemplateUsed: false
         };
@@ -19,8 +15,8 @@ if (typeof _ === 'undefined') {
         // todo: I could set each Ledj.defaults.foo to Ledj.foo and have functions that
         // todo: set the default on init. Then either the loaded config or just Ledj.foo = bar changes the setting.
         Ledj.defaults = {
-            sortDataBy: 'title',
-            dateFormat: 'mm/dd/yyyy',
+            sortDataBy:         'title',
+            dateFormat:         'mm/dd/yyyy',
             selectMultipleTags: true
         };
 
@@ -500,8 +496,8 @@ if (typeof _ === 'undefined') {
     }
 
     if(typeof(Ledj) === 'undefined') {
+        //export default 'Ledj';
         window.Ledj = define_ledj();
-        //window.Ledj = define_Ledj();
     } else {
         console.log("Ledj is already defined.");
     }
