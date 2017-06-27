@@ -18,8 +18,8 @@ if (typeof _ === 'undefined') {
 
         // todo: I could set each Ledj.defaults.foo to Ledj.foo and have functions that
         // todo: set the default on init. Then either the loaded config or just Ledj.foo = bar changes the setting.
-        // todo: add the tag click event listener function as a default in here. 
         Ledj.defaults = {
+            sortDataBy: 'title',
             dateFormat: 'mm/dd/yyyy',
             selectMultipleTags: true
         };
@@ -36,29 +36,25 @@ if (typeof _ === 'undefined') {
             ),
             linkGrid: _.template(
                 '<div class="ledj-link-grid">' +
-                '<% _.forEach( (objectKey ? Ledj.cache.jsonData[cacheID][objectKey] : Ledj.cache.jsonData[cacheID]), function(dataItem) { %>' +
+                '<% (objectKey ? Ledj.cache.jsonData[cacheID][objectKey] : Ledj.cache.jsonData[cacheID]).forEach(function(dataItem) { %>' +
                     '<a class="link-grid-item" href="<%= dataItem[itemHrefKey] %>"<% if(newTab) { %> target="_blank" <% } %>>' +
                         '<img src="<%= Ledj.getImageUrl(dataItem[itemImageKey], cacheID, objectKey) %>" title="<%= dataItem[itemTitleKey] %>" />' +
                         '<span><%= dataItem[itemTitleKey] %></span>' +
-                    '</a>' +
-                '<% }); %>' +
+                    '</a><% }); %>' +
                 '</div>'
             ),
             table: _.template(
                 '<table class="ledj-table">' +
                     '<thead><tr>' +
-                    '<% _.forEach(headerItems, function(colConfig) { %>' +
-                        '<th>' + '<%= colConfig.name %>' + '</th>' +
+                    '<% _.forEach(Ledj.cache.jsonConfig[cacheID].headers, function(colConfig) { %>' +
+                        '<th><%= colConfig.name %></th>' +
                     '<% }); %>' +
                     '</tr></thead>' +
-                    '<% _.forEach(dataItems, function(dataItem) { %>' +
-                        '<tr>' +
-                            '<% _.forEach(headerItems, function(colConfig, colName) { %>' +
-                            '<td>' + '<%= Ledj.getCellContent(colConfig, colName, dataItem) %>' + '</td>' +
-                            '<% }); %>' +
-                        '</tr>' +
-                    '<% }); %>' +
-                    '</tbody>' +
+                    '<tbody><% (objectKey ? Ledj.cache.jsonData[cacheID][objectKey] : Ledj.cache.jsonData[cacheID]).forEach(function(dataItem) { %>' +
+                        '<tr><% _.forEach(Ledj.cache.jsonConfig[cacheID].headers, function(colConfig, colName) { %>' +
+                            '<td><%= Ledj.getCellContent(colConfig, colName, dataItem) %></td>' +
+                        '<% }); %></tr>' +
+                    '<% }); %></tbody>' +
                 '</table>'
             ),
             gifGrid: _.template(
@@ -299,27 +295,13 @@ if (typeof _ === 'undefined') {
         }
 
         function sortData(cacheID) {
-            // todo: search the config for how to sort data. if not specified, try to figure it out?
-            sortJsonDataBy(cacheID, 'title'); // debug
-        }
-
-        function getDataHeaderItems(cacheID) {
-            return Ledj.cache.jsonConfig[cacheID].headers;
-        }
-
-        function getDataItems(cacheID, objectKey) {
-            if(objectKey) {
-                return Ledj.cache.jsonData[cacheID][objectKey];
-            } else {
-                return Ledj.cache.jsonData[cacheID];
-            }
+            sortJsonDataBy(cacheID, Ledj.defaults.sortDataBy);
         }
 
         function getLinkGridFromData(cacheID, objectKey) {
             var templateData = {
                 'cacheID': cacheID,
                 'objectKey': objectKey,
-                //'dataItems': getDataItems(cacheID, objectKey),
                 'itemHrefKey': 'href',      // todo set this in json config
                 'newTab': true,             // todo set this in json config
                 'itemImageKey': 'filename', // todo set this in json config
@@ -333,9 +315,7 @@ if (typeof _ === 'undefined') {
         function getTableFromData(cacheID, objectKey) {
             var templateData = {
                 'cacheID': cacheID,
-                'objectKey': objectKey,
-                'headerItems': getDataHeaderItems(cacheID),
-                'dataItems': getDataItems(cacheID, objectKey)
+                'objectKey': objectKey
             };
 
             return wrapHtmlInParent(Ledj.templates.table(templateData), cacheID, objectKey);
@@ -343,7 +323,8 @@ if (typeof _ === 'undefined') {
 
         function getGifGridFromData(cacheID, objectKey) {
             var templateData = {
-                'dataItems': getDataItems(cacheID, objectKey)
+                'cacheID': cacheID,
+                'objectKey': objectKey
             };
 
             return wrapHtmlInParent(Ledj.templates.gifGrid(templateData), cacheID, objectKey);
@@ -440,6 +421,17 @@ if (typeof _ === 'undefined') {
             }
         }
 
+        /*
+        Callback for Ledj.loadAndAttachTo and Ledj.loadFromObjAndAttachTo.
+        Sorts, parses, and attaches data to the DOM.
+         */
+        function sortAndAttachCallback(cacheID, elementID) {
+            // reset this flag if a previous data set used the tag template.
+            Ledj.cache.tagTemplateUsed = false;
+            sortData(cacheID);
+            addElementsTo(cacheID, elementID);
+        }
+
         /* End Private Helper Functions */
 
         /*
@@ -449,8 +441,7 @@ if (typeof _ === 'undefined') {
          */
         Ledj.loadAndAttachTo = function(jsonUrl, elementID) {
             loadConfigFromUrl(jsonUrl, function(cacheID) {
-                sortData(cacheID);
-                addElementsTo(cacheID, elementID);
+                sortAndAttachCallback(cacheID, elementID);
             });
         };
 
