@@ -21,6 +21,10 @@
 * Add template and code to create a GIF grid.
 * Add the ability to expand gifs and images when I get that template working.
 * Consider using SCSS for stylesheets.
+* have the ability to specify a different data type for an individual data item for tables?
+* Create a to do list type
+    * have the ability to check items off, and specify an API call when an item is checked off?
+    * Integrate with Google Tasks API?
 
 
 -----

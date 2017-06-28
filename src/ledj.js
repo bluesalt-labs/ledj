@@ -58,6 +58,9 @@
                 '<code>#todo</code>' // +
                 //'</div>'
             ),
+            todoList: _.template(
+                '<code>#todo</code>'
+            ),
             data: {
                 url:        _.template('<a href="<%= href %>" target="_blank"><%= text %></a>'),
                 image:      _.template(  // todo: make this less confusing/weird.

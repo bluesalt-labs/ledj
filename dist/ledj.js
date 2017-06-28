@@ -75,31 +75,41 @@ return /******/ (function(modules) { // webpackBootstrap
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ledj_js__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ledj_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__ledj_js__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__ledj_css__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__ledj_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__ledj_css__);
 
 
+var _ledj = __webpack_require__(1);
+
+var _ledj2 = _interopRequireDefault(_ledj);
+
+var _ledj3 = __webpack_require__(2);
+
+var _ledj4 = _interopRequireDefault(_ledj3);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
 /* 1 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-(function(window){
+"use strict";
+
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+(function (window) {
     'use strict';
+
     function define_ledj() {
         var Ledj = {};
 
         Ledj.cache = {
             jsonConfig: [],
-            jsonData:   [],
-            jsonUrl:    [],
-            elementID:  [],
+            jsonData: [],
+            jsonUrl: [],
+            elementID: [],
             curCacheID: -1,
             tagTemplateUsed: false
         };
@@ -107,8 +117,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         // todo: I could set each Ledj.defaults.foo to Ledj.foo and have functions that
         // todo: set the default on init. Then either the loaded config or just Ledj.foo = bar changes the setting.
         Ledj.defaults = {
-            sortDataBy:         'title',
-            dateFormat:         'mm/dd/yyyy',
+            sortDataBy: 'title',
+            dateFormat: 'mm/dd/yyyy',
             selectMultipleTags: true
         };
 
@@ -116,85 +126,57 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         // todo: I could add functionality to change those class/ID names.
 
         Ledj.templates = {
-            parent: _.template(
-                '<div class="ledj-container" id="ledj-container-<%= cacheID %>">' +
-                    '<% if(title) { print(title); } %>' +
-                    '<%= childHTML %>' +
-                '</div>'
-            ),
-            linkGrid: _.template(
-                '<div class="ledj-link-grid">' +
-                '<% (objectKey ? Ledj.cache.jsonData[cacheID][objectKey] : Ledj.cache.jsonData[cacheID]).forEach(function(dataItem) { %>' +
-                    '<a class="link-grid-item" href="<%= dataItem[itemHrefKey] %>"<% if(newTab) { %> target="_blank" <% } %>>' +
-                        '<img src="<%= Ledj.getImageUrl(dataItem[itemImageKey], cacheID, objectKey) %>" title="<%= dataItem[itemTitleKey] %>" />' +
-                        '<span><%= dataItem[itemTitleKey] %></span>' +
-                    '</a><% }); %>' +
-                '</div>'
-            ),
-            table: _.template(
-                '<table class="ledj-table">' +
-                    '<thead><tr>' +
-                    '<% _.forEach(Ledj.cache.jsonConfig[cacheID].headers, function(colConfig) { %>' +
-                        '<th><%= colConfig.name %></th>' +
-                    '<% }); %>' +
-                    '</tr></thead>' +
-                    '<tbody><% (objectKey ? Ledj.cache.jsonData[cacheID][objectKey] : Ledj.cache.jsonData[cacheID]).forEach(function(dataItem) { %>' +
-                        '<tr><% _.forEach(Ledj.cache.jsonConfig[cacheID].headers, function(colConfig, colName) { %>' +
-                            '<td><%= Ledj.getCellContent(colConfig, colName, dataItem) %></td>' +
-                        '<% }); %></tr>' +
-                    '<% }); %></tbody>' +
-                '</table>'
-            ),
+            parent: _.template('<div class="ledj-container" id="ledj-container-<%= cacheID %>">' + '<% if(title) { print(title); } %>' + '<%= childHTML %>' + '</div>'),
+            linkGrid: _.template('<div class="ledj-link-grid">' + '<% (objectKey ? Ledj.cache.jsonData[cacheID][objectKey] : Ledj.cache.jsonData[cacheID]).forEach(function(dataItem) { %>' + '<a class="link-grid-item" href="<%= dataItem[itemHrefKey] %>"<% if(newTab) { %> target="_blank" <% } %>>' + '<img src="<%= Ledj.getImageUrl(dataItem[itemImageKey], cacheID, objectKey) %>" title="<%= dataItem[itemTitleKey] %>" />' + '<span><%= dataItem[itemTitleKey] %></span>' + '</a><% }); %>' + '</div>'),
+            table: _.template('<table class="ledj-table">' + '<thead><tr>' + '<% _.forEach(Ledj.cache.jsonConfig[cacheID].headers, function(colConfig) { %>' + '<th><%= colConfig.name %></th>' + '<% }); %>' + '</tr></thead>' + '<tbody><% (objectKey ? Ledj.cache.jsonData[cacheID][objectKey] : Ledj.cache.jsonData[cacheID]).forEach(function(dataItem) { %>' + '<tr><% _.forEach(Ledj.cache.jsonConfig[cacheID].headers, function(colConfig, colName) { %>' + '<td><%= Ledj.getCellContent(colConfig, colName, dataItem) %></td>' + '<% }); %></tr>' + '<% }); %></tbody>' + '</table>'),
             gifGrid: _.template(
-                //'<div class="ledj-gif-grid">' +
-                '<code>#todo</code>' // +
-                //'</div>'
+            //'<div class="ledj-gif-grid">' +
+            '<code>#todo</code>' // +
+            //'</div>'
             ),
+            todoList: _.template('<code>#todo</code>'),
             data: {
-                url:        _.template('<a href="<%= href %>" target="_blank"><%= text %></a>'),
-                image:      _.template(  // todo: make this less confusing/weird.
-                    '<img class="image" src="<%= Ledj.getImageUrl(src, cacheID, objectKey) %>"' +
-                    '<% if(alt) { print(\' alt="\' + alt + \'"\'); } %> />'
-                ),
-                date:       _.template('<span class="date"><%= Ledj.formatDateString(date, dateFormat) %></span>'),
-                string:     _.template('<span class="string"><%= text %></span>'),
-                tagArray:   _.template(
-                    '<div class="tag-container">' +
-                    '<% _.forEach(tags, function(tag) { %>' +
-                        '<span class="tag <%= Ledj.nameToID(tag) %>"><%= tag %></span>' +
-                    '<% }); %>' +
-                    '</div>'
-                )
+                url: _.template('<a href="<%= href %>" target="_blank"><%= text %></a>'),
+                image: _.template( // todo: make this less confusing/weird.
+                '<img class="image" src="<%= Ledj.getImageUrl(src, cacheID, objectKey) %>"' + '<% if(alt) { print(\' alt="\' + alt + \'"\'); } %> />'),
+                date: _.template('<span class="date"><%= Ledj.formatDateString(date, dateFormat) %></span>'),
+                string: _.template('<span class="string"><%= text %></span>'),
+                tagArray: _.template('<div class="tag-container">' + '<% _.forEach(tags, function(tag) { %>' + '<span class="tag <%= Ledj.nameToID(tag) %>"><%= tag %></span>' + '<% }); %>' + '</div>')
             }
         };
 
         /*
         Checks if a specified URL gives a status of 200
          */
-        Ledj.urlExists = function(url, callbackSuccess, callbackFail, callbackArg) {
+        Ledj.urlExists = function (url, callbackSuccess, callbackFail, callbackArg) {
             var http = new XMLHttpRequest();
             http.open('HEAD', url);
-            http.onreadystatechange = function() {
+            http.onreadystatechange = function () {
                 if (this.readyState === this.DONE) {
                     if (this.status === 200) {
-                        if(callbackSuccess !== null) { callbackSuccess(callbackArg); }
-                        else { return 0; }
-                    }
-                    else {
-                        if(callbackFail !== null) { callbackFail(callbackArg); }
-                        else { return -1; }
+                        if (callbackSuccess !== null) {
+                            callbackSuccess(callbackArg);
+                        } else {
+                            return 0;
+                        }
+                    } else {
+                        if (callbackFail !== null) {
+                            callbackFail(callbackArg);
+                        } else {
+                            return -1;
+                        }
                     }
                 }
             };
             http.send();
         };
 
-        Ledj.reset = function(cacheID) {
+        Ledj.reset = function (cacheID) {
             resetElement(Ledj.cache.elementID[cacheID]);
         };
 
-        Ledj.getJSONConfig = function(url, callback) {
-            if(typeof url === 'string'){
+        Ledj.getJSONConfig = function (url, callback) {
+            if (typeof url === 'string') {
 
                 // Add date param to force clearing the browser cache
                 url += '?dt=' + Date.now();
@@ -202,10 +184,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 var xhr = new XMLHttpRequest();
                 xhr.open('GET', url, true);
                 xhr.responseType = 'json';
-                xhr.onload = function() {
+                xhr.onload = function () {
                     var status = xhr.status;
-                    if (status === 200) { callback(null, xhr.response); }
-                    else { callback(status); }
+                    if (status === 200) {
+                        callback(null, xhr.response);
+                    } else {
+                        callback(status);
+                    }
                 };
                 xhr.send();
             } else {
@@ -213,23 +198,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }
         };
 
-        Ledj.getHostName = function() {
-            return window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+        Ledj.getHostName = function () {
+            return window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port : '');
         };
 
-        Ledj.capitalize = function(string) {
+        Ledj.capitalize = function (string) {
             return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
         };
 
-        Ledj.nameToID = function(name) {
+        Ledj.nameToID = function (name) {
             return name.replace(/\\s/g, "-").toLowerCase();
         };
 
-        Ledj.formatDateString = function(dateString, dateFormat) {
+        Ledj.formatDateString = function (dateString, dateFormat) {
             // if the moment library is available, use that to format the string.
-            if(!!window.moment) {
+            if (!!window.moment) {
                 var date = moment(dateString);
-                var dateFormat = (dateFormat ? dateFormat : Ledj.defaults.dateFormat);
+                var dateFormat = dateFormat ? dateFormat : Ledj.defaults.dateFormat;
                 return date.format(dateFormat);
             } else {
                 var d = new Date(dateString);
@@ -238,42 +223,48 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         };
 
         // Click Event Listener for tag elements (see Ledj.templates.data.tagArray template)
-        Ledj.toggleActiveTagsByClassName = function(e) {
+        Ledj.toggleActiveTagsByClassName = function (e) {
             var tagClass = e.target.className.replace('tag', '').replace('active', '').trim();
 
-            if(Ledj.defaults.selectMultipleTags) {
-                _.map(document.getElementsByClassName(tagClass), function(el) {
-                    if(el.className.includes('active')) { el.className = 'tag ' + tagClass; }
-                    else { el.className = 'tag active ' + tagClass; }
+            if (Ledj.defaults.selectMultipleTags) {
+                _.map(document.getElementsByClassName(tagClass), function (el) {
+                    if (el.className.includes('active')) {
+                        el.className = 'tag ' + tagClass;
+                    } else {
+                        el.className = 'tag active ' + tagClass;
+                    }
                 });
             } else {
-                _.map(document.getElementsByClassName('tag'), function(el) {
+                _.map(document.getElementsByClassName('tag'), function (el) {
                     var classNames = el.className.split(' ');
-                    if(classNames.includes(tagClass) && !classNames.includes('active')) { el.className = 'tag active ' + tagClass; }
-                    else { el.className = el.className.replace('active', '').trim(); }
+                    if (classNames.includes(tagClass) && !classNames.includes('active')) {
+                        el.className = 'tag active ' + tagClass;
+                    } else {
+                        el.className = el.className.replace('active', '').trim();
+                    }
                 });
             }
         };
         // Adds click event listener for tag elements (see Ledj.templates.data.tagArray template)
         // todo: attach this to the tags' parent div and modify the click event
-        Ledj.addTagClickListeners = function() {
-            _.map(document.getElementsByClassName('tag'), function(el) {
+        Ledj.addTagClickListeners = function () {
+            _.map(document.getElementsByClassName('tag'), function (el) {
                 el.addEventListener("click", Ledj.toggleActiveTagsByClassName);
             });
         };
         // Removes click event listener for tag elements (see Ledj.templates.data.tagArray template)
         // todo: attach this to the tags' parent div and modify the click event
-        Ledj.removeTagClickListeners = function() {
-            _.map(document.getElementsByClassName('tag'), function(el) {
+        Ledj.removeTagClickListeners = function () {
+            _.map(document.getElementsByClassName('tag'), function (el) {
                 el.removeEventListener("click", Ledj.toggleActiveTagsByClassName);
             });
         };
 
         // todo: make this function more generic somehow ( getHtmlByDataType() )
-        Ledj.getCellContent = function(colConfig, colName, itemData) {
+        Ledj.getCellContent = function (colConfig, colName, itemData) {
             var cell = '';
 
-            switch(colConfig.type.toLowerCase()) {
+            switch (colConfig.type.toLowerCase()) {
                 case "url":
                     cell += Ledj.templates.data.url({ 'text': itemData[colName], 'href': itemData[colConfig.href] });
                     break;
@@ -281,7 +272,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     cell += Ledj.templates.data.image({ 'src': itemData[colConfig.src], 'alt': itemData[colConfig.alt] });
                     break;
                 case "date":
-                    var dateFormat = (colConfig.hasOwnProperty('dateFormat') ? colConfig.dateFormat : null);
+                    var dateFormat = colConfig.hasOwnProperty('dateFormat') ? colConfig.dateFormat : null;
                     cell += Ledj.templates.data.date({ 'date': itemData[colName], 'dateFormat': dateFormat });
                     break;
                 case "tag-array":
@@ -297,22 +288,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             return cell;
         };
 
-        Ledj.getImageUrl = function(imageTitle, cacheID, objectKey) {
+        Ledj.getImageUrl = function (imageTitle, cacheID, objectKey) {
             var srcDir = '/';
-            var ext = (Ledj.cache.jsonConfig[cacheID].hasOwnProperty('imgExt') ? Ledj.cache.jsonConfig[cacheID].imgExt : '');
+            var ext = Ledj.cache.jsonConfig[cacheID].hasOwnProperty('imgExt') ? Ledj.cache.jsonConfig[cacheID].imgExt : '';
 
-            if(Ledj.cache.jsonConfig[cacheID].hasOwnProperty('srcDir')) {
+            if (Ledj.cache.jsonConfig[cacheID].hasOwnProperty('srcDir')) {
                 srcDir = Ledj.cache.jsonConfig[cacheID].srcDir;
-            }
-
-            else if(Ledj.cache.jsonConfig[cacheID].hasOwnProperty('srcDirs')) {
-                if(!!objectKey && Ledj.cache.jsonConfig[cacheID].srcDirs.hasOwnProperty(objectKey)) {
+            } else if (Ledj.cache.jsonConfig[cacheID].hasOwnProperty('srcDirs')) {
+                if (!!objectKey && Ledj.cache.jsonConfig[cacheID].srcDirs.hasOwnProperty(objectKey)) {
                     srcDir = Ledj.cache.jsonConfig[cacheID].srcDirs[objectKey];
-                }
-                else if(Ledj.cache.jsonConfig[cacheID].srcDirs.hasOwnProperty('Default')) {
+                } else if (Ledj.cache.jsonConfig[cacheID].srcDirs.hasOwnProperty('Default')) {
                     srcDir = Ledj.cache.jsonConfig[cacheID].srcDirs['Default'];
-                }
-                else if(Ledj.cache.jsonConfig[cacheID].srcDirs.hasOwnProperty('default')) {
+                } else if (Ledj.cache.jsonConfig[cacheID].srcDirs.hasOwnProperty('default')) {
                     srcDir = Ledj.cache.jsonConfig[cacheID].srcDirs['default'];
                 }
             }
@@ -320,12 +307,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             return srcDir + imageTitle + ext;
         };
 
-
         /* Private Helper Functions */
 
         function loadConfigFromUrl(url, callback) {
-            Ledj.getJSONConfig(url, function(err, data) {
-                if(err === null) {
+            Ledj.getJSONConfig(url, function (err, data) {
+                if (err === null) {
                     if (data.hasOwnProperty('config') && data.hasOwnProperty('data')) {
                         Ledj.cache.curCacheID = Ledj.cache.jsonConfig.push(data.config) - 1;
                         Ledj.cache.jsonData[Ledj.cache.curCacheID] = data.data;
@@ -337,9 +323,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     }
                 }
 
-               if(err !== null) {
-                   console.warn('Config file "' + url + '" could not be retrieved. ' + err);
-               }
+                if (err !== null) {
+                    console.warn('Config file "' + url + '" could not be retrieved. ' + err);
+                }
             });
         }
 
@@ -355,26 +341,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         }
 
         function sortJsonDataBy(cacheID, propName) {
-            if(Ledj.cache.jsonData[cacheID]) {
-                if( Array.isArray(Ledj.cache.jsonData[cacheID]) ) {
-                    Ledj.cache.jsonData[cacheID] =
-                        _.sortBy(
-                            Ledj.cache.jsonData[cacheID],
-                            (typeof propName === 'string' ? propName.toLowerCase() : propName)
-                        );
-                }
-
-                else if(typeof Ledj.cache.jsonData[cacheID] === 'object') {
-                    for(var item in Ledj.cache.jsonData[cacheID]) {
-                        Ledj.cache.jsonData[cacheID][item] =
-                            _.sortBy(
-                                Ledj.cache.jsonData[cacheID][item],
-                                (typeof propName === 'string' ? propName.toLowerCase() : propName)
-                            );
+            if (Ledj.cache.jsonData[cacheID]) {
+                if (Array.isArray(Ledj.cache.jsonData[cacheID])) {
+                    Ledj.cache.jsonData[cacheID] = _.sortBy(Ledj.cache.jsonData[cacheID], typeof propName === 'string' ? propName.toLowerCase() : propName);
+                } else if (_typeof(Ledj.cache.jsonData[cacheID]) === 'object') {
+                    for (var item in Ledj.cache.jsonData[cacheID]) {
+                        Ledj.cache.jsonData[cacheID][item] = _.sortBy(Ledj.cache.jsonData[cacheID][item], typeof propName === 'string' ? propName.toLowerCase() : propName);
                     }
-                }
-
-                else {
+                } else {
                     console.warn('Could not sort cache.jsonData[' + cacheID + ']');
                 }
             } else {
@@ -390,10 +364,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var templateData = {
                 'cacheID': cacheID,
                 'objectKey': objectKey,
-                'itemHrefKey': 'href',      // todo set this in json config
-                'newTab': true,             // todo set this in json config
+                'itemHrefKey': 'href', // todo set this in json config
+                'newTab': true, // todo set this in json config
                 'itemImageKey': 'filename', // todo set this in json config
-                'itemTitleKey': 'title'     // todo set this in json config
+                'itemTitleKey': 'title' // todo set this in json config
 
             };
 
@@ -430,13 +404,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var element = document.getElementById(elementID);
 
             // Make sure the DOM element exists
-            if(!!element) {
+            if (!!element) {
                 // Store the valid elementID
                 Ledj.cache.elementID[cacheID] = elementID;
 
                 var functionToUse = null;
 
-                switch(Ledj.cache.jsonConfig[cacheID].type.toLowerCase()) {
+                switch (Ledj.cache.jsonConfig[cacheID].type.toLowerCase()) {
                     case 'link-grid':
                     case 'linkgrid':
                         functionToUse = getLinkGridFromData;
@@ -452,28 +426,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                         console.log('A fallback template is not yet implemented.');
                 }
 
-                if(!!functionToUse) {
+                if (!!functionToUse) {
                     var toAppend = '';
 
-                    if( Array.isArray(Ledj.cache.jsonData[cacheID]) ) {
+                    if (Array.isArray(Ledj.cache.jsonData[cacheID])) {
                         toAppend = functionToUse(cacheID);
-                    }
-
-                    else if(typeof Ledj.cache.jsonData[cacheID] === 'object') {
-                        for(var item in Ledj.cache.jsonData[cacheID]) {
+                    } else if (_typeof(Ledj.cache.jsonData[cacheID]) === 'object') {
+                        for (var item in Ledj.cache.jsonData[cacheID]) {
                             toAppend += functionToUse(cacheID, item);
                         }
-                    }
-
-                     else { // todo
+                    } else {
+                        // todo
                         console.warn('Couldn\'t find a template to use - Ledj shouldn\'t get here');
                     }
 
-                    if(toAppend !== '') {
+                    if (toAppend !== '') {
                         element.innerHTML += toAppend;
 
                         // Add tag click event listener if tags were attached to the page
-                        if(Ledj.cache.tagTemplateUsed) {
+                        if (Ledj.cache.tagTemplateUsed) {
                             Ledj.removeTagClickListeners(); // prevents duplicate event listeners
                             Ledj.addTagClickListeners();
                         }
@@ -487,11 +458,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         }
 
         function getElementTitle(configID, objectKey) {
-            if(!!objectKey && objectKey !== '') {
+            if (!!objectKey && objectKey !== '') {
                 var titleTag = 'h2';
 
-                if( Ledj.cache.jsonConfig[configID].hasOwnProperty('titleElementLevel') &&
-                    typeof parseInt(Ledj.cache.jsonConfig[configID].titleElementLevel) === 'number') {
+                if (Ledj.cache.jsonConfig[configID].hasOwnProperty('titleElementLevel') && typeof parseInt(Ledj.cache.jsonConfig[configID].titleElementLevel) === 'number') {
                     titleTag = 'h' + Ledj.cache.jsonConfig[configID].titleElementLevel;
                 }
 
@@ -504,7 +474,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         function resetElement(elementID) {
             try {
                 document.getElementById(elementID).innerHTML = '';
-            } catch(e) {
+            } catch (e) {
                 console.warn(e); // debug?
             }
         }
@@ -527,8 +497,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         and attaches them to the specified DOM element.
         This is the primary method for loading data and attaching elements.
          */
-        Ledj.loadAndAttachTo = function(jsonUrl, elementID) {
-            loadConfigFromUrl(jsonUrl, function(cacheID) {
+        Ledj.loadAndAttachTo = function (jsonUrl, elementID) {
+            loadConfigFromUrl(jsonUrl, function (cacheID) {
                 sortAndAttachCallback(cacheID, elementID);
             });
         };
@@ -537,8 +507,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
          Creates new HTML elements from specified JSON data object
          and attaches them to the specified DOM element.
          */
-        Ledj.loadFromObjAndAttachTo = function(jsonData, elementID) {
-            loadConfigFromObj(jsonData, function(cacheID) {
+        Ledj.loadFromObjAndAttachTo = function (jsonData, elementID) {
+            loadConfigFromObj(jsonData, function (cacheID) {
                 sortData(cacheID);
                 addElementsTo(cacheID, elementID);
             });
@@ -548,10 +518,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
          If the specified cache ID exists, the associated element is cleared,
          the data retrieved again, and the HTML elements re-added to that container.
          */
-        Ledj.reloadFromUrlByID = function(cacheID) {
+        Ledj.reloadFromUrlByID = function (cacheID) {
             var numCacheID = parseInt(cacheID);
 
-            if(typeof numCacheID === 'number' && !!this.cache.jsonUrl[numCacheID] && !!this.cache.elementID[numCacheID]) {
+            if (typeof numCacheID === 'number' && !!this.cache.jsonUrl[numCacheID] && !!this.cache.elementID[numCacheID]) {
                 this.reset(numCacheID); // todo: make sure this works.
                 this.loadAndAttachTo(this.cache.jsonUrl[numCacheID], this.cache.elementID[numCacheID]);
             } else {
@@ -563,10 +533,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
          If the specified cache ID exists, the associated element is cleared,
          the cached data is replaced with the specified data, and the HTML elements re-added to that container.
          */
-        Ledj.reloadFromObjByID = function(jsonData, cacheID) {
+        Ledj.reloadFromObjByID = function (jsonData, cacheID) {
             var numCacheID = parseInt(cacheID);
 
-            if(typeof numCacheID === 'number' && !!this.cache.elementID[numCacheID]) {
+            if (typeof numCacheID === 'number' && !!this.cache.elementID[numCacheID]) {
                 this.reset(numCacheID);
                 this.loadFromObjAndAttachTo(jsonData, this.cache.elementID[numCacheID]);
             } else {
@@ -579,7 +549,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         // Alias for Ledj.loadFromObjAndAttachTo
         Ledj.attachWith = Ledj.loadFromObjAndAttachTo;
         // Alias for Ledj.reloadFromUrlByID
-        Ledj.reload =  Ledj.reloadFromUrlByID;
+        Ledj.reload = Ledj.reloadFromUrlByID;
         // Alias for Ledj.reloadFromObjByID
         Ledj.reloadwith = Ledj.reloadFromObjByID;
 
@@ -587,7 +557,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         return Ledj;
     }
 
-    if(typeof(Ledj) === 'undefined') {
+    if (typeof Ledj === 'undefined') {
         //export default 'Ledj';
         window.Ledj = define_ledj();
     } else {
@@ -599,7 +569,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* 2 */
 /***/ (function(module, exports) {
 
-throw new Error("Module parse failed: /Users/luke/projects/ledj/src/ledj.css Unexpected token (1:0)\nYou may need an appropriate loader to handle this file type.\n| .ledj-container { margin: 0; }\n| .ledj-link-grid { margin: 15px auto; }\n| ");
+// removed by extract-text-webpack-plugin
 
 /***/ })
 /******/ ]);

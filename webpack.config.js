@@ -1,33 +1,54 @@
 var webpack = require('webpack');
 var path = require('path');
+
 var UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var env = process.env.WEBPACK_ENV;
 
-var plugins = [], outputFile;
+var plugins = [], outputJSFile, outputCSSFile;
 var libraryName = 'ledj';
 
 if (env === 'build') {
+    outputJSFile = libraryName + '.min.js';
+    outputCSSFile = libraryName + '.min.css';
+
     plugins.push(new UglifyJsPlugin({ minimize: true }));
-    outputFile = libraryName + '.min.js';
 } else {
-    outputFile = libraryName + '.js';
+    outputJSFile = libraryName + '.js';
+    outputCSSFile = libraryName + '.css';
 }
+
+plugins.push(new ExtractTextPlugin(libraryName + '.css'));
 
 module.exports = {
     entry: __dirname + '/src/app.js',
     devtool: 'source-map',
     output: {
         path: __dirname + '/dist',
-        filename: outputFile,
+        filename: outputJSFile,
         library: libraryName,
         libraryTarget: 'umd',
         umdNamedDefine: true
     },
     module: {
-        loaders: [
+        rules: [
             {
-                loader: 'style-loader!css-loader',
-                test: /\\.css$/
+                test: /\.js$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['env']
+                    }
+                }
+            },
+            {
+                test: /\.css$/,
+                loader: ExtractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use: 'css-loader'
+                }),
+
             }
         ]
     },
