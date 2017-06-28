@@ -1,4 +1,4 @@
-Ledj.templates.data.string = html`
+window.Ledj.templates.data.string = `
 <span class="string">${text}</span>
 `;
 

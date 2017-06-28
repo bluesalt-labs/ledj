@@ -1,4 +1,4 @@
-Ledj.templates.todoList = html`
+window.Ledj.templates.todoList = html`
 <div class="ledj-todo-list">
     <code>#todo</code>
 </div>

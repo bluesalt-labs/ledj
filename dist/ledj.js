@@ -243,7 +243,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             var tagClass = e.target.className.replace('tag', '').replace('active', '').trim();
 
             if (Ledj.defaults.selectMultipleTags) {
-                _.map(document.getElementsByClassName(tagClass), function (el) {
+                document.getElementsByClassName(tagClass).map(function (el) {
                     if (el.className.includes('active')) {
                         el.className = 'tag ' + tagClass;
                     } else {
@@ -251,7 +251,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                     }
                 });
             } else {
-                _.map(document.getElementsByClassName('tag'), function (el) {
+                document.getElementsByClassName('tag').map(function (el) {
                     var classNames = el.className.split(' ');
                     if (classNames.includes(tagClass) && !classNames.includes('active')) {
                         el.className = 'tag active ' + tagClass;
@@ -264,14 +264,14 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         // Adds click event listener for tag elements (see Ledj.templates.data.tagArray template)
         // todo: attach this to the tags' parent div and modify the click event
         Ledj.addTagClickListeners = function () {
-            _.map(document.getElementsByClassName('tag'), function (el) {
+            document.getElementsByClassName('tag').map(function (el) {
                 el.addEventListener("click", Ledj.toggleActiveTagsByClassName);
             });
         };
         // Removes click event listener for tag elements (see Ledj.templates.data.tagArray template)
         // todo: attach this to the tags' parent div and modify the click event
         Ledj.removeTagClickListeners = function () {
-            _.map(document.getElementsByClassName('tag'), function (el) {
+            document.getElementsByClassName('tag').map(function (el) {
                 el.removeEventListener("click", Ledj.toggleActiveTagsByClassName);
             });
         };
@@ -357,12 +357,28 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         }
 
         function sortJsonDataBy(cacheID, propName) {
+            // todo: the propname variable is supposed to change the default value.
+            // todo: for now I'm just using the default. allow setting this in the loaded config.
             if (Ledj.cache.jsonData[cacheID]) {
                 if (Array.isArray(Ledj.cache.jsonData[cacheID])) {
-                    Ledj.cache.jsonData[cacheID] = _.sortBy(Ledj.cache.jsonData[cacheID], typeof propName === 'string' ? propName.toLowerCase() : propName);
+                    Ledj.cache.jsonData[cacheID] = Ledj.cache.jsonData[cacheID].sort(Ledj.dataSortCompareHelper);
+                    /*
+                    _.sortBy(
+                        Ledj.cache.jsonData[cacheID],
+                        (typeof propName === 'string' ? propName.toLowerCase() : propName)
+                    );
+                    */
                 } else if (_typeof(Ledj.cache.jsonData[cacheID]) === 'object') {
                     for (var item in Ledj.cache.jsonData[cacheID]) {
-                        Ledj.cache.jsonData[cacheID][item] = _.sortBy(Ledj.cache.jsonData[cacheID][item], typeof propName === 'string' ? propName.toLowerCase() : propName);
+                        Ledj.cache.jsonData[cacheID][item].sort(Ledj.dataSortCompareHelper);
+
+                        /*
+                        Ledj.cache.jsonData[cacheID][item] =
+                            _.sortBy(
+                                Ledj.cache.jsonData[cacheID][item],
+                                (typeof propName === 'string' ? propName.toLowerCase() : propName)
+                            );
+                        */
                     }
                 } else {
                     console.warn('Could not sort cache.jsonData[' + cacheID + ']');
@@ -372,8 +388,18 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             }
         }
 
+        function dataSortCompareHelper(a, b) {
+            var propName = typeof propName === 'string' ? propName.toLowerCase() : propName;
+            if (!!a[propName] && !!b[propName] && a[propName] !== b[propName]) {
+                return a[propName] > b[propName] ? -1 : 1;
+            } else {
+                return 0;
+            }
+        }
+
+        // todo: do we really need this, which is essentially just an alias for `sortJsonDataBy()`?
         function sortData(cacheID) {
-            sortJsonDataBy(cacheID, Ledj.defaults.sortDataBy);
+            sortJsonDataBy(cacheID);
         }
 
         function getLinkGridFromData(cacheID, objectKey) {
@@ -592,7 +618,7 @@ var _templateObject = _taggedTemplateLiteral(["\n<div class=\"ledj-container\" i
 
 function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
-Ledj.templates.parent = html(_templateObject, cacheID, title ? title : "", childHTML);
+window.Ledj.templates.parent = html(_templateObject, cacheID, title ? title : "", childHTML);
 
 /***/ }),
 /* 3 */
@@ -606,7 +632,7 @@ var _templateObject = _taggedTemplateLiteral(["\n<div class=\"ledj-link-grid\">\
 
 function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
-Ledj.templates.linkGrid = html(_templateObject, (objectKey ? Ledj.cache.jsonData[cacheID][objectKey] : Ledj.cache.jsonData[cacheID]).map(function (dataItem) {
+window.Ledj.templates.linkGrid = html(_templateObject, (objectKey ? Ledj.cache.jsonData[cacheID][objectKey] : Ledj.cache.jsonData[cacheID]).map(function (dataItem) {
     return html(_templateObject2, dataItem[itemHrefKey], newTab ? " target=\"_blank\"" : "", Ledj.getImageUrl(dataItem[itemImageKey], cacheID, objectKey), dataItem[itemTitleKey], dataItem[itemTitleKey]);
 }));
 
@@ -624,7 +650,7 @@ var _templateObject = _taggedTemplateLiteral(["\n<table class=\"ledj-table\">\n 
 
 function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
-Ledj.templates.table = html(_templateObject, Ledj.cache.jsonConfig[cacheID].headers.map(function (colConfig) {
+window.Ledj.templates.table = html(_templateObject, Ledj.cache.jsonConfig[cacheID].headers.map(function (colConfig) {
     return html(_templateObject2, colConfig.name);
 }), (objectKey ? Ledj.cache.jsonData[cacheID][objectKey] : Ledj.cache.jsonData[cacheID]).map(function (dataItem) {
     return html(_templateObject3, Ledj.cache.jsonConfig[cacheID].headers.map(function (colConfig, colName) {
@@ -643,7 +669,7 @@ var _templateObject = _taggedTemplateLiteral(["\n<div class=\"ledj-gif-grid\">\n
 
 function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
-Ledj.templates.gifGrid = html(_templateObject);
+window.Ledj.templates.gifGrid = html(_templateObject);
 
 /***/ }),
 /* 6 */
@@ -656,7 +682,7 @@ var _templateObject = _taggedTemplateLiteral(["\n<div class=\"ledj-todo-list\">\
 
 function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
-Ledj.templates.todoList = html(_templateObject);
+window.Ledj.templates.todoList = html(_templateObject);
 
 /***/ }),
 /* 7 */
@@ -665,11 +691,7 @@ Ledj.templates.todoList = html(_templateObject);
 "use strict";
 
 
-var _templateObject = _taggedTemplateLiteral(["\n<span class=\"string\">", "</span>\n"], ["\n<span class=\"string\">", "</span>\n"]);
-
-function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
-Ledj.templates.data.string = html(_templateObject, text);
+window.Ledj.templates.data.string = "\n<span class=\"string\">" + text + "</span>\n";
 
 /***/ }),
 /* 8 */
@@ -682,7 +704,7 @@ var _templateObject = _taggedTemplateLiteral(["\n<a href=\"", "\" target=\"_blan
 
 function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
-Ledj.templates.data.url = html(_templateObject, href, text);
+window.Ledj.templates.data.url = html(_templateObject, href, text);
 
 /***/ }),
 /* 9 */
@@ -696,7 +718,7 @@ var _templateObject = _taggedTemplateLiteral(["  \n<img class=\"image\" src=\"",
 function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
 // todo: make this less confusing/weird.
-Ledj.templates.data.image = html(_templateObject, Ledj.getImageUrl(src, cacheID, objectKey), alt ? " alt=\"" + alt + "\"" : "");
+window.Ledj.templates.data.image = html(_templateObject, Ledj.getImageUrl(src, cacheID, objectKey), alt ? " alt=\"" + alt + "\"" : "");
 
 /***/ }),
 /* 10 */

@@ -1,4 +1,4 @@
-Ledj.templates.table = html`
+window.Ledj.templates.table = html`
 <table class="ledj-table">
     <thead>
         <tr>

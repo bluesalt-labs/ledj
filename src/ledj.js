@@ -101,12 +101,12 @@
             var tagClass = e.target.className.replace('tag', '').replace('active', '').trim();
 
             if(Ledj.defaults.selectMultipleTags) {
-                _.map(document.getElementsByClassName(tagClass), function(el) {
+                document.getElementsByClassName(tagClass).map(el => {
                     if(el.className.includes('active')) { el.className = 'tag ' + tagClass; }
                     else { el.className = 'tag active ' + tagClass; }
                 });
             } else {
-                _.map(document.getElementsByClassName('tag'), function(el) {
+                document.getElementsByClassName('tag').map(el => {
                     var classNames = el.className.split(' ');
                     if(classNames.includes(tagClass) && !classNames.includes('active')) { el.className = 'tag active ' + tagClass; }
                     else { el.className = el.className.replace('active', '').trim(); }
@@ -116,14 +116,14 @@
         // Adds click event listener for tag elements (see Ledj.templates.data.tagArray template)
         // todo: attach this to the tags' parent div and modify the click event
         Ledj.addTagClickListeners = function() {
-            _.map(document.getElementsByClassName('tag'), function(el) {
+            document.getElementsByClassName('tag').map(el => {
                 el.addEventListener("click", Ledj.toggleActiveTagsByClassName);
             });
         };
         // Removes click event listener for tag elements (see Ledj.templates.data.tagArray template)
         // todo: attach this to the tags' parent div and modify the click event
         Ledj.removeTagClickListeners = function() {
-            _.map(document.getElementsByClassName('tag'), function(el) {
+            document.getElementsByClassName('tag').map(el => {
                 el.removeEventListener("click", Ledj.toggleActiveTagsByClassName);
             });
         };
@@ -214,22 +214,31 @@
         }
 
         function sortJsonDataBy(cacheID, propName) {
+            // todo: the propname variable is supposed to change the default value.
+            // todo: for now I'm just using the default. allow setting this in the loaded config.
             if(Ledj.cache.jsonData[cacheID]) {
                 if( Array.isArray(Ledj.cache.jsonData[cacheID]) ) {
                     Ledj.cache.jsonData[cacheID] =
+                        Ledj.cache.jsonData[cacheID].sort(Ledj.dataSortCompareHelper);
+                        /*
                         _.sortBy(
                             Ledj.cache.jsonData[cacheID],
                             (typeof propName === 'string' ? propName.toLowerCase() : propName)
                         );
+                        */
                 }
 
                 else if(typeof Ledj.cache.jsonData[cacheID] === 'object') {
                     for(var item in Ledj.cache.jsonData[cacheID]) {
+                        Ledj.cache.jsonData[cacheID][item].sort(Ledj.dataSortCompareHelper);
+
+                        /*
                         Ledj.cache.jsonData[cacheID][item] =
                             _.sortBy(
                                 Ledj.cache.jsonData[cacheID][item],
                                 (typeof propName === 'string' ? propName.toLowerCase() : propName)
                             );
+                        */
                     }
                 }
 
@@ -241,8 +250,18 @@
             }
         }
 
+        function dataSortCompareHelper(a, b) {
+            var propName = (typeof propName === 'string' ? propName.toLowerCase() : propName);
+            if ( !!a[propName] && !!b[propName] && a[propName] !== b[propName]) {
+                return (a[propName] > b[propName] ? -1 : 1);
+            } else {
+                return 0;
+            }
+        }
+
+        // todo: do we really need this, which is essentially just an alias for `sortJsonDataBy()`?
         function sortData(cacheID) {
-            sortJsonDataBy(cacheID, Ledj.defaults.sortDataBy);
+            sortJsonDataBy(cacheID);
         }
 
         function getLinkGridFromData(cacheID, objectKey) {
