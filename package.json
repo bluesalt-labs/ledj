@@ -10,7 +10,7 @@
     "clean:docs": "rm -rf docs/assets/*.min.css docs/assets/*.min.js",
     "clean": "npm run clean:dist && npm run clean:docs",
     "dev": "WEBPACK_ENV=dev webpack --progress --colors --watch",
-    "build": "npm run clean && WEBPACK_ENV=dev webpack && WEBPACK_ENV=build webpack"
+    "build": "npm run clean && WEBPACK_ENV=dev webpack; WEBPACK_ENV=build webpack"
   },
   "repository": {
     "type": "git",

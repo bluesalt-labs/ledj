@@ -84,7 +84,39 @@ var _ledj = __webpack_require__(1);
 
 var _ledj2 = _interopRequireDefault(_ledj);
 
-var _ledj3 = __webpack_require__(2);
+var _parent = __webpack_require__(2);
+
+var _parent2 = _interopRequireDefault(_parent);
+
+var _linkGrid = __webpack_require__(3);
+
+var _linkGrid2 = _interopRequireDefault(_linkGrid);
+
+var _table = __webpack_require__(4);
+
+var _table2 = _interopRequireDefault(_table);
+
+var _gifGrid = __webpack_require__(5);
+
+var _gifGrid2 = _interopRequireDefault(_gifGrid);
+
+var _todoList = __webpack_require__(6);
+
+var _todoList2 = _interopRequireDefault(_todoList);
+
+var _string = __webpack_require__(7);
+
+var _string2 = _interopRequireDefault(_string);
+
+var _url = __webpack_require__(8);
+
+var _url2 = _interopRequireDefault(_url);
+
+var _image = __webpack_require__(9);
+
+var _image2 = _interopRequireDefault(_image);
+
+var _ledj3 = __webpack_require__(10);
 
 var _ledj4 = _interopRequireDefault(_ledj3);
 
@@ -126,23 +158,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         // todo: I could add functionality to change those class/ID names.
 
         Ledj.templates = {
-            parent: _.template('<div class="ledj-container" id="ledj-container-<%= cacheID %>">' + '<% if(title) { print(title); } %>' + '<%= childHTML %>' + '</div>'),
-            linkGrid: _.template('<div class="ledj-link-grid">' + '<% (objectKey ? Ledj.cache.jsonData[cacheID][objectKey] : Ledj.cache.jsonData[cacheID]).forEach(function(dataItem) { %>' + '<a class="link-grid-item" href="<%= dataItem[itemHrefKey] %>"<% if(newTab) { %> target="_blank" <% } %>>' + '<img src="<%= Ledj.getImageUrl(dataItem[itemImageKey], cacheID, objectKey) %>" title="<%= dataItem[itemTitleKey] %>" />' + '<span><%= dataItem[itemTitleKey] %></span>' + '</a><% }); %>' + '</div>'),
-            table: _.template('<table class="ledj-table">' + '<thead><tr>' + '<% _.forEach(Ledj.cache.jsonConfig[cacheID].headers, function(colConfig) { %>' + '<th><%= colConfig.name %></th>' + '<% }); %>' + '</tr></thead>' + '<tbody><% (objectKey ? Ledj.cache.jsonData[cacheID][objectKey] : Ledj.cache.jsonData[cacheID]).forEach(function(dataItem) { %>' + '<tr><% _.forEach(Ledj.cache.jsonConfig[cacheID].headers, function(colConfig, colName) { %>' + '<td><%= Ledj.getCellContent(colConfig, colName, dataItem) %></td>' + '<% }); %></tr>' + '<% }); %></tbody>' + '</table>'),
-            gifGrid: _.template(
-            //'<div class="ledj-gif-grid">' +
-            '<code>#todo</code>' // +
-            //'</div>'
-            ),
-            todoList: _.template('<code>#todo</code>'),
-            data: {
-                url: _.template('<a href="<%= href %>" target="_blank"><%= text %></a>'),
-                image: _.template( // todo: make this less confusing/weird.
-                '<img class="image" src="<%= Ledj.getImageUrl(src, cacheID, objectKey) %>"' + '<% if(alt) { print(\' alt="\' + alt + \'"\'); } %> />'),
-                date: _.template('<span class="date"><%= Ledj.formatDateString(date, dateFormat) %></span>'),
-                string: _.template('<span class="string"><%= text %></span>'),
-                tagArray: _.template('<div class="tag-container">' + '<% _.forEach(tags, function(tag) { %>' + '<span class="tag <%= Ledj.nameToID(tag) %>"><%= tag %></span>' + '<% }); %>' + '</div>')
-            }
+            data: {}
         };
 
         /*
@@ -394,9 +410,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
         function wrapHtmlInParent(processedHTML, cacheID, objectKey) {
             return Ledj.templates.parent({
-                'title': getElementTitle(cacheID, objectKey),
-                'cacheID': cacheID,
-                'childHTML': processedHTML
+                title: getElementTitle(cacheID, objectKey),
+                cacheID: cacheID,
+                childHTML: processedHTML
             });
         }
 
@@ -567,6 +583,123 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 /***/ }),
 /* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _templateObject = _taggedTemplateLiteral(["\n<div class=\"ledj-container\" id=\"ledj-container-", "\">\n    ", "\n    ", "\n</div>\n"], ["\n<div class=\"ledj-container\" id=\"ledj-container-", "\">\n    ", "\n    ", "\n</div>\n"]);
+
+function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+Ledj.templates.parent = html(_templateObject, cacheID, title ? title : "", childHTML);
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _templateObject = _taggedTemplateLiteral(["\n<div class=\"ledj-link-grid\">\n", "\n</div>\n"], ["\n<div class=\"ledj-link-grid\">\n", "\n</div>\n"]),
+    _templateObject2 = _taggedTemplateLiteral(["\n    <a class=\"link-grid-item\" href=\"", "\"", "\n        <img src=\"", "\" title=\"", "\" />\n        <span>", "</span>\n    </a>\n"], ["\n    <a class=\"link-grid-item\" href=\"", "\"", "\n        <img src=\"", "\" title=\"", "\" />\n        <span>", "</span>\n    </a>\n"]);
+
+function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+Ledj.templates.linkGrid = html(_templateObject, (objectKey ? Ledj.cache.jsonData[cacheID][objectKey] : Ledj.cache.jsonData[cacheID]).map(function (dataItem) {
+    return html(_templateObject2, dataItem[itemHrefKey], newTab ? " target=\"_blank\"" : "", Ledj.getImageUrl(dataItem[itemImageKey], cacheID, objectKey), dataItem[itemTitleKey], dataItem[itemTitleKey]);
+}));
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _templateObject = _taggedTemplateLiteral(["\n<table class=\"ledj-table\">\n    <thead>\n        <tr>\n        ", "\n        </tr>\n    </thead>\n    <tbody>\n    ", "\n    </tbody>\n</table>\n"], ["\n<table class=\"ledj-table\">\n    <thead>\n        <tr>\n        ", "\n        </tr>\n    </thead>\n    <tbody>\n    ", "\n    </tbody>\n</table>\n"]),
+    _templateObject2 = _taggedTemplateLiteral(["\n            <th>", "</th>\n        "], ["\n            <th>", "</th>\n        "]),
+    _templateObject3 = _taggedTemplateLiteral(["\n        <tr>\n        ", "\n        </tr>\n    "], ["\n        <tr>\n        ", "\n        </tr>\n    "]),
+    _templateObject4 = _taggedTemplateLiteral(["\n            <td>", "</td>\n        "], ["\n            <td>", "</td>\n        "]);
+
+function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+Ledj.templates.table = html(_templateObject, Ledj.cache.jsonConfig[cacheID].headers.map(function (colConfig) {
+    return html(_templateObject2, colConfig.name);
+}), (objectKey ? Ledj.cache.jsonData[cacheID][objectKey] : Ledj.cache.jsonData[cacheID]).map(function (dataItem) {
+    return html(_templateObject3, Ledj.cache.jsonConfig[cacheID].headers.map(function (colConfig, colName) {
+        return html(_templateObject4, Ledj.getCellContent(colConfig, colName, dataItem));
+    }));
+}));
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _templateObject = _taggedTemplateLiteral(["\n<div class=\"ledj-gif-grid\">\n    <code>#todo</code>\n</div>\n"], ["\n<div class=\"ledj-gif-grid\">\n    <code>#todo</code>\n</div>\n"]);
+
+function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+Ledj.templates.gifGrid = html(_templateObject);
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _templateObject = _taggedTemplateLiteral(["\n<div class=\"ledj-todo-list\">\n    <code>#todo</code>\n</div>\n"], ["\n<div class=\"ledj-todo-list\">\n    <code>#todo</code>\n</div>\n"]);
+
+function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+Ledj.templates.todoList = html(_templateObject);
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _templateObject = _taggedTemplateLiteral(["\n<span class=\"string\">", "</span>\n"], ["\n<span class=\"string\">", "</span>\n"]);
+
+function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+Ledj.templates.data.string = html(_templateObject, text);
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _templateObject = _taggedTemplateLiteral(["\n<a href=\"", "\" target=\"_blank\">", "</a>\n"], ["\n<a href=\"", "\" target=\"_blank\">", "</a>\n"]);
+
+function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+Ledj.templates.data.url = html(_templateObject, href, text);
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _templateObject = _taggedTemplateLiteral(["  \n<img class=\"image\" src=\"", "\"", " />\n"], ["  \n<img class=\"image\" src=\"", "\"", " />\n"]);
+
+function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+// todo: make this less confusing/weird.
+Ledj.templates.data.image = html(_templateObject, Ledj.getImageUrl(src, cacheID, objectKey), alt ? " alt=\"" + alt + "\"" : "");
+
+/***/ }),
+/* 10 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

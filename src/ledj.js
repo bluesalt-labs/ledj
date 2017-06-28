@@ -24,59 +24,7 @@
         // todo: I could add functionality to change those class/ID names.
 
         Ledj.templates = {
-            parent: _.template(
-                '<div class="ledj-container" id="ledj-container-<%= cacheID %>">' +
-                    '<% if(title) { print(title); } %>' +
-                    '<%= childHTML %>' +
-                '</div>'
-            ),
-            linkGrid: _.template(
-                '<div class="ledj-link-grid">' +
-                '<% (objectKey ? Ledj.cache.jsonData[cacheID][objectKey] : Ledj.cache.jsonData[cacheID]).forEach(function(dataItem) { %>' +
-                    '<a class="link-grid-item" href="<%= dataItem[itemHrefKey] %>"<% if(newTab) { %> target="_blank" <% } %>>' +
-                        '<img src="<%= Ledj.getImageUrl(dataItem[itemImageKey], cacheID, objectKey) %>" title="<%= dataItem[itemTitleKey] %>" />' +
-                        '<span><%= dataItem[itemTitleKey] %></span>' +
-                    '</a><% }); %>' +
-                '</div>'
-            ),
-            table: _.template(
-                '<table class="ledj-table">' +
-                    '<thead><tr>' +
-                    '<% _.forEach(Ledj.cache.jsonConfig[cacheID].headers, function(colConfig) { %>' +
-                        '<th><%= colConfig.name %></th>' +
-                    '<% }); %>' +
-                    '</tr></thead>' +
-                    '<tbody><% (objectKey ? Ledj.cache.jsonData[cacheID][objectKey] : Ledj.cache.jsonData[cacheID]).forEach(function(dataItem) { %>' +
-                        '<tr><% _.forEach(Ledj.cache.jsonConfig[cacheID].headers, function(colConfig, colName) { %>' +
-                            '<td><%= Ledj.getCellContent(colConfig, colName, dataItem) %></td>' +
-                        '<% }); %></tr>' +
-                    '<% }); %></tbody>' +
-                '</table>'
-            ),
-            gifGrid: _.template(
-                //'<div class="ledj-gif-grid">' +
-                '<code>#todo</code>' // +
-                //'</div>'
-            ),
-            todoList: _.template(
-                '<code>#todo</code>'
-            ),
-            data: {
-                url:        _.template('<a href="<%= href %>" target="_blank"><%= text %></a>'),
-                image:      _.template(  // todo: make this less confusing/weird.
-                    '<img class="image" src="<%= Ledj.getImageUrl(src, cacheID, objectKey) %>"' +
-                    '<% if(alt) { print(\' alt="\' + alt + \'"\'); } %> />'
-                ),
-                date:       _.template('<span class="date"><%= Ledj.formatDateString(date, dateFormat) %></span>'),
-                string:     _.template('<span class="string"><%= text %></span>'),
-                tagArray:   _.template(
-                    '<div class="tag-container">' +
-                    '<% _.forEach(tags, function(tag) { %>' +
-                        '<span class="tag <%= Ledj.nameToID(tag) %>"><%= tag %></span>' +
-                    '<% }); %>' +
-                    '</div>'
-                )
-            }
+            data: {}
         };
 
         /*
@@ -331,9 +279,9 @@
 
         function wrapHtmlInParent(processedHTML, cacheID, objectKey) {
             return Ledj.templates.parent({
-                'title': getElementTitle(cacheID, objectKey),
-                'cacheID': cacheID,
-                'childHTML': processedHTML
+                title: getElementTitle(cacheID, objectKey),
+                cacheID: cacheID,
+                childHTML: processedHTML
             });
         }
 

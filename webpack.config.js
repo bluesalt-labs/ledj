@@ -18,7 +18,7 @@ if (env === 'build') {
     outputCSSFile = libraryName + '.css';
 }
 
-plugins.push(new ExtractTextPlugin(libraryName + '.css'));
+plugins.push(new ExtractTextPlugin(outputCSSFile));
 
 module.exports = {
     entry: __dirname + '/src/app.js',
@@ -31,7 +31,7 @@ module.exports = {
         umdNamedDefine: true
     },
     module: {
-        rules: [
+        loaders: [
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
@@ -46,9 +46,13 @@ module.exports = {
                 test: /\.css$/,
                 loader: ExtractTextPlugin.extract({
                     fallback: 'style-loader',
-                    use: 'css-loader'
-                }),
-
+                    use: {
+                        loader: 'css-loader',
+                        options: {
+                            minimize: (env === 'build')
+                        }
+                    }
+                })
             }
         ]
     },
