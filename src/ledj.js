@@ -77,7 +77,11 @@
         };
 
         Ledj.capitalize = function(string) {
-            return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+            if(typeof string === 'string') {
+                return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+            } else {
+                return string;
+            }
         };
 
         Ledj.nameToID = function(name) {
@@ -101,31 +105,31 @@
             var tagClass = e.target.className.replace('tag', '').replace('active', '').trim();
 
             if(Ledj.defaults.selectMultipleTags) {
-                document.getElementsByClassName(tagClass).map(el => {
+                for(let el of document.getElementsByClassName(tagClass)) {
                     if(el.className.includes('active')) { el.className = 'tag ' + tagClass; }
                     else { el.className = 'tag active ' + tagClass; }
-                });
+                }
             } else {
-                document.getElementsByClassName('tag').map(el => {
+                for(let el of document.getElementsByClassName('tag')) {
                     var classNames = el.className.split(' ');
                     if(classNames.includes(tagClass) && !classNames.includes('active')) { el.className = 'tag active ' + tagClass; }
                     else { el.className = el.className.replace('active', '').trim(); }
-                });
+                }
             }
         };
         // Adds click event listener for tag elements (see Ledj.templates.data.tagArray template)
         // todo: attach this to the tags' parent div and modify the click event
         Ledj.addTagClickListeners = function() {
-            document.getElementsByClassName('tag').map(el => {
+            for(let el of document.getElementsByClassName('tag')) {
                 el.addEventListener("click", Ledj.toggleActiveTagsByClassName);
-            });
+            }
         };
         // Removes click event listener for tag elements (see Ledj.templates.data.tagArray template)
         // todo: attach this to the tags' parent div and modify the click event
         Ledj.removeTagClickListeners = function() {
-            document.getElementsByClassName('tag').map(el => {
+            for(let el of document.getElementsByClassName('tag')) {
                 el.removeEventListener("click", Ledj.toggleActiveTagsByClassName);
-            });
+            }
         };
 
         // todo: make this function more generic somehow ( getHtmlByDataType() )
@@ -399,6 +403,20 @@
         }
 
         /* End Private Helper Functions */
+
+        /*
+
+         */
+        Ledj.addTemplate = function(templateName, template) {
+            Ledj.templates[templateName] = template;
+        };
+
+        /*
+
+         */
+        Ledj.addDataTemplate = function(dataType, template) {
+            Ledj.templates.data[dataType] = template;
+        };
 
         /*
         Creates new HTML elements from specified JSON data URL

@@ -1,3 +1,3 @@
-window.Ledj.templates.data.url = html`
-<a href="${href}" target="_blank">${text}</a>
-`;
+Ledj.addDataTemplate('url', function(data) {
+return `<a href="${data.href}" target="_blank">${data.text}</a>`;
+});

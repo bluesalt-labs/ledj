@@ -1,20 +1,20 @@
-window.Ledj.templates.table = html`
-<table class="ledj-table">
+Ledj.addTemplate('table', function(data) {
+return `<table class="ledj-table">
     <thead>
         <tr>
-        ${Ledj.cache.jsonConfig[cacheID].headers.map(colConfig => html`
-            <th>${colConfig.name}</th>
-        `)}
+        ${Object.keys(Ledj.cache.jsonConfig[data.cacheID].headers).map(headerName => `
+            <th>${Ledj.cache.jsonConfig[data.cacheID].headers[headerName].name}</th>
+        `).join('\n')}
         </tr>
     </thead>
     <tbody>
-    ${(objectKey ? Ledj.cache.jsonData[cacheID][objectKey] : Ledj.cache.jsonData[cacheID]).map(dataItem => html`
+    ${(data.objectKey ? Ledj.cache.jsonData[data.cacheID][data.objectKey] : Ledj.cache.jsonData[data.cacheID]).map(dataItem => `
         <tr>
-        ${Ledj.cache.jsonConfig[cacheID].headers.map((colConfig, colName) => html`
-            <td>${Ledj.getCellContent(colConfig, colName, dataItem)}</td>
-        `)}
+        ${Object.keys(Ledj.cache.jsonConfig[data.cacheID].headers).map(colName => `
+            <td>${Ledj.getCellContent(Ledj.cache.jsonConfig[data.cacheID].headers[colName], colName, dataItem)}</td>
+        `).join('\n')}
         </tr>
-    `)}
+    `).join('\n')}
     </tbody>
-</table>
-`;
+</table>`;
+});

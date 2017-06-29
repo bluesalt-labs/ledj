@@ -1,6 +1,6 @@
-window.Ledj.templates.parent = html`
-<div class="ledj-container" id="ledj-container-${cacheID}">
-    ${title ? title : ``}
-    ${childHTML}
-</div>
-`;
+Ledj.addTemplate('parent', function(data) {
+return `<div class="ledj-container" id="ledj-container-${data.cacheID}">
+    ${data.title ? data.title : ``}
+    ${data.childHTML}
+</div>`;
+});

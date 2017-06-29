@@ -1,5 +1,3 @@
-window.Ledj.templates.data.string = `
-<span class="string">${text}</span>
-`;
-
-
+Ledj.addDataTemplate('string', function(data) {
+return `<span class="string">${data.text}</span>`;
+});

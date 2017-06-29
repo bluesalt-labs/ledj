@@ -1,10 +1,10 @@
-window.Ledj.templates.linkGrid = html`
-<div class="ledj-link-grid">
-${(objectKey ? Ledj.cache.jsonData[cacheID][objectKey] : Ledj.cache.jsonData[cacheID]).map(dataItem => html`
-    <a class="link-grid-item" href="${dataItem[itemHrefKey]}"${newTab ? ` target="_blank"` : ``}
-        <img src="${Ledj.getImageUrl(dataItem[itemImageKey], cacheID, objectKey)}" title="${dataItem[itemTitleKey]}" />
-        <span>${dataItem[itemTitleKey]}</span>
-    </a>
-`)}
-</div>
-`;
+Ledj.addTemplate('linkGrid', function(data) {
+return `<div class="ledj-link-grid">
+${(data.objectKey ? Ledj.cache.jsonData[data.cacheID][data.objectKey] : Ledj.cache.jsonData[data.cacheID]).map(dataItem => 
+    `<a class="link-grid-item" href="${dataItem[data.itemHrefKey]}"${data.newTab ? ' target="_blank"' : ''}>
+        <img src="${Ledj.getImageUrl(dataItem[data.itemImageKey], data.cacheID, data.objectKey)}" title="${dataItem[data.itemTitleKey]}" />
+        <span>${dataItem[data.itemTitleKey]}</span>
+    </a>`
+).join('')}
+</div>`;
+});

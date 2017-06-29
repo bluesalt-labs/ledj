@@ -84,39 +84,47 @@ var _ledj = __webpack_require__(1);
 
 var _ledj2 = _interopRequireDefault(_ledj);
 
-var _parent = __webpack_require__(2);
+var _gifGrid = __webpack_require__(2);
 
-var _parent2 = _interopRequireDefault(_parent);
+var _gifGrid2 = _interopRequireDefault(_gifGrid);
 
 var _linkGrid = __webpack_require__(3);
 
 var _linkGrid2 = _interopRequireDefault(_linkGrid);
 
-var _table = __webpack_require__(4);
+var _parent = __webpack_require__(4);
+
+var _parent2 = _interopRequireDefault(_parent);
+
+var _table = __webpack_require__(5);
 
 var _table2 = _interopRequireDefault(_table);
-
-var _gifGrid = __webpack_require__(5);
-
-var _gifGrid2 = _interopRequireDefault(_gifGrid);
 
 var _todoList = __webpack_require__(6);
 
 var _todoList2 = _interopRequireDefault(_todoList);
 
-var _string = __webpack_require__(7);
+var _date = __webpack_require__(7);
 
-var _string2 = _interopRequireDefault(_string);
+var _date2 = _interopRequireDefault(_date);
 
-var _url = __webpack_require__(8);
-
-var _url2 = _interopRequireDefault(_url);
-
-var _image = __webpack_require__(9);
+var _image = __webpack_require__(8);
 
 var _image2 = _interopRequireDefault(_image);
 
-var _ledj3 = __webpack_require__(10);
+var _string = __webpack_require__(9);
+
+var _string2 = _interopRequireDefault(_string);
+
+var _tagArray = __webpack_require__(10);
+
+var _tagArray2 = _interopRequireDefault(_tagArray);
+
+var _url = __webpack_require__(11);
+
+var _url2 = _interopRequireDefault(_url);
+
+var _ledj3 = __webpack_require__(12);
 
 var _ledj4 = _interopRequireDefault(_ledj3);
 
@@ -219,7 +227,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         };
 
         Ledj.capitalize = function (string) {
-            return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+            if (typeof string === 'string') {
+                return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+            } else {
+                return string;
+            }
         };
 
         Ledj.nameToID = function (name) {
@@ -243,37 +255,121 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             var tagClass = e.target.className.replace('tag', '').replace('active', '').trim();
 
             if (Ledj.defaults.selectMultipleTags) {
-                document.getElementsByClassName(tagClass).map(function (el) {
-                    if (el.className.includes('active')) {
-                        el.className = 'tag ' + tagClass;
-                    } else {
-                        el.className = 'tag active ' + tagClass;
+                var _iteratorNormalCompletion = true;
+                var _didIteratorError = false;
+                var _iteratorError = undefined;
+
+                try {
+                    for (var _iterator = document.getElementsByClassName(tagClass)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                        var el = _step.value;
+
+                        if (el.className.includes('active')) {
+                            el.className = 'tag ' + tagClass;
+                        } else {
+                            el.className = 'tag active ' + tagClass;
+                        }
                     }
-                });
+                } catch (err) {
+                    _didIteratorError = true;
+                    _iteratorError = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion && _iterator.return) {
+                            _iterator.return();
+                        }
+                    } finally {
+                        if (_didIteratorError) {
+                            throw _iteratorError;
+                        }
+                    }
+                }
             } else {
-                document.getElementsByClassName('tag').map(function (el) {
-                    var classNames = el.className.split(' ');
-                    if (classNames.includes(tagClass) && !classNames.includes('active')) {
-                        el.className = 'tag active ' + tagClass;
-                    } else {
-                        el.className = el.className.replace('active', '').trim();
+                var _iteratorNormalCompletion2 = true;
+                var _didIteratorError2 = false;
+                var _iteratorError2 = undefined;
+
+                try {
+                    for (var _iterator2 = document.getElementsByClassName('tag')[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                        var _el = _step2.value;
+
+                        var classNames = _el.className.split(' ');
+                        if (classNames.includes(tagClass) && !classNames.includes('active')) {
+                            _el.className = 'tag active ' + tagClass;
+                        } else {
+                            _el.className = _el.className.replace('active', '').trim();
+                        }
                     }
-                });
+                } catch (err) {
+                    _didIteratorError2 = true;
+                    _iteratorError2 = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                            _iterator2.return();
+                        }
+                    } finally {
+                        if (_didIteratorError2) {
+                            throw _iteratorError2;
+                        }
+                    }
+                }
             }
         };
         // Adds click event listener for tag elements (see Ledj.templates.data.tagArray template)
         // todo: attach this to the tags' parent div and modify the click event
         Ledj.addTagClickListeners = function () {
-            document.getElementsByClassName('tag').map(function (el) {
-                el.addEventListener("click", Ledj.toggleActiveTagsByClassName);
-            });
+            var _iteratorNormalCompletion3 = true;
+            var _didIteratorError3 = false;
+            var _iteratorError3 = undefined;
+
+            try {
+                for (var _iterator3 = document.getElementsByClassName('tag')[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                    var el = _step3.value;
+
+                    el.addEventListener("click", Ledj.toggleActiveTagsByClassName);
+                }
+            } catch (err) {
+                _didIteratorError3 = true;
+                _iteratorError3 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                        _iterator3.return();
+                    }
+                } finally {
+                    if (_didIteratorError3) {
+                        throw _iteratorError3;
+                    }
+                }
+            }
         };
         // Removes click event listener for tag elements (see Ledj.templates.data.tagArray template)
         // todo: attach this to the tags' parent div and modify the click event
         Ledj.removeTagClickListeners = function () {
-            document.getElementsByClassName('tag').map(function (el) {
-                el.removeEventListener("click", Ledj.toggleActiveTagsByClassName);
-            });
+            var _iteratorNormalCompletion4 = true;
+            var _didIteratorError4 = false;
+            var _iteratorError4 = undefined;
+
+            try {
+                for (var _iterator4 = document.getElementsByClassName('tag')[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                    var el = _step4.value;
+
+                    el.removeEventListener("click", Ledj.toggleActiveTagsByClassName);
+                }
+            } catch (err) {
+                _didIteratorError4 = true;
+                _iteratorError4 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion4 && _iterator4.return) {
+                        _iterator4.return();
+                    }
+                } finally {
+                    if (_didIteratorError4) {
+                        throw _iteratorError4;
+                    }
+                }
+            }
         };
 
         // todo: make this function more generic somehow ( getHtmlByDataType() )
@@ -535,6 +631,18 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         /* End Private Helper Functions */
 
         /*
+          */
+        Ledj.addTemplate = function (templateName, template) {
+            Ledj.templates[templateName] = template;
+        };
+
+        /*
+          */
+        Ledj.addDataTemplate = function (dataType, template) {
+            Ledj.templates.data[dataType] = template;
+        };
+
+        /*
         Creates new HTML elements from specified JSON data URL
         and attaches them to the specified DOM element.
         This is the primary method for loading data and attaching elements.
@@ -614,11 +722,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 "use strict";
 
 
-var _templateObject = _taggedTemplateLiteral(["\n<div class=\"ledj-container\" id=\"ledj-container-", "\">\n    ", "\n    ", "\n</div>\n"], ["\n<div class=\"ledj-container\" id=\"ledj-container-", "\">\n    ", "\n    ", "\n</div>\n"]);
-
-function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
-window.Ledj.templates.parent = html(_templateObject, cacheID, title ? title : "", childHTML);
+Ledj.addTemplate('gifGrid', function (data) {
+  return '<div class="ledj-gif-grid">\n<code>#todo</code>\n</div>';
+});
 
 /***/ }),
 /* 3 */
@@ -627,14 +733,11 @@ window.Ledj.templates.parent = html(_templateObject, cacheID, title ? title : ""
 "use strict";
 
 
-var _templateObject = _taggedTemplateLiteral(["\n<div class=\"ledj-link-grid\">\n", "\n</div>\n"], ["\n<div class=\"ledj-link-grid\">\n", "\n</div>\n"]),
-    _templateObject2 = _taggedTemplateLiteral(["\n    <a class=\"link-grid-item\" href=\"", "\"", "\n        <img src=\"", "\" title=\"", "\" />\n        <span>", "</span>\n    </a>\n"], ["\n    <a class=\"link-grid-item\" href=\"", "\"", "\n        <img src=\"", "\" title=\"", "\" />\n        <span>", "</span>\n    </a>\n"]);
-
-function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
-window.Ledj.templates.linkGrid = html(_templateObject, (objectKey ? Ledj.cache.jsonData[cacheID][objectKey] : Ledj.cache.jsonData[cacheID]).map(function (dataItem) {
-    return html(_templateObject2, dataItem[itemHrefKey], newTab ? " target=\"_blank\"" : "", Ledj.getImageUrl(dataItem[itemImageKey], cacheID, objectKey), dataItem[itemTitleKey], dataItem[itemTitleKey]);
-}));
+Ledj.addTemplate('linkGrid', function (data) {
+    return '<div class="ledj-link-grid">\n' + (data.objectKey ? Ledj.cache.jsonData[data.cacheID][data.objectKey] : Ledj.cache.jsonData[data.cacheID]).map(function (dataItem) {
+        return '<a class="link-grid-item" href="' + dataItem[data.itemHrefKey] + '"' + (data.newTab ? ' target="_blank"' : '') + '>\n        <img src="' + Ledj.getImageUrl(dataItem[data.itemImageKey], data.cacheID, data.objectKey) + '" title="' + dataItem[data.itemTitleKey] + '" />\n        <span>' + dataItem[data.itemTitleKey] + '</span>\n    </a>';
+    }).join('') + '\n</div>';
+});
 
 /***/ }),
 /* 4 */
@@ -643,20 +746,9 @@ window.Ledj.templates.linkGrid = html(_templateObject, (objectKey ? Ledj.cache.j
 "use strict";
 
 
-var _templateObject = _taggedTemplateLiteral(["\n<table class=\"ledj-table\">\n    <thead>\n        <tr>\n        ", "\n        </tr>\n    </thead>\n    <tbody>\n    ", "\n    </tbody>\n</table>\n"], ["\n<table class=\"ledj-table\">\n    <thead>\n        <tr>\n        ", "\n        </tr>\n    </thead>\n    <tbody>\n    ", "\n    </tbody>\n</table>\n"]),
-    _templateObject2 = _taggedTemplateLiteral(["\n            <th>", "</th>\n        "], ["\n            <th>", "</th>\n        "]),
-    _templateObject3 = _taggedTemplateLiteral(["\n        <tr>\n        ", "\n        </tr>\n    "], ["\n        <tr>\n        ", "\n        </tr>\n    "]),
-    _templateObject4 = _taggedTemplateLiteral(["\n            <td>", "</td>\n        "], ["\n            <td>", "</td>\n        "]);
-
-function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
-window.Ledj.templates.table = html(_templateObject, Ledj.cache.jsonConfig[cacheID].headers.map(function (colConfig) {
-    return html(_templateObject2, colConfig.name);
-}), (objectKey ? Ledj.cache.jsonData[cacheID][objectKey] : Ledj.cache.jsonData[cacheID]).map(function (dataItem) {
-    return html(_templateObject3, Ledj.cache.jsonConfig[cacheID].headers.map(function (colConfig, colName) {
-        return html(_templateObject4, Ledj.getCellContent(colConfig, colName, dataItem));
-    }));
-}));
+Ledj.addTemplate('parent', function (data) {
+    return '<div class="ledj-container" id="ledj-container-' + data.cacheID + '">\n    ' + (data.title ? data.title : '') + '\n    ' + data.childHTML + '\n</div>';
+});
 
 /***/ }),
 /* 5 */
@@ -665,11 +757,15 @@ window.Ledj.templates.table = html(_templateObject, Ledj.cache.jsonConfig[cacheI
 "use strict";
 
 
-var _templateObject = _taggedTemplateLiteral(["\n<div class=\"ledj-gif-grid\">\n    <code>#todo</code>\n</div>\n"], ["\n<div class=\"ledj-gif-grid\">\n    <code>#todo</code>\n</div>\n"]);
-
-function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
-window.Ledj.templates.gifGrid = html(_templateObject);
+Ledj.addTemplate('table', function (data) {
+    return '<table class="ledj-table">\n    <thead>\n        <tr>\n        ' + Object.keys(Ledj.cache.jsonConfig[data.cacheID].headers).map(function (headerName) {
+        return '\n            <th>' + Ledj.cache.jsonConfig[data.cacheID].headers[headerName].name + '</th>\n        ';
+    }).join('\n') + '\n        </tr>\n    </thead>\n    <tbody>\n    ' + (data.objectKey ? Ledj.cache.jsonData[data.cacheID][data.objectKey] : Ledj.cache.jsonData[data.cacheID]).map(function (dataItem) {
+        return '\n        <tr>\n        ' + Object.keys(Ledj.cache.jsonConfig[data.cacheID].headers).map(function (colName) {
+            return '\n            <td>' + Ledj.getCellContent(Ledj.cache.jsonConfig[data.cacheID].headers[colName], colName, dataItem) + '</td>\n        ';
+        }).join('\n') + '\n        </tr>\n    ';
+    }).join('\n') + '\n    </tbody>\n</table>';
+});
 
 /***/ }),
 /* 6 */
@@ -678,11 +774,9 @@ window.Ledj.templates.gifGrid = html(_templateObject);
 "use strict";
 
 
-var _templateObject = _taggedTemplateLiteral(["\n<div class=\"ledj-todo-list\">\n    <code>#todo</code>\n</div>\n"], ["\n<div class=\"ledj-todo-list\">\n    <code>#todo</code>\n</div>\n"]);
-
-function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
-window.Ledj.templates.todoList = html(_templateObject);
+Ledj.addTemplate('todoList', function (data) {
+    return '<div class="ledj-todo-list">\n    <code>#todo</code>\n</div>';
+});
 
 /***/ }),
 /* 7 */
@@ -691,7 +785,9 @@ window.Ledj.templates.todoList = html(_templateObject);
 "use strict";
 
 
-window.Ledj.templates.data.string = "\n<span class=\"string\">" + text + "</span>\n";
+Ledj.addDataTemplate('date', function (data) {
+  return '<span class="date">' + Ledj.formatDateString(data.date, data.dateFormat) + '</span>';
+});
 
 /***/ }),
 /* 8 */
@@ -700,11 +796,9 @@ window.Ledj.templates.data.string = "\n<span class=\"string\">" + text + "</span
 "use strict";
 
 
-var _templateObject = _taggedTemplateLiteral(["\n<a href=\"", "\" target=\"_blank\">", "</a>\n"], ["\n<a href=\"", "\" target=\"_blank\">", "</a>\n"]);
-
-function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
-window.Ledj.templates.data.url = html(_templateObject, href, text);
+Ledj.addDataTemplate('image', function (data) {
+  return '<img class="image" src="' + Ledj.getImageUrl(data.src, data.cacheID, data.objectKey) + '"' + (data.alt ? ' alt="' + data.alt + '" ' : '') + '/>';
+});
 
 /***/ }),
 /* 9 */
@@ -713,15 +807,36 @@ window.Ledj.templates.data.url = html(_templateObject, href, text);
 "use strict";
 
 
-var _templateObject = _taggedTemplateLiteral(["  \n<img class=\"image\" src=\"", "\"", " />\n"], ["  \n<img class=\"image\" src=\"", "\"", " />\n"]);
-
-function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
-// todo: make this less confusing/weird.
-window.Ledj.templates.data.image = html(_templateObject, Ledj.getImageUrl(src, cacheID, objectKey), alt ? " alt=\"" + alt + "\"" : "");
+Ledj.addDataTemplate('string', function (data) {
+  return '<span class="string">' + data.text + '</span>';
+});
 
 /***/ }),
 /* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Ledj.addDataTemplate('tagArray', function (data) {
+  return '<div class="tag-container">\n' + data.tags.map(function (tag) {
+    return '<span class="tag ' + Ledj.nameToID(tag) + '">' + tag + '</span>';
+  }).join('') + '\n</div>';
+});
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Ledj.addDataTemplate('url', function (data) {
+  return '<a href="' + data.href + '" target="_blank">' + data.text + '</a>';
+});
+
+/***/ }),
+/* 12 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

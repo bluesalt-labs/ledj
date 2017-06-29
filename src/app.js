@@ -2,16 +2,18 @@
 import Ledj from './ledj.js'
 
 // Ledj templates
-import templateParent from './templates/parent';
-import templateLinkGrid from './templates/linkGrid';
-import templateTable from './templates/table';
-import templateGifGrid from './templates/gifGrid';
-import templateTodoList from './templates/todoList';
+import gifGrid from './templates/gifGrid';
+import linkGrid from './templates/linkGrid';
+import parent from './templates/parent';
+import table from './templates/table';
+import todoList from './templates/todoList';
 
 // Ledj data templates
-import dataTemplateString from './templates/data/string';
-import dataTemplateUrl from './templates/data/url';
-import dataTemplateImage from './templates/data/image';
+import date from './templates/data/date';
+import image from './templates/data/image';
+import string from './templates/data/string';
+import tagArray from './templates/data/tagArray';
+import url from './templates/data/url';
 
 // Ledj stylesheets
 import style from './ledj.css'

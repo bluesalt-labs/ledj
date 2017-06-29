@@ -1,4 +1,3 @@
-// todo: make this less confusing/weird.
-window.Ledj.templates.data.image = html`  
-<img class="image" src="${Ledj.getImageUrl(src, cacheID, objectKey)}"${alt ? ` alt="${alt}"` : `` } />
-`;
+Ledj.addDataTemplate('image', function(data) {
+return `<img class="image" src="${Ledj.getImageUrl(data.src, data.cacheID, data.objectKey)}"${data.alt ? ` alt="${data.alt}" ` : '' }/>`;
+});

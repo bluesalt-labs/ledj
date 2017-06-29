@@ -1,7 +1,5 @@
-window.Ledj.templates.data.tagArray = `
-<div class="tag-container">
-${tags.map(tag => html`
-    <span class="tag ${Ledj.nameToID(tag)}">${tag}</span>
-`)}
-</div>
-`;
+Ledj.addDataTemplate('tagArray', function(data) {
+return `<div class="tag-container">
+${data.tags.map(tag => `<span class="tag ${Ledj.nameToID(tag)}">${tag}</span>` ).join('')}
+</div>`;
+});

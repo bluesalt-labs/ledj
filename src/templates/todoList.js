@@ -1,5 +1,5 @@
-window.Ledj.templates.todoList = html`
-<div class="ledj-todo-list">
+Ledj.addTemplate('todoList', function(data) {
+return `<div class="ledj-todo-list">
     <code>#todo</code>
-</div>
-`;
+</div>`;
+});
