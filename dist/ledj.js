@@ -80,55 +80,41 @@ return /******/ (function(modules) { // webpackBootstrap
 "use strict";
 
 
-var _ledj = __webpack_require__(1);
+// Ledj core
+__webpack_require__(1);
 
-var _ledj2 = _interopRequireDefault(_ledj);
+// Ledj templates
+__webpack_require__(2);
+__webpack_require__(3);
+__webpack_require__(4);
+__webpack_require__(5);
+__webpack_require__(6);
 
-var _gifGrid = __webpack_require__(2);
+// Ledj data templates
+__webpack_require__(7);
+__webpack_require__(8);
+__webpack_require__(9);
+__webpack_require__(10);
+__webpack_require__(11);
 
-var _gifGrid2 = _interopRequireDefault(_gifGrid);
+/*
+ // Ledj templates
+ import gifGrid from './templates/gifGrid';
+ import linkGrid from './templates/linkGrid';
+ import parent from './templates/parent';
+ import table from './templates/table';
+ import todoList from './templates/todoList';
 
-var _linkGrid = __webpack_require__(3);
+ // Ledj data templates
+ import date from './templates/data/date';
+ import image from './templates/data/image';
+ import string from './templates/data/string';
+ import tagArray from './templates/data/tagArray';
+ import url from './templates/data/url';
+ */
 
-var _linkGrid2 = _interopRequireDefault(_linkGrid);
-
-var _parent = __webpack_require__(4);
-
-var _parent2 = _interopRequireDefault(_parent);
-
-var _table = __webpack_require__(5);
-
-var _table2 = _interopRequireDefault(_table);
-
-var _todoList = __webpack_require__(6);
-
-var _todoList2 = _interopRequireDefault(_todoList);
-
-var _date = __webpack_require__(7);
-
-var _date2 = _interopRequireDefault(_date);
-
-var _image = __webpack_require__(8);
-
-var _image2 = _interopRequireDefault(_image);
-
-var _string = __webpack_require__(9);
-
-var _string2 = _interopRequireDefault(_string);
-
-var _tagArray = __webpack_require__(10);
-
-var _tagArray2 = _interopRequireDefault(_tagArray);
-
-var _url = __webpack_require__(11);
-
-var _url2 = _interopRequireDefault(_url);
-
-var _ledj3 = __webpack_require__(12);
-
-var _ledj4 = _interopRequireDefault(_ledj3);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+// Ledj stylesheets
+__webpack_require__(12);
 
 /***/ }),
 /* 1 */
@@ -631,13 +617,15 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         /* End Private Helper Functions */
 
         /*
-          */
+        Adds a new template for use
+         */
         Ledj.addTemplate = function (templateName, template) {
             Ledj.templates[templateName] = template;
         };
 
         /*
-          */
+        Adds a new data type template for use
+         */
         Ledj.addDataTemplate = function (dataType, template) {
             Ledj.templates.data[dataType] = template;
         };

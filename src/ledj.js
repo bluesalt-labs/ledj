@@ -405,14 +405,14 @@
         /* End Private Helper Functions */
 
         /*
-
+        Adds a new template for use
          */
         Ledj.addTemplate = function(templateName, template) {
             Ledj.templates[templateName] = template;
         };
 
         /*
-
+        Adds a new data type template for use
          */
         Ledj.addDataTemplate = function(dataType, template) {
             Ledj.templates.data[dataType] = template;
