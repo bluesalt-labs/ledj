@@ -3,6 +3,7 @@ var path = require('path');
 
 var UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
+
 var env = process.env.WEBPACK_ENV;
 
 var plugins = [], outputJSFile, outputCSSFile;
@@ -29,6 +30,12 @@ module.exports = {
         library: libraryName,
         libraryTarget: 'umd',
         umdNamedDefine: true
+    },
+    devServer: {
+        contentBase: [path.join(__dirname, "docs"), path.join(__dirname, "dist")],
+        open: '/local.html',
+        compress: true,
+        port: 8080
     },
     module: {
         loaders: [

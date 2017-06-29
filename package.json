@@ -8,9 +8,15 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean:dist": "rm -rf dist/*",
     "clean:docs": "rm -rf docs/assets/*.min.css docs/assets/*.min.js",
+    "copy-css:docs": "cp dist/*.min.css docs/assets/",
+    "copy-js:docs": "cp dist/*.min.js docs/assets/",
+    "copy-css": "npm run copy-css:docs",
+    "copy-js": "npm run copy-js:docs",
+    "copy": "npm run copy-css && npm run copy-js",
     "clean": "npm run clean:dist && npm run clean:docs",
+    "start": "webpack-dev-server --open-page local.html",
     "dev": "WEBPACK_ENV=dev webpack --progress --colors --watch",
-    "build": "npm run clean && WEBPACK_ENV=dev webpack; WEBPACK_ENV=build webpack"
+    "build": "npm run clean && WEBPACK_ENV=dev webpack; WEBPACK_ENV=build webpack && npm run copy"
   },
   "repository": {
     "type": "git",
@@ -31,6 +37,7 @@
     "css-loader": "^0.28.4",
     "extract-text-webpack-plugin": "^2.1.2",
     "style-loader": "^0.18.2",
-    "webpack": "^3.0.0"
+    "webpack": "^3.0.0",
+    "webpack-dev-server": "^2.5.0"
   }
 }
