@@ -1,9 +1,133 @@
-if (typeof _ === 'undefined') {
-    throw new Error('Ledj requires Lodash. Lodash must be included before Ledj\'s JavaScript.')
-}
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define("ledj", [], factory);
+	else if(typeof exports === 'object')
+		exports["ledj"] = factory();
+	else
+		root["ledj"] = factory();
+})(this, function() {
+return /******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, exports, __webpack_require__) {
 
-(function(window){
+"use strict";
+
+
+// Ledj core
+__webpack_require__(1);
+
+// Ledj templates
+__webpack_require__(2);
+__webpack_require__(3);
+__webpack_require__(4);
+__webpack_require__(5);
+__webpack_require__(6);
+
+// Ledj data templates
+__webpack_require__(7);
+__webpack_require__(8);
+__webpack_require__(9);
+__webpack_require__(10);
+__webpack_require__(11);
+
+/*
+ // Ledj templates
+ import gifGrid from './templates/gifGrid';
+ import linkGrid from './templates/linkGrid';
+ import parent from './templates/parent';
+ import table from './templates/table';
+ import todoList from './templates/todoList';
+
+ // Ledj data templates
+ import date from './templates/data/date';
+ import image from './templates/data/image';
+ import string from './templates/data/string';
+ import tagArray from './templates/data/tagArray';
+ import url from './templates/data/url';
+ */
+
+// Ledj stylesheets
+__webpack_require__(12);
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+(function (window) {
     'use strict';
+
     function define_ledj() {
         var Ledj = {};
 
@@ -18,8 +142,8 @@ if (typeof _ === 'undefined') {
 
         // todo: I could set each Ledj.defaults.foo to Ledj.foo and have functions that
         // todo: set the default on init. Then either the loaded config or just Ledj.foo = bar changes the setting.
-        // todo: add the tag click event listener function as a default in here. 
         Ledj.defaults = {
+            sortDataBy: 'title',
             dateFormat: 'mm/dd/yyyy',
             selectMultipleTags: true
         };
@@ -28,89 +152,41 @@ if (typeof _ === 'undefined') {
         // todo: I could add functionality to change those class/ID names.
 
         Ledj.templates = {
-            parent: _.template(
-                '<div class="ledj-container" id="ledj-container-<%= cacheID %>">' +
-                    '<% if(title) { print(title); } %>' +
-                    '<%= childHTML %>' +
-                '</div>'
-            ),
-            linkGrid: _.template(
-                '<div class="ledj-link-grid">' +
-                '<% _.forEach( (objectKey ? Ledj.cache.jsonData[cacheID][objectKey] : Ledj.cache.jsonData[cacheID]), function(dataItem) { %>' +
-                    '<a class="link-grid-item" href="<%= dataItem[itemHrefKey] %>"<% if(newTab) { %> target="_blank" <% } %>>' +
-                        '<img src="<%= Ledj.getImageUrl(dataItem[itemImageKey], cacheID, objectKey) %>" title="<%= dataItem[itemTitleKey] %>" />' +
-                        '<span><%= dataItem[itemTitleKey] %></span>' +
-                    '</a>' +
-                '<% }); %>' +
-                '</div>'
-            ),
-            table: _.template(
-                '<table class="ledj-table">' +
-                    '<thead><tr>' +
-                    '<% _.forEach(headerItems, function(colConfig) { %>' +
-                        '<th>' + '<%= colConfig.name %>' + '</th>' +
-                    '<% }); %>' +
-                    '</tr></thead>' +
-                    '<% _.forEach(dataItems, function(dataItem) { %>' +
-                        '<tr>' +
-                            '<% _.forEach(headerItems, function(colConfig, colName) { %>' +
-                            '<td>' + '<%= Ledj.getCellContent(colConfig, colName, dataItem) %>' + '</td>' +
-                            '<% }); %>' +
-                        '</tr>' +
-                    '<% }); %>' +
-                    '</tbody>' +
-                '</table>'
-            ),
-            gifGrid: _.template(
-                //'<div class="ledj-gif-grid">' +
-                '<code>#todo</code>' // +
-                //'</div>'
-            ),
-            data: {
-                url:        _.template('<a href="<%= href %>" target="_blank"><%= text %></a>'),
-                image:      _.template(  // todo: make this less confusing/weird.
-                    '<img class="image" src="<%= Ledj.getImageUrl(src, cacheID, objectKey) %>"' +
-                    '<% if(alt) { print(\' alt="\' + alt + \'"\'); } %> />'
-                ),
-                date:       _.template('<span class="date"><%= Ledj.formatDateString(date, dateFormat) %></span>'),
-                string:     _.template('<span class="string"><%= text %></span>'),
-                tagArray:   _.template(
-                    '<div class="tag-container">' +
-                    '<% _.forEach(tags, function(tag) { %>' +
-                        '<span class="tag <%= Ledj.nameToID(tag) %>"><%= tag %></span>' +
-                    '<% }); %>' +
-                    '</div>'
-                )
-            }
+            data: {}
         };
 
         /*
         Checks if a specified URL gives a status of 200
          */
-        Ledj.urlExists = function(url, callbackSuccess, callbackFail, callbackArg) {
+        Ledj.urlExists = function (url, callbackSuccess, callbackFail, callbackArg) {
             var http = new XMLHttpRequest();
             http.open('HEAD', url);
-            http.onreadystatechange = function() {
+            http.onreadystatechange = function () {
                 if (this.readyState === this.DONE) {
                     if (this.status === 200) {
-                        if(callbackSuccess !== null) { callbackSuccess(callbackArg); }
-                        else { return 0; }
-                    }
-                    else {
-                        if(callbackFail !== null) { callbackFail(callbackArg); }
-                        else { return -1; }
+                        if (callbackSuccess !== null) {
+                            callbackSuccess(callbackArg);
+                        } else {
+                            return 0;
+                        }
+                    } else {
+                        if (callbackFail !== null) {
+                            callbackFail(callbackArg);
+                        } else {
+                            return -1;
+                        }
                     }
                 }
             };
             http.send();
         };
 
-        Ledj.reset = function(cacheID) {
+        Ledj.reset = function (cacheID) {
             resetElement(Ledj.cache.elementID[cacheID]);
         };
 
-        Ledj.getJSONConfig = function(url, callback) {
-            if(typeof url === 'string'){
+        Ledj.getJSONConfig = function (url, callback) {
+            if (typeof url === 'string') {
 
                 // Add date param to force clearing the browser cache
                 url += '?dt=' + Date.now();
@@ -118,10 +194,13 @@ if (typeof _ === 'undefined') {
                 var xhr = new XMLHttpRequest();
                 xhr.open('GET', url, true);
                 xhr.responseType = 'json';
-                xhr.onload = function() {
+                xhr.onload = function () {
                     var status = xhr.status;
-                    if (status === 200) { callback(null, xhr.response); }
-                    else { callback(status); }
+                    if (status === 200) {
+                        callback(null, xhr.response);
+                    } else {
+                        callback(status);
+                    }
                 };
                 xhr.send();
             } else {
@@ -129,23 +208,27 @@ if (typeof _ === 'undefined') {
             }
         };
 
-        Ledj.getHostName = function() {
-            return window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+        Ledj.getHostName = function () {
+            return window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port : '');
         };
 
-        Ledj.capitalize = function(string) {
-            return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+        Ledj.capitalize = function (string) {
+            if (typeof string === 'string') {
+                return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+            } else {
+                return string;
+            }
         };
 
-        Ledj.nameToID = function(name) {
+        Ledj.nameToID = function (name) {
             return name.replace(/\\s/g, "-").toLowerCase();
         };
 
-        Ledj.formatDateString = function(dateString, dateFormat) {
+        Ledj.formatDateString = function (dateString, dateFormat) {
             // if the moment library is available, use that to format the string.
-            if(!!window.moment) {
+            if (!!window.moment) {
                 var date = moment(dateString);
-                var dateFormat = (dateFormat ? dateFormat : Ledj.defaults.dateFormat);
+                var dateFormat = dateFormat ? dateFormat : Ledj.defaults.dateFormat;
                 return date.format(dateFormat);
             } else {
                 var d = new Date(dateString);
@@ -154,42 +237,132 @@ if (typeof _ === 'undefined') {
         };
 
         // Click Event Listener for tag elements (see Ledj.templates.data.tagArray template)
-        Ledj.toggleActiveTagsByClassName = function(e) {
+        Ledj.toggleActiveTagsByClassName = function (e) {
             var tagClass = e.target.className.replace('tag', '').replace('active', '').trim();
 
-            if(Ledj.defaults.selectMultipleTags) {
-                _.map(document.getElementsByClassName(tagClass), function(el) {
-                    if(el.className.includes('active')) { el.className = 'tag ' + tagClass; }
-                    else { el.className = 'tag active ' + tagClass; }
-                });
+            if (Ledj.defaults.selectMultipleTags) {
+                var _iteratorNormalCompletion = true;
+                var _didIteratorError = false;
+                var _iteratorError = undefined;
+
+                try {
+                    for (var _iterator = document.getElementsByClassName(tagClass)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                        var el = _step.value;
+
+                        if (el.className.includes('active')) {
+                            el.className = 'tag ' + tagClass;
+                        } else {
+                            el.className = 'tag active ' + tagClass;
+                        }
+                    }
+                } catch (err) {
+                    _didIteratorError = true;
+                    _iteratorError = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion && _iterator.return) {
+                            _iterator.return();
+                        }
+                    } finally {
+                        if (_didIteratorError) {
+                            throw _iteratorError;
+                        }
+                    }
+                }
             } else {
-                _.map(document.getElementsByClassName('tag'), function(el) {
-                    var classNames = el.className.split(' ');
-                    if(classNames.includes(tagClass) && !classNames.includes('active')) { el.className = 'tag active ' + tagClass; }
-                    else { el.className = el.className.replace('active', '').trim(); }
-                });
+                var _iteratorNormalCompletion2 = true;
+                var _didIteratorError2 = false;
+                var _iteratorError2 = undefined;
+
+                try {
+                    for (var _iterator2 = document.getElementsByClassName('tag')[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                        var _el = _step2.value;
+
+                        var classNames = _el.className.split(' ');
+                        if (classNames.includes(tagClass) && !classNames.includes('active')) {
+                            _el.className = 'tag active ' + tagClass;
+                        } else {
+                            _el.className = _el.className.replace('active', '').trim();
+                        }
+                    }
+                } catch (err) {
+                    _didIteratorError2 = true;
+                    _iteratorError2 = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                            _iterator2.return();
+                        }
+                    } finally {
+                        if (_didIteratorError2) {
+                            throw _iteratorError2;
+                        }
+                    }
+                }
             }
         };
         // Adds click event listener for tag elements (see Ledj.templates.data.tagArray template)
         // todo: attach this to the tags' parent div and modify the click event
-        Ledj.addTagClickListeners = function() {
-            _.map(document.getElementsByClassName('tag'), function(el) {
-                el.addEventListener("click", Ledj.toggleActiveTagsByClassName);
-            });
+        Ledj.addTagClickListeners = function () {
+            var _iteratorNormalCompletion3 = true;
+            var _didIteratorError3 = false;
+            var _iteratorError3 = undefined;
+
+            try {
+                for (var _iterator3 = document.getElementsByClassName('tag')[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                    var el = _step3.value;
+
+                    el.addEventListener("click", Ledj.toggleActiveTagsByClassName);
+                }
+            } catch (err) {
+                _didIteratorError3 = true;
+                _iteratorError3 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                        _iterator3.return();
+                    }
+                } finally {
+                    if (_didIteratorError3) {
+                        throw _iteratorError3;
+                    }
+                }
+            }
         };
         // Removes click event listener for tag elements (see Ledj.templates.data.tagArray template)
         // todo: attach this to the tags' parent div and modify the click event
-        Ledj.removeTagClickListeners = function() {
-            _.map(document.getElementsByClassName('tag'), function(el) {
-                el.removeEventListener("click", Ledj.toggleActiveTagsByClassName);
-            });
+        Ledj.removeTagClickListeners = function () {
+            var _iteratorNormalCompletion4 = true;
+            var _didIteratorError4 = false;
+            var _iteratorError4 = undefined;
+
+            try {
+                for (var _iterator4 = document.getElementsByClassName('tag')[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                    var el = _step4.value;
+
+                    el.removeEventListener("click", Ledj.toggleActiveTagsByClassName);
+                }
+            } catch (err) {
+                _didIteratorError4 = true;
+                _iteratorError4 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion4 && _iterator4.return) {
+                        _iterator4.return();
+                    }
+                } finally {
+                    if (_didIteratorError4) {
+                        throw _iteratorError4;
+                    }
+                }
+            }
         };
 
         // todo: make this function more generic somehow ( getHtmlByDataType() )
-        Ledj.getCellContent = function(colConfig, colName, itemData) {
+        Ledj.getCellContent = function (colConfig, colName, itemData) {
             var cell = '';
 
-            switch(colConfig.type.toLowerCase()) {
+            switch (colConfig.type.toLowerCase()) {
                 case "url":
                     cell += Ledj.templates.data.url({ 'text': itemData[colName], 'href': itemData[colConfig.href] });
                     break;
@@ -197,7 +370,7 @@ if (typeof _ === 'undefined') {
                     cell += Ledj.templates.data.image({ 'src': itemData[colConfig.src], 'alt': itemData[colConfig.alt] });
                     break;
                 case "date":
-                    var dateFormat = (colConfig.hasOwnProperty('dateFormat') ? colConfig.dateFormat : null);
+                    var dateFormat = colConfig.hasOwnProperty('dateFormat') ? colConfig.dateFormat : null;
                     cell += Ledj.templates.data.date({ 'date': itemData[colName], 'dateFormat': dateFormat });
                     break;
                 case "tag-array":
@@ -213,22 +386,18 @@ if (typeof _ === 'undefined') {
             return cell;
         };
 
-        Ledj.getImageUrl = function(imageTitle, cacheID, objectKey) {
+        Ledj.getImageUrl = function (imageTitle, cacheID, objectKey) {
             var srcDir = '/';
-            var ext = (Ledj.cache.jsonConfig[cacheID].hasOwnProperty('imgExt') ? Ledj.cache.jsonConfig[cacheID].imgExt : '');
+            var ext = Ledj.cache.jsonConfig[cacheID].hasOwnProperty('imgExt') ? Ledj.cache.jsonConfig[cacheID].imgExt : '';
 
-            if(Ledj.cache.jsonConfig[cacheID].hasOwnProperty('srcDir')) {
+            if (Ledj.cache.jsonConfig[cacheID].hasOwnProperty('srcDir')) {
                 srcDir = Ledj.cache.jsonConfig[cacheID].srcDir;
-            }
-
-            else if(Ledj.cache.jsonConfig[cacheID].hasOwnProperty('srcDirs')) {
-                if(!!objectKey && Ledj.cache.jsonConfig[cacheID].srcDirs.hasOwnProperty(objectKey)) {
+            } else if (Ledj.cache.jsonConfig[cacheID].hasOwnProperty('srcDirs')) {
+                if (!!objectKey && Ledj.cache.jsonConfig[cacheID].srcDirs.hasOwnProperty(objectKey)) {
                     srcDir = Ledj.cache.jsonConfig[cacheID].srcDirs[objectKey];
-                }
-                else if(Ledj.cache.jsonConfig[cacheID].srcDirs.hasOwnProperty('Default')) {
+                } else if (Ledj.cache.jsonConfig[cacheID].srcDirs.hasOwnProperty('Default')) {
                     srcDir = Ledj.cache.jsonConfig[cacheID].srcDirs['Default'];
-                }
-                else if(Ledj.cache.jsonConfig[cacheID].srcDirs.hasOwnProperty('default')) {
+                } else if (Ledj.cache.jsonConfig[cacheID].srcDirs.hasOwnProperty('default')) {
                     srcDir = Ledj.cache.jsonConfig[cacheID].srcDirs['default'];
                 }
             }
@@ -236,12 +405,11 @@ if (typeof _ === 'undefined') {
             return srcDir + imageTitle + ext;
         };
 
-
         /* Private Helper Functions */
 
         function loadConfigFromUrl(url, callback) {
-            Ledj.getJSONConfig(url, function(err, data) {
-                if(err === null) {
+            Ledj.getJSONConfig(url, function (err, data) {
+                if (err === null) {
                     if (data.hasOwnProperty('config') && data.hasOwnProperty('data')) {
                         Ledj.cache.curCacheID = Ledj.cache.jsonConfig.push(data.config) - 1;
                         Ledj.cache.jsonData[Ledj.cache.curCacheID] = data.data;
@@ -253,9 +421,9 @@ if (typeof _ === 'undefined') {
                     }
                 }
 
-               if(err !== null) {
-                   console.warn('Config file "' + url + '" could not be retrieved. ' + err);
-               }
+                if (err !== null) {
+                    console.warn('Config file "' + url + '" could not be retrieved. ' + err);
+                }
             });
         }
 
@@ -271,26 +439,30 @@ if (typeof _ === 'undefined') {
         }
 
         function sortJsonDataBy(cacheID, propName) {
-            if(Ledj.cache.jsonData[cacheID]) {
-                if( Array.isArray(Ledj.cache.jsonData[cacheID]) ) {
-                    Ledj.cache.jsonData[cacheID] =
-                        _.sortBy(
-                            Ledj.cache.jsonData[cacheID],
-                            (typeof propName === 'string' ? propName.toLowerCase() : propName)
-                        );
-                }
+            // todo: the propname variable is supposed to change the default value.
+            // todo: for now I'm just using the default. allow setting this in the loaded config.
+            if (Ledj.cache.jsonData[cacheID]) {
+                if (Array.isArray(Ledj.cache.jsonData[cacheID])) {
+                    Ledj.cache.jsonData[cacheID] = Ledj.cache.jsonData[cacheID].sort(Ledj.dataSortCompareHelper);
+                    /*
+                    _.sortBy(
+                        Ledj.cache.jsonData[cacheID],
+                        (typeof propName === 'string' ? propName.toLowerCase() : propName)
+                    );
+                    */
+                } else if (_typeof(Ledj.cache.jsonData[cacheID]) === 'object') {
+                    for (var item in Ledj.cache.jsonData[cacheID]) {
+                        Ledj.cache.jsonData[cacheID][item].sort(Ledj.dataSortCompareHelper);
 
-                else if(typeof Ledj.cache.jsonData[cacheID] === 'object') {
-                    for(var item in Ledj.cache.jsonData[cacheID]) {
+                        /*
                         Ledj.cache.jsonData[cacheID][item] =
                             _.sortBy(
                                 Ledj.cache.jsonData[cacheID][item],
                                 (typeof propName === 'string' ? propName.toLowerCase() : propName)
                             );
+                        */
                     }
-                }
-
-                else {
+                } else {
                     console.warn('Could not sort cache.jsonData[' + cacheID + ']');
                 }
             } else {
@@ -298,32 +470,28 @@ if (typeof _ === 'undefined') {
             }
         }
 
-        function sortData(cacheID) {
-            // todo: search the config for how to sort data. if not specified, try to figure it out?
-            sortJsonDataBy(cacheID, 'title'); // debug
-        }
-
-        function getDataHeaderItems(cacheID) {
-            return Ledj.cache.jsonConfig[cacheID].headers;
-        }
-
-        function getDataItems(cacheID, objectKey) {
-            if(objectKey) {
-                return Ledj.cache.jsonData[cacheID][objectKey];
+        function dataSortCompareHelper(a, b) {
+            var propName = typeof propName === 'string' ? propName.toLowerCase() : propName;
+            if (!!a[propName] && !!b[propName] && a[propName] !== b[propName]) {
+                return a[propName] > b[propName] ? -1 : 1;
             } else {
-                return Ledj.cache.jsonData[cacheID];
+                return 0;
             }
+        }
+
+        // todo: do we really need this, which is essentially just an alias for `sortJsonDataBy()`?
+        function sortData(cacheID) {
+            sortJsonDataBy(cacheID);
         }
 
         function getLinkGridFromData(cacheID, objectKey) {
             var templateData = {
                 'cacheID': cacheID,
                 'objectKey': objectKey,
-                //'dataItems': getDataItems(cacheID, objectKey),
-                'itemHrefKey': 'href',      // todo set this in json config
-                'newTab': true,             // todo set this in json config
+                'itemHrefKey': 'href', // todo set this in json config
+                'newTab': true, // todo set this in json config
                 'itemImageKey': 'filename', // todo set this in json config
-                'itemTitleKey': 'title'     // todo set this in json config
+                'itemTitleKey': 'title' // todo set this in json config
 
             };
 
@@ -333,9 +501,7 @@ if (typeof _ === 'undefined') {
         function getTableFromData(cacheID, objectKey) {
             var templateData = {
                 'cacheID': cacheID,
-                'objectKey': objectKey,
-                'headerItems': getDataHeaderItems(cacheID),
-                'dataItems': getDataItems(cacheID, objectKey)
+                'objectKey': objectKey
             };
 
             return wrapHtmlInParent(Ledj.templates.table(templateData), cacheID, objectKey);
@@ -343,7 +509,8 @@ if (typeof _ === 'undefined') {
 
         function getGifGridFromData(cacheID, objectKey) {
             var templateData = {
-                'dataItems': getDataItems(cacheID, objectKey)
+                'cacheID': cacheID,
+                'objectKey': objectKey
             };
 
             return wrapHtmlInParent(Ledj.templates.gifGrid(templateData), cacheID, objectKey);
@@ -351,9 +518,9 @@ if (typeof _ === 'undefined') {
 
         function wrapHtmlInParent(processedHTML, cacheID, objectKey) {
             return Ledj.templates.parent({
-                'title': getElementTitle(cacheID, objectKey),
-                'cacheID': cacheID,
-                'childHTML': processedHTML
+                title: getElementTitle(cacheID, objectKey),
+                cacheID: cacheID,
+                childHTML: processedHTML
             });
         }
 
@@ -361,13 +528,13 @@ if (typeof _ === 'undefined') {
             var element = document.getElementById(elementID);
 
             // Make sure the DOM element exists
-            if(!!element) {
+            if (!!element) {
                 // Store the valid elementID
                 Ledj.cache.elementID[cacheID] = elementID;
 
                 var functionToUse = null;
 
-                switch(Ledj.cache.jsonConfig[cacheID].type.toLowerCase()) {
+                switch (Ledj.cache.jsonConfig[cacheID].type.toLowerCase()) {
                     case 'link-grid':
                     case 'linkgrid':
                         functionToUse = getLinkGridFromData;
@@ -383,28 +550,25 @@ if (typeof _ === 'undefined') {
                         console.log('A fallback template is not yet implemented.');
                 }
 
-                if(!!functionToUse) {
+                if (!!functionToUse) {
                     var toAppend = '';
 
-                    if( Array.isArray(Ledj.cache.jsonData[cacheID]) ) {
+                    if (Array.isArray(Ledj.cache.jsonData[cacheID])) {
                         toAppend = functionToUse(cacheID);
-                    }
-
-                    else if(typeof Ledj.cache.jsonData[cacheID] === 'object') {
-                        for(var item in Ledj.cache.jsonData[cacheID]) {
+                    } else if (_typeof(Ledj.cache.jsonData[cacheID]) === 'object') {
+                        for (var item in Ledj.cache.jsonData[cacheID]) {
                             toAppend += functionToUse(cacheID, item);
                         }
-                    }
-
-                     else { // todo
+                    } else {
+                        // todo
                         console.warn('Couldn\'t find a template to use - Ledj shouldn\'t get here');
                     }
 
-                    if(toAppend !== '') {
+                    if (toAppend !== '') {
                         element.innerHTML += toAppend;
 
                         // Add tag click event listener if tags were attached to the page
-                        if(Ledj.cache.tagTemplateUsed) {
+                        if (Ledj.cache.tagTemplateUsed) {
                             Ledj.removeTagClickListeners(); // prevents duplicate event listeners
                             Ledj.addTagClickListeners();
                         }
@@ -418,11 +582,10 @@ if (typeof _ === 'undefined') {
         }
 
         function getElementTitle(configID, objectKey) {
-            if(!!objectKey && objectKey !== '') {
+            if (!!objectKey && objectKey !== '') {
                 var titleTag = 'h2';
 
-                if( Ledj.cache.jsonConfig[configID].hasOwnProperty('titleElementLevel') &&
-                    typeof parseInt(Ledj.cache.jsonConfig[configID].titleElementLevel) === 'number') {
+                if (Ledj.cache.jsonConfig[configID].hasOwnProperty('titleElementLevel') && typeof parseInt(Ledj.cache.jsonConfig[configID].titleElementLevel) === 'number') {
                     titleTag = 'h' + Ledj.cache.jsonConfig[configID].titleElementLevel;
                 }
 
@@ -435,22 +598,46 @@ if (typeof _ === 'undefined') {
         function resetElement(elementID) {
             try {
                 document.getElementById(elementID).innerHTML = '';
-            } catch(e) {
+            } catch (e) {
                 console.warn(e); // debug?
             }
         }
 
+        /*
+        Callback for Ledj.loadAndAttachTo and Ledj.loadFromObjAndAttachTo.
+        Sorts, parses, and attaches data to the DOM.
+         */
+        function sortAndAttachCallback(cacheID, elementID) {
+            // reset this flag if a previous data set used the tag template.
+            Ledj.cache.tagTemplateUsed = false;
+            sortData(cacheID);
+            addElementsTo(cacheID, elementID);
+        }
+
         /* End Private Helper Functions */
+
+        /*
+        Adds a new template for use
+         */
+        Ledj.addTemplate = function (templateName, template) {
+            Ledj.templates[templateName] = template;
+        };
+
+        /*
+        Adds a new data type template for use
+         */
+        Ledj.addDataTemplate = function (dataType, template) {
+            Ledj.templates.data[dataType] = template;
+        };
 
         /*
         Creates new HTML elements from specified JSON data URL
         and attaches them to the specified DOM element.
         This is the primary method for loading data and attaching elements.
          */
-        Ledj.loadAndAttachTo = function(jsonUrl, elementID) {
-            loadConfigFromUrl(jsonUrl, function(cacheID) {
-                sortData(cacheID);
-                addElementsTo(cacheID, elementID);
+        Ledj.loadAndAttachTo = function (jsonUrl, elementID) {
+            loadConfigFromUrl(jsonUrl, function (cacheID) {
+                sortAndAttachCallback(cacheID, elementID);
             });
         };
 
@@ -458,8 +645,8 @@ if (typeof _ === 'undefined') {
          Creates new HTML elements from specified JSON data object
          and attaches them to the specified DOM element.
          */
-        Ledj.loadFromObjAndAttachTo = function(jsonData, elementID) {
-            loadConfigFromObj(jsonData, function(cacheID) {
+        Ledj.loadFromObjAndAttachTo = function (jsonData, elementID) {
+            loadConfigFromObj(jsonData, function (cacheID) {
                 sortData(cacheID);
                 addElementsTo(cacheID, elementID);
             });
@@ -469,10 +656,10 @@ if (typeof _ === 'undefined') {
          If the specified cache ID exists, the associated element is cleared,
          the data retrieved again, and the HTML elements re-added to that container.
          */
-        Ledj.reloadFromUrlByID = function(cacheID) {
+        Ledj.reloadFromUrlByID = function (cacheID) {
             var numCacheID = parseInt(cacheID);
 
-            if(typeof numCacheID === 'number' && !!this.cache.jsonUrl[numCacheID] && !!this.cache.elementID[numCacheID]) {
+            if (typeof numCacheID === 'number' && !!this.cache.jsonUrl[numCacheID] && !!this.cache.elementID[numCacheID]) {
                 this.reset(numCacheID); // todo: make sure this works.
                 this.loadAndAttachTo(this.cache.jsonUrl[numCacheID], this.cache.elementID[numCacheID]);
             } else {
@@ -484,10 +671,10 @@ if (typeof _ === 'undefined') {
          If the specified cache ID exists, the associated element is cleared,
          the cached data is replaced with the specified data, and the HTML elements re-added to that container.
          */
-        Ledj.reloadFromObjByID = function(jsonData, cacheID) {
+        Ledj.reloadFromObjByID = function (jsonData, cacheID) {
             var numCacheID = parseInt(cacheID);
 
-            if(typeof numCacheID === 'number' && !!this.cache.elementID[numCacheID]) {
+            if (typeof numCacheID === 'number' && !!this.cache.elementID[numCacheID]) {
                 this.reset(numCacheID);
                 this.loadFromObjAndAttachTo(jsonData, this.cache.elementID[numCacheID]);
             } else {
@@ -500,7 +687,7 @@ if (typeof _ === 'undefined') {
         // Alias for Ledj.loadFromObjAndAttachTo
         Ledj.attachWith = Ledj.loadFromObjAndAttachTo;
         // Alias for Ledj.reloadFromUrlByID
-        Ledj.reload =  Ledj.reloadFromUrlByID;
+        Ledj.reload = Ledj.reloadFromUrlByID;
         // Alias for Ledj.reloadFromObjByID
         Ledj.reloadwith = Ledj.reloadFromObjByID;
 
@@ -508,10 +695,141 @@ if (typeof _ === 'undefined') {
         return Ledj;
     }
 
-    if(typeof(Ledj) === 'undefined') {
+    if (typeof Ledj === 'undefined') {
+        //export default 'Ledj';
         window.Ledj = define_ledj();
-        //window.Ledj = define_Ledj();
     } else {
         console.log("Ledj is already defined.");
     }
 })(window);
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Ledj.addTemplate('gifGrid', function (data) {
+  return '<div class="ledj-gif-grid">\n<code>#todo</code>\n</div>';
+});
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Ledj.addTemplate('linkGrid', function (data) {
+    return '<div class="ledj-link-grid">\n' + (data.objectKey ? Ledj.cache.jsonData[data.cacheID][data.objectKey] : Ledj.cache.jsonData[data.cacheID]).map(function (dataItem) {
+        return '<a class="link-grid-item" href="' + dataItem[data.itemHrefKey] + '"' + (data.newTab ? ' target="_blank"' : '') + '>\n        <img src="' + Ledj.getImageUrl(dataItem[data.itemImageKey], data.cacheID, data.objectKey) + '" title="' + dataItem[data.itemTitleKey] + '" />\n        <span>' + dataItem[data.itemTitleKey] + '</span>\n    </a>';
+    }).join('') + '\n</div>';
+});
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Ledj.addTemplate('parent', function (data) {
+    return '<div class="ledj-container" id="ledj-container-' + data.cacheID + '">\n    ' + (data.title ? data.title : '') + '\n    ' + data.childHTML + '\n</div>';
+});
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Ledj.addTemplate('table', function (data) {
+    return '<table class="ledj-table">\n    <thead>\n        <tr>\n        ' + Object.keys(Ledj.cache.jsonConfig[data.cacheID].headers).map(function (headerName) {
+        return '\n            <th>' + Ledj.cache.jsonConfig[data.cacheID].headers[headerName].name + '</th>\n        ';
+    }).join('\n') + '\n        </tr>\n    </thead>\n    <tbody>\n    ' + (data.objectKey ? Ledj.cache.jsonData[data.cacheID][data.objectKey] : Ledj.cache.jsonData[data.cacheID]).map(function (dataItem) {
+        return '\n        <tr>\n        ' + Object.keys(Ledj.cache.jsonConfig[data.cacheID].headers).map(function (colName) {
+            return '\n            <td>' + Ledj.getCellContent(Ledj.cache.jsonConfig[data.cacheID].headers[colName], colName, dataItem) + '</td>\n        ';
+        }).join('\n') + '\n        </tr>\n    ';
+    }).join('\n') + '\n    </tbody>\n</table>';
+});
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Ledj.addTemplate('todoList', function (data) {
+    return '<div class="ledj-todo-list">\n    <code>#todo</code>\n</div>';
+});
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Ledj.addDataTemplate('date', function (data) {
+  return '<span class="date">' + Ledj.formatDateString(data.date, data.dateFormat) + '</span>';
+});
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Ledj.addDataTemplate('image', function (data) {
+  return '<img class="image" src="' + Ledj.getImageUrl(data.src, data.cacheID, data.objectKey) + '"' + (data.alt ? ' alt="' + data.alt + '" ' : '') + '/>';
+});
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Ledj.addDataTemplate('string', function (data) {
+  return '<span class="string">' + data.text + '</span>';
+});
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Ledj.addDataTemplate('tagArray', function (data) {
+  return '<div class="tag-container">\n' + data.tags.map(function (tag) {
+    return '<span class="tag ' + Ledj.nameToID(tag) + '">' + tag + '</span>';
+  }).join('') + '\n</div>';
+});
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Ledj.addDataTemplate('url', function (data) {
+  return '<a href="' + data.href + '" target="_blank">' + data.text + '</a>';
+});
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ })
+/******/ ]);
+});
+//# sourceMappingURL=ledj.js.map

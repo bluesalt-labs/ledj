@@ -1,7 +1,3 @@
-if (typeof _ === 'undefined') {
-    throw new Error('Ledj requires Lodash. Lodash must be included before Ledj\'s JavaScript.')
-}
-
 (function(window){
     'use strict';
     function define_ledj() {
@@ -9,18 +5,18 @@ if (typeof _ === 'undefined') {
 
         Ledj.cache = {
             jsonConfig: [],
-            jsonData: [],
-            jsonUrl: [],
-            elementID: [],
+            jsonData:   [],
+            jsonUrl:    [],
+            elementID:  [],
             curCacheID: -1,
             tagTemplateUsed: false
         };
 
         // todo: I could set each Ledj.defaults.foo to Ledj.foo and have functions that
         // todo: set the default on init. Then either the loaded config or just Ledj.foo = bar changes the setting.
-        // todo: add the tag click event listener function as a default in here. 
         Ledj.defaults = {
-            dateFormat: 'mm/dd/yyyy',
+            sortDataBy:         'title',
+            dateFormat:         'mm/dd/yyyy',
             selectMultipleTags: true
         };
 
@@ -28,60 +24,7 @@ if (typeof _ === 'undefined') {
         // todo: I could add functionality to change those class/ID names.
 
         Ledj.templates = {
-            parent: _.template(
-                '<div class="ledj-container" id="ledj-container-<%= cacheID %>">' +
-                    '<% if(title) { print(title); } %>' +
-                    '<%= childHTML %>' +
-                '</div>'
-            ),
-            linkGrid: _.template(
-                '<div class="ledj-link-grid">' +
-                '<% _.forEach( (objectKey ? Ledj.cache.jsonData[cacheID][objectKey] : Ledj.cache.jsonData[cacheID]), function(dataItem) { %>' +
-                    '<a class="link-grid-item" href="<%= dataItem[itemHrefKey] %>"<% if(newTab) { %> target="_blank" <% } %>>' +
-                        '<img src="<%= Ledj.getImageUrl(dataItem[itemImageKey], cacheID, objectKey) %>" title="<%= dataItem[itemTitleKey] %>" />' +
-                        '<span><%= dataItem[itemTitleKey] %></span>' +
-                    '</a>' +
-                '<% }); %>' +
-                '</div>'
-            ),
-            table: _.template(
-                '<table class="ledj-table">' +
-                    '<thead><tr>' +
-                    '<% _.forEach(headerItems, function(colConfig) { %>' +
-                        '<th>' + '<%= colConfig.name %>' + '</th>' +
-                    '<% }); %>' +
-                    '</tr></thead>' +
-                    '<% _.forEach(dataItems, function(dataItem) { %>' +
-                        '<tr>' +
-                            '<% _.forEach(headerItems, function(colConfig, colName) { %>' +
-                            '<td>' + '<%= Ledj.getCellContent(colConfig, colName, dataItem) %>' + '</td>' +
-                            '<% }); %>' +
-                        '</tr>' +
-                    '<% }); %>' +
-                    '</tbody>' +
-                '</table>'
-            ),
-            gifGrid: _.template(
-                //'<div class="ledj-gif-grid">' +
-                '<code>#todo</code>' // +
-                //'</div>'
-            ),
-            data: {
-                url:        _.template('<a href="<%= href %>" target="_blank"><%= text %></a>'),
-                image:      _.template(  // todo: make this less confusing/weird.
-                    '<img class="image" src="<%= Ledj.getImageUrl(src, cacheID, objectKey) %>"' +
-                    '<% if(alt) { print(\' alt="\' + alt + \'"\'); } %> />'
-                ),
-                date:       _.template('<span class="date"><%= Ledj.formatDateString(date, dateFormat) %></span>'),
-                string:     _.template('<span class="string"><%= text %></span>'),
-                tagArray:   _.template(
-                    '<div class="tag-container">' +
-                    '<% _.forEach(tags, function(tag) { %>' +
-                        '<span class="tag <%= Ledj.nameToID(tag) %>"><%= tag %></span>' +
-                    '<% }); %>' +
-                    '</div>'
-                )
-            }
+            data: {}
         };
 
         /*
@@ -134,7 +77,11 @@ if (typeof _ === 'undefined') {
         };
 
         Ledj.capitalize = function(string) {
-            return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+            if(typeof string === 'string') {
+                return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+            } else {
+                return string;
+            }
         };
 
         Ledj.nameToID = function(name) {
@@ -158,31 +105,31 @@ if (typeof _ === 'undefined') {
             var tagClass = e.target.className.replace('tag', '').replace('active', '').trim();
 
             if(Ledj.defaults.selectMultipleTags) {
-                _.map(document.getElementsByClassName(tagClass), function(el) {
+                for(let el of document.getElementsByClassName(tagClass)) {
                     if(el.className.includes('active')) { el.className = 'tag ' + tagClass; }
                     else { el.className = 'tag active ' + tagClass; }
-                });
+                }
             } else {
-                _.map(document.getElementsByClassName('tag'), function(el) {
+                for(let el of document.getElementsByClassName('tag')) {
                     var classNames = el.className.split(' ');
                     if(classNames.includes(tagClass) && !classNames.includes('active')) { el.className = 'tag active ' + tagClass; }
                     else { el.className = el.className.replace('active', '').trim(); }
-                });
+                }
             }
         };
         // Adds click event listener for tag elements (see Ledj.templates.data.tagArray template)
         // todo: attach this to the tags' parent div and modify the click event
         Ledj.addTagClickListeners = function() {
-            _.map(document.getElementsByClassName('tag'), function(el) {
+            for(let el of document.getElementsByClassName('tag')) {
                 el.addEventListener("click", Ledj.toggleActiveTagsByClassName);
-            });
+            }
         };
         // Removes click event listener for tag elements (see Ledj.templates.data.tagArray template)
         // todo: attach this to the tags' parent div and modify the click event
         Ledj.removeTagClickListeners = function() {
-            _.map(document.getElementsByClassName('tag'), function(el) {
+            for(let el of document.getElementsByClassName('tag')) {
                 el.removeEventListener("click", Ledj.toggleActiveTagsByClassName);
-            });
+            }
         };
 
         // todo: make this function more generic somehow ( getHtmlByDataType() )
@@ -271,22 +218,31 @@ if (typeof _ === 'undefined') {
         }
 
         function sortJsonDataBy(cacheID, propName) {
+            // todo: the propname variable is supposed to change the default value.
+            // todo: for now I'm just using the default. allow setting this in the loaded config.
             if(Ledj.cache.jsonData[cacheID]) {
                 if( Array.isArray(Ledj.cache.jsonData[cacheID]) ) {
                     Ledj.cache.jsonData[cacheID] =
+                        Ledj.cache.jsonData[cacheID].sort(Ledj.dataSortCompareHelper);
+                        /*
                         _.sortBy(
                             Ledj.cache.jsonData[cacheID],
                             (typeof propName === 'string' ? propName.toLowerCase() : propName)
                         );
+                        */
                 }
 
                 else if(typeof Ledj.cache.jsonData[cacheID] === 'object') {
                     for(var item in Ledj.cache.jsonData[cacheID]) {
+                        Ledj.cache.jsonData[cacheID][item].sort(Ledj.dataSortCompareHelper);
+
+                        /*
                         Ledj.cache.jsonData[cacheID][item] =
                             _.sortBy(
                                 Ledj.cache.jsonData[cacheID][item],
                                 (typeof propName === 'string' ? propName.toLowerCase() : propName)
                             );
+                        */
                     }
                 }
 
@@ -298,28 +254,24 @@ if (typeof _ === 'undefined') {
             }
         }
 
-        function sortData(cacheID) {
-            // todo: search the config for how to sort data. if not specified, try to figure it out?
-            sortJsonDataBy(cacheID, 'title'); // debug
-        }
-
-        function getDataHeaderItems(cacheID) {
-            return Ledj.cache.jsonConfig[cacheID].headers;
-        }
-
-        function getDataItems(cacheID, objectKey) {
-            if(objectKey) {
-                return Ledj.cache.jsonData[cacheID][objectKey];
+        function dataSortCompareHelper(a, b) {
+            var propName = (typeof propName === 'string' ? propName.toLowerCase() : propName);
+            if ( !!a[propName] && !!b[propName] && a[propName] !== b[propName]) {
+                return (a[propName] > b[propName] ? -1 : 1);
             } else {
-                return Ledj.cache.jsonData[cacheID];
+                return 0;
             }
+        }
+
+        // todo: do we really need this, which is essentially just an alias for `sortJsonDataBy()`?
+        function sortData(cacheID) {
+            sortJsonDataBy(cacheID);
         }
 
         function getLinkGridFromData(cacheID, objectKey) {
             var templateData = {
                 'cacheID': cacheID,
                 'objectKey': objectKey,
-                //'dataItems': getDataItems(cacheID, objectKey),
                 'itemHrefKey': 'href',      // todo set this in json config
                 'newTab': true,             // todo set this in json config
                 'itemImageKey': 'filename', // todo set this in json config
@@ -333,9 +285,7 @@ if (typeof _ === 'undefined') {
         function getTableFromData(cacheID, objectKey) {
             var templateData = {
                 'cacheID': cacheID,
-                'objectKey': objectKey,
-                'headerItems': getDataHeaderItems(cacheID),
-                'dataItems': getDataItems(cacheID, objectKey)
+                'objectKey': objectKey
             };
 
             return wrapHtmlInParent(Ledj.templates.table(templateData), cacheID, objectKey);
@@ -343,7 +293,8 @@ if (typeof _ === 'undefined') {
 
         function getGifGridFromData(cacheID, objectKey) {
             var templateData = {
-                'dataItems': getDataItems(cacheID, objectKey)
+                'cacheID': cacheID,
+                'objectKey': objectKey
             };
 
             return wrapHtmlInParent(Ledj.templates.gifGrid(templateData), cacheID, objectKey);
@@ -351,9 +302,9 @@ if (typeof _ === 'undefined') {
 
         function wrapHtmlInParent(processedHTML, cacheID, objectKey) {
             return Ledj.templates.parent({
-                'title': getElementTitle(cacheID, objectKey),
-                'cacheID': cacheID,
-                'childHTML': processedHTML
+                title: getElementTitle(cacheID, objectKey),
+                cacheID: cacheID,
+                childHTML: processedHTML
             });
         }
 
@@ -440,7 +391,32 @@ if (typeof _ === 'undefined') {
             }
         }
 
+        /*
+        Callback for Ledj.loadAndAttachTo and Ledj.loadFromObjAndAttachTo.
+        Sorts, parses, and attaches data to the DOM.
+         */
+        function sortAndAttachCallback(cacheID, elementID) {
+            // reset this flag if a previous data set used the tag template.
+            Ledj.cache.tagTemplateUsed = false;
+            sortData(cacheID);
+            addElementsTo(cacheID, elementID);
+        }
+
         /* End Private Helper Functions */
+
+        /*
+        Adds a new template for use
+         */
+        Ledj.addTemplate = function(templateName, template) {
+            Ledj.templates[templateName] = template;
+        };
+
+        /*
+        Adds a new data type template for use
+         */
+        Ledj.addDataTemplate = function(dataType, template) {
+            Ledj.templates.data[dataType] = template;
+        };
 
         /*
         Creates new HTML elements from specified JSON data URL
@@ -449,8 +425,7 @@ if (typeof _ === 'undefined') {
          */
         Ledj.loadAndAttachTo = function(jsonUrl, elementID) {
             loadConfigFromUrl(jsonUrl, function(cacheID) {
-                sortData(cacheID);
-                addElementsTo(cacheID, elementID);
+                sortAndAttachCallback(cacheID, elementID);
             });
         };
 
@@ -509,8 +484,8 @@ if (typeof _ === 'undefined') {
     }
 
     if(typeof(Ledj) === 'undefined') {
+        //export default 'Ledj';
         window.Ledj = define_ledj();
-        //window.Ledj = define_Ledj();
     } else {
         console.log("Ledj is already defined.");
     }

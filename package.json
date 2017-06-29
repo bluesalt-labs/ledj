@@ -8,23 +8,15 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean:dist": "rm -rf dist/*",
     "clean:docs": "rm -rf docs/assets/*.min.css docs/assets/*.min.js",
-    "clean": "npm run clean:dist && npm run clean:docs",
-    "uglify-css:dist": "uglifycss --max-line-len 30000 src/ledj.css > dist/ledj.min.css",
-    "uglify-css:docs": "uglifycss --max-line-len 30000 docs/assets/docs-styles.css > docs/assets/docs-styles.min.css",
-    "uglify-js:dist": "uglifyjs src/ledj.js > dist/ledj.min.js",
-    "uglify-css": "npm run uglify-css:dist && npm run uglify-css:docs",
-    "uglify-js": "npm run uglify-js:dist",
-    "uglify": "npm run uglify-css && npm run uglify-js",
-    "copy-css:dist": "cp src/*.css dist/",
-    "copy-js:dist": "cp src/*.js dist/",
     "copy-css:docs": "cp dist/*.min.css docs/assets/",
     "copy-js:docs": "cp dist/*.min.js docs/assets/",
-    "copy-css": "npm run copy-css:dist && npm run copy-css:docs",
-    "copy-js": "npm run copy-js:dist && npm run copy-js:docs",
+    "copy-css": "npm run copy-css:docs",
+    "copy-js": "npm run copy-js:docs",
     "copy": "npm run copy-css && npm run copy-js",
-    "build:js": "npm run uglify-js && npm run copy-js",
-    "build:css": "npm run uglify-css && npm run copy-css",
-    "build": "npm run clean && npm run build:js && npm run build:css"
+    "clean": "npm run clean:dist && npm run clean:docs",
+    "start": "webpack-dev-server --open-page local.html",
+    "dev": "WEBPACK_ENV=dev webpack --progress --colors --watch",
+    "build": "npm run clean && WEBPACK_ENV=dev webpack; WEBPACK_ENV=build webpack && npm run copy"
   },
   "repository": {
     "type": "git",
@@ -36,11 +28,16 @@
     "url": "https://github.com/bluesalt-labs/ledj/issues"
   },
   "homepage": "http://ledj.bluesaltlabs.com/",
-  "dependencies": {
-    "lodash": "^4.17.4"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "uglify-js": "^3.0.17",
-    "uglifycss": "0.0.27"
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.25.0",
+    "babel-loader": "^7.1.1",
+    "babel-preset-env": "^1.5.2",
+    "css-loader": "^0.28.4",
+    "extract-text-webpack-plugin": "^2.1.2",
+    "style-loader": "^0.18.2",
+    "webpack": "^3.0.0",
+    "webpack-dev-server": "^2.5.0"
   }
 }

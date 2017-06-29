@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- local.html page -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -14,20 +15,23 @@
     <meta name="msapplication-TileColor" content="#074059" />
     <meta name="theme-color" content="#074059">
 
-    <title>Ledj.js | Docs</title>
+    <title>Ledj.js | Local Testing</title>
 
     <!-- Stylesheets -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700|Roboto+Mono" rel="stylesheet" />
-    <link href="assets/ledj.min.css" rel="stylesheet" />
-    <link href="assets/docs-styles.min.css" rel="stylesheet" />
+    <link href="ledj.css" rel="stylesheet" />
+    <link href="/assets/docs-styles.css" rel="stylesheet" />
 
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
-    <script type="text/javascript" src="assets/ledj.min.js"></script>
+    <!-- debug -- >
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    -->
+
+    <script type="text/javascript" src="ledj.js"></script>
 
     <script type="text/javascript">
         var ledjDocs = {
             config: {
-                baseJsonUrl: 'assets/data/'
+                baseJsonUrl: '/assets/data/'
             },
             // todo: these cacheID's should NOT be hard coded...
             data: {
@@ -36,6 +40,7 @@
             },
 
             // Functions
+
             checkForTab: function(e) {
                 var keyCode = e.keyCode || e.which;
                 if(keyCode === 9) {
@@ -76,7 +81,7 @@
             resetOutputFor: function(ledjID) {
                 var elOutput = this.getContainer(ledjID, 'output');
                 elOutput.innerHTML = '';
-                Ledj.attach( this.getJsonDataUrl(ledjID), this.getContainerID(ledjID, 'output') );
+                Ledj.attach( this.getJsonDataUrl(ledjID), this.getContainerID(ledjID, 'output'));
             },
             resetJsonDataFor: function(ledjID) {
                 var elJson = this.getContainer(ledjID, 'json');
@@ -115,7 +120,6 @@
             initLedjExamples: function() {
                 for(var i in this.data) {
                     this.resetLedjFor(i); // todo: we need to change this so that we get a cacheID from Ledj.
-                    this.addCheckTabListener(i);
                 }
             }
         };
@@ -130,7 +134,7 @@
 
 <div class="header">
     <div class="body-container">
-        <img class="header-logo" src="assets/images/ledj.png" />
+        <img class="header-logo" src="/assets/images/ledj.png" />
         <h1 class="header-title">Ledj.js</h1>
 
         <h2 class="sub-header-title">
@@ -142,6 +146,13 @@
 </div>
 
 <div class="body-container">
+    <h1>Getting Started</h1>
+    <div>
+        <code>#todo</code>
+    </div>
+
+    <hr />
+
     <h1>Examples</h1>
 
     <div class="example-container">
@@ -162,8 +173,6 @@
 
     <div class="example-container">
         <h2>Table</h2>
-        <span style="color:#B40E01;">Note: This is still under development.</span>
-        <br /><br />
         <div class="ledj-output-container" id="table-data-output"></div>
 
         <h2>JSON Data</h2>
