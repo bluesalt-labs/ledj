@@ -162,7 +162,7 @@
 
         Ledj.getImageUrl = function(imageTitle, cacheID, objectKey) {
             var srcDir = '/';
-            var ext = (Ledj.cache.jsonConfig[cacheID].hasOwnProperty('imgExt') ? Ledj.cache.jsonConfig[cacheID].imgExt : '');
+            var ext = (Ledj.cache.jsonConfig[cacheID].hasOwnProperty('imgExt') ? Ledj.cache.jsonConfig[cacheID]['imgExt']: '');
 
             if(Ledj.cache.jsonConfig[cacheID].hasOwnProperty('srcDir')) {
                 srcDir = Ledj.cache.jsonConfig[cacheID].srcDir;
@@ -181,6 +181,29 @@
             }
 
             return srcDir + imageTitle + ext;
+        };
+
+        Ledj.getAssetUrl = function(assetExt, assetTitle, cacheID, objectKey) {
+            var srcDir = '/';
+            var ext = (Ledj.cache.jsonConfig[cacheID].hasOwnProperty(assetExt) ? Ledj.cache.jsonConfig[cacheID][assetExt]: '');
+
+            if(Ledj.cache.jsonConfig[cacheID].hasOwnProperty('srcDir')) {
+                srcDir = Ledj.cache.jsonConfig[cacheID].srcDir;
+            }
+
+            else if(Ledj.cache.jsonConfig[cacheID].hasOwnProperty('srcDirs')) {
+                if(!!objectKey && Ledj.cache.jsonConfig[cacheID].srcDirs.hasOwnProperty(objectKey)) {
+                    srcDir = Ledj.cache.jsonConfig[cacheID].srcDirs[objectKey];
+                }
+                else if(Ledj.cache.jsonConfig[cacheID].srcDirs.hasOwnProperty('Default')) {
+                    srcDir = Ledj.cache.jsonConfig[cacheID].srcDirs['Default'];
+                }
+                else if(Ledj.cache.jsonConfig[cacheID].srcDirs.hasOwnProperty('default')) {
+                    srcDir = Ledj.cache.jsonConfig[cacheID].srcDirs['default'];
+                }
+            }
+
+            return srcDir + assetTitle + ext;
         };
 
 

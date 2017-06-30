@@ -1,0 +1,48 @@
+{
+  "config": {
+    "srcDirs": {
+      "default": "assets/images/gifs/"
+    },
+    "type": "gif-grid",
+    "imgExt": ".gif",
+    "vidExt": ".mp4"
+  },
+  "data": [
+    {
+      "title": "Umbrella",
+      "source": "https://giphy.com/gifs/source-XHNDcp7K8QtOg",
+      "filename": "umbrella",
+      "tags": []
+    },
+    {
+      "title": "Arduboy",
+      "source": "https://giphy.com/gifs/original-VQd6mQsj0sYuc/",
+      "filename": "arduboy",
+      "tags": []
+    },
+    {
+      "title": "Switch",
+      "source": "https://giphy.com/gifs/source-2dSzDyE2Z7fPi/download",
+      "filename": "switch",
+      "tags": []
+    },
+    {
+      "title": "Lines",
+      "source": "https://giphy.com/gifs/helpers-8GsGx6aOgVMs0",
+      "filename": "lines",
+      "tags": []
+    },
+    {
+      "title": "Menu",
+      "source": "https://giphy.com/gifs/openm-gKwqZhFq65Bny/download",
+      "filename": "menu",
+      "tags": []
+    },
+    {
+      "title": "Twinkle",
+      "source": "https://giphy.com/gifs/source-EL6zyGhvnwrrW/download",
+      "filename": "twinkle",
+      "tags": []
+    }
+  ]
+}
