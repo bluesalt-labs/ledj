@@ -25,6 +25,8 @@
 * Create a to do list type
     * have the ability to check items off, and specify an API call when an item is checked off?
     * Integrate with Google Tasks API?
+* make it possible for the input data and config can be separate.
+    * also make it possible for the config to be an object and the data to be a url, or vice-versa.  
 
 
 -----
