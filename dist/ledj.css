@@ -1,3 +1,25 @@
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg)
+    }
+    100% {
+        -webkit-transform: rotate(359deg);
+        transform: rotate(359deg)
+    }
+}
+
+@keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg)
+    }
+    100% {
+        -webkit-transform: rotate(359deg);
+        transform: rotate(359deg)
+    }
+}
+
 .ledj-container { margin: 0; }
 .ledj-link-grid { margin: 15px auto; }
 
@@ -162,6 +184,41 @@ table.ledj-table tr:last-child td:last-child {
     -moz-border-radius-bottomright: 4px;
     border-bottom-right-radius: 4px;
 }
-/* End Ledj Table styling */
+/* End styling for ledj-table */
 
+
+/* Styling for gif-grid */
+.ledj-gif-grid {
+    display: inline-block;
+    text-align: center;
+}
+
+.ledj-gif-grid > .ledj-gif-item {
+    display: inline-block;
+    max-width: 350px;
+    overflow: hidden;
+
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.ledj-gif-grid .ledj-gif-content { padding: 5px 10px; }
+
+.ledj-gif-grid .ledj-gif-container { height: 350px; }
+
+.ledj-gif-grid video {
+    max-height: 350px;
+    height: auto;
+    width: 100%;
+    display: block;
+}
+
+@media (max-width: 700px) {
+    .ledj-gif-grid .ledj-gif-container {
+        height: auto;
+        max-height: 350px;
+    }
+}
+/* End gif-grid styling */
 /*# sourceMappingURL=ledj.css.map*/

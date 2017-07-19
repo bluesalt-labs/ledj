@@ -388,7 +388,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
         Ledj.getImageUrl = function (imageTitle, cacheID, objectKey) {
             var srcDir = '/';
-            var ext = Ledj.cache.jsonConfig[cacheID].hasOwnProperty('imgExt') ? Ledj.cache.jsonConfig[cacheID].imgExt : '';
+            var ext = Ledj.cache.jsonConfig[cacheID].hasOwnProperty('imgExt') ? Ledj.cache.jsonConfig[cacheID]['imgExt'] : '';
 
             if (Ledj.cache.jsonConfig[cacheID].hasOwnProperty('srcDir')) {
                 srcDir = Ledj.cache.jsonConfig[cacheID].srcDir;
@@ -403,6 +403,25 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             }
 
             return srcDir + imageTitle + ext;
+        };
+
+        Ledj.getAssetUrl = function (assetExt, assetTitle, cacheID, objectKey) {
+            var srcDir = '/';
+            var ext = Ledj.cache.jsonConfig[cacheID].hasOwnProperty(assetExt) ? Ledj.cache.jsonConfig[cacheID][assetExt] : '';
+
+            if (Ledj.cache.jsonConfig[cacheID].hasOwnProperty('srcDir')) {
+                srcDir = Ledj.cache.jsonConfig[cacheID].srcDir;
+            } else if (Ledj.cache.jsonConfig[cacheID].hasOwnProperty('srcDirs')) {
+                if (!!objectKey && Ledj.cache.jsonConfig[cacheID].srcDirs.hasOwnProperty(objectKey)) {
+                    srcDir = Ledj.cache.jsonConfig[cacheID].srcDirs[objectKey];
+                } else if (Ledj.cache.jsonConfig[cacheID].srcDirs.hasOwnProperty('Default')) {
+                    srcDir = Ledj.cache.jsonConfig[cacheID].srcDirs['Default'];
+                } else if (Ledj.cache.jsonConfig[cacheID].srcDirs.hasOwnProperty('default')) {
+                    srcDir = Ledj.cache.jsonConfig[cacheID].srcDirs['default'];
+                }
+            }
+
+            return srcDir + assetTitle + ext;
         };
 
         /* Private Helper Functions */
@@ -711,8 +730,12 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 
 Ledj.addTemplate('gifGrid', function (data) {
-  return '<div class="ledj-gif-grid">\n<code>#todo</code>\n</div>';
+    return '<div class="ledj-gif-grid">\n' + (data.objectKey ? Ledj.cache.jsonData[data.cacheID][data.objectKey] : Ledj.cache.jsonData[data.cacheID]).map(function (dataItem, id) {
+        return '<div class="ledj-gif-item" id="ledj-gif-item-' + id + '">\n        <div class="ledj-gif-loading-overlay" id="ledj-gif-loading-overlay-' + id + '"></div>\n        <div class="ledj-gif-content" id="ledj-gif-content-' + id + '">\n            <a class="ledj-gif-title-link" href="' + Ledj.getImageUrl(dataItem.filename, data.cacheID, data.objectKey) + '" target="_blank">' + dataItem.title + '</a>\n            <hr />\n            ' + (Ledj.cache.jsonData.hasOwnProperty('source') ? '<!-- Source: ' + Ledj.cache.jsonData.source + ' -->' : '') + '\n            <div class="ledj-gif-container">\n                <video id="ledj-video-' + id + '" autoplay="true" loop="true">\n                    <source src="' + Ledj.getAssetUrl('vidExt', dataItem.filename, data.cacheID, data.objectKey) + '" type="video/mp4" />\n                    <img src="' + Ledj.getImageUrl(dataItem.filename, data.cacheID, data.objectKey) + '" title="Your browser does not support the <video> tag." />\n                </video>\n            </div>\n        </div>\n    </div>';
+    }).join('') + '\n</div>';
 });
+
+// todo: split the video element out as a data type.
 
 /***/ }),
 /* 3 */

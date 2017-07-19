@@ -35,8 +35,9 @@
             },
             // todo: these cacheID's should NOT be hard coded...
             data: {
-                0: { baseName: 'grid-data',    cacheID: 0 },
-                1: { baseName: 'table-data',   cacheID: 1 }
+                0: { baseName: 'link-grid-data',    cacheID: 0 },
+                1: { baseName: 'table-data',        cacheID: 1 },
+                2: { baseName: 'gif-grid-data',     cacheID: 2 }
             },
 
             // Functions
@@ -156,16 +157,16 @@
     <h1>Examples</h1>
 
     <div class="example-container">
-        <h2>Grid</h2>
-        <div class="ledj-output-container" id="grid-data-output"></div>
+        <h2>Link Grid</h2>
+        <div class="ledj-output-container" id="link-grid-data-output"></div>
 
         <h2>JSON Data</h2>
         <div class="json-data-container">
-            <label class="sr-only" for="grid-data-json">Grid Data JSON</label>
-            <textarea id="grid-data-json"></textarea>
+            <label class="sr-only" for="link-grid-data-json">Link Grid Data JSON</label>
+            <textarea id="link-grid-data-json"></textarea>
             <button onclick="ledjDocs.reloadLedjFor(0);">Reload</button>
             <button class="reset" onclick="ledjDocs.resetLedjFor(0);">Reset</button>
-            <span class="json-error" id="grid-data-error"></span>
+            <span class="json-error" id="link-grid-data-error"></span>
         </div>
     </div>
 
@@ -182,6 +183,22 @@
             <button onclick="ledjDocs.reloadLedjFor(1);">Reload</button>
             <button class="reset" onclick="ledjDocs.resetLedjFor(1);">Reset</button>
             <span class="json-error" id="table-data-error"></span>
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="example-container">
+        <h2>Gif Grid</h2>
+        <div class="ledj-output-container" id="gif-grid-data-output"></div>
+
+        <h2>JSON Data</h2>
+        <div class="json-data-container">
+            <label class="sr-only" for="gif-grid-data-json">Gif Grid Data JSON</label>
+            <textarea id="gif-grid-data-json"></textarea>
+            <button onclick="ledjDocs.reloadLedjFor(2);">Reload</button>
+            <button class="reset" onclick="ledjDocs.resetLedjFor(2);">Reset</button>
+            <span class="json-error" id="gif-grid-data-error"></span>
         </div>
     </div>
 </div>
