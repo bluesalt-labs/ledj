@@ -136,6 +136,8 @@
         Ledj.getCellContent = function(colConfig, colName, itemData) {
             var cell = '';
 
+            itemData[colName] = (!!itemData[colName] ? itemData[colName] : '');
+
             switch(colConfig.type.toLowerCase()) {
                 case "url":
                     cell += Ledj.templates.data.url({ 'text': itemData[colName], 'href': itemData[colConfig.href] });
@@ -146,6 +148,12 @@
                 case "date":
                     var dateFormat = (colConfig.hasOwnProperty('dateFormat') ? colConfig.dateFormat : null);
                     cell += Ledj.templates.data.date({ 'date': itemData[colName], 'dateFormat': dateFormat });
+                    break;
+                case "phone":
+                    cell += Ledj.templates.data.phone({ 'phone_num': itemData[colName] });
+                    break;
+                case "code":
+                    cell += Ledj.templates.data.code({ 'text': itemData[colName] });
                     break;
                 case "tag-array":
                 case "tagarray":

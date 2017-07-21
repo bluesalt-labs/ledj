@@ -9,8 +9,10 @@ require('./templates/table');
 require('./templates/todoList');
 
 // Ledj data templates
+require('./templates/data/code');
 require('./templates/data/date');
 require('./templates/data/image');
+require('./templates/data/phone');
 require('./templates/data/string');
 require('./templates/data/tagArray');
 require('./templates/data/url');
