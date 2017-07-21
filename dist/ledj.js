@@ -96,6 +96,8 @@ __webpack_require__(8);
 __webpack_require__(9);
 __webpack_require__(10);
 __webpack_require__(11);
+__webpack_require__(12);
+__webpack_require__(13);
 
 /*
  // Ledj templates
@@ -114,7 +116,7 @@ __webpack_require__(11);
  */
 
 // Ledj stylesheets
-__webpack_require__(12);
+__webpack_require__(14);
 
 /***/ }),
 /* 1 */
@@ -362,6 +364,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         Ledj.getCellContent = function (colConfig, colName, itemData) {
             var cell = '';
 
+            itemData[colName] = !!itemData[colName] ? itemData[colName] : '';
+
             switch (colConfig.type.toLowerCase()) {
                 case "url":
                     cell += Ledj.templates.data.url({ 'text': itemData[colName], 'href': itemData[colConfig.href] });
@@ -372,6 +376,12 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                 case "date":
                     var dateFormat = colConfig.hasOwnProperty('dateFormat') ? colConfig.dateFormat : null;
                     cell += Ledj.templates.data.date({ 'date': itemData[colName], 'dateFormat': dateFormat });
+                    break;
+                case "phone":
+                    cell += Ledj.templates.data.phone({ 'phone_num': itemData[colName] });
+                    break;
+                case "code":
+                    cell += Ledj.templates.data.code({ 'text': itemData[colName] });
                     break;
                 case "tag-array":
                 case "tagarray":
@@ -796,12 +806,23 @@ Ledj.addTemplate('todoList', function (data) {
 "use strict";
 
 
+Ledj.addDataTemplate('code', function (data) {
+    return '<span class="string code"><code>' + data.text + '</code></span>';
+});
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 Ledj.addDataTemplate('date', function (data) {
   return '<span class="date">' + Ledj.formatDateString(data.date, data.dateFormat) + '</span>';
 });
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -812,7 +833,18 @@ Ledj.addDataTemplate('image', function (data) {
 });
 
 /***/ }),
-/* 9 */
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Ledj.addDataTemplate('phone', function (data) {
+    return '<span class="phone"><a href="tel:' + data.phone_num + '">' + data.phone_num + '</a></span>';
+});
+
+/***/ }),
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -823,7 +855,7 @@ Ledj.addDataTemplate('string', function (data) {
 });
 
 /***/ }),
-/* 10 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -836,7 +868,7 @@ Ledj.addDataTemplate('tagArray', function (data) {
 });
 
 /***/ }),
-/* 11 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -847,7 +879,7 @@ Ledj.addDataTemplate('url', function (data) {
 });
 
 /***/ }),
-/* 12 */
+/* 14 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
