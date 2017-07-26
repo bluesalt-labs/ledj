@@ -19,7 +19,8 @@ if (env === 'build') {
     outputCSSFile = libraryName + '.css';
 }
 
-plugins.push(new ExtractTextPlugin(outputCSSFile));
+var extractSass = new ExtractTextPlugin({ filename: outputCSSFile, allChunks: true });
+plugins.push(extractSass);
 
 module.exports = {
     entry: __dirname + '/src/app.js',
@@ -50,15 +51,13 @@ module.exports = {
                 }
             },
             {
-                test: /\.css$/,
-                loader: ExtractTextPlugin.extract({
-                    fallback: 'style-loader',
-                    use: {
-                        loader: 'css-loader',
-                        options: {
-                            minimize: (env === 'build')
-                        }
-                    }
+                test: /\.scss$/,
+                use: extractSass.extract({
+                    use: [
+                        { loader: "css-loader" },
+                        { loader: "sass-loader" }
+                    ],
+                    fallback: "style-loader"
                 })
             }
         ]

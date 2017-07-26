@@ -99,22 +99,6 @@ __webpack_require__(11);
 __webpack_require__(12);
 __webpack_require__(13);
 
-/*
- // Ledj templates
- import gifGrid from './templates/gifGrid';
- import linkGrid from './templates/linkGrid';
- import parent from './templates/parent';
- import table from './templates/table';
- import todoList from './templates/todoList';
-
- // Ledj data templates
- import date from './templates/data/date';
- import image from './templates/data/image';
- import string from './templates/data/string';
- import tagArray from './templates/data/tagArray';
- import url from './templates/data/url';
- */
-
 // Ledj stylesheets
 __webpack_require__(14);
 
@@ -138,6 +122,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             jsonData: [],
             jsonUrl: [],
             elementID: [],
+            sortDataBy: '',
+            sortDataDir: '',
             curCacheID: -1,
             tagTemplateUsed: false
         };
@@ -146,6 +132,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         // todo: set the default on init. Then either the loaded config or just Ledj.foo = bar changes the setting.
         Ledj.defaults = {
             sortDataBy: 'title',
+            sortDataDir: 'asc',
             dateFormat: 'mm/dd/yyyy',
             selectMultipleTags: true
         };
@@ -467,29 +454,56 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             }
         }
 
-        function sortJsonDataBy(cacheID, propName) {
-            // todo: the propname variable is supposed to change the default value.
-            // todo: for now I'm just using the default. allow setting this in the loaded config.
+        function dataSortCompareHelper(a, b) {
+            var propName = Ledj.cache.sortDataBy === '' ? Ledj.defaults.sortDataBy : Ledj.cache.sortDataBy;
+            var sortDir = Ledj.cache.sortDataDir === '' ? Ledj.defaults.sortDataDir : Ledj.cache.sortDataDir;
+
+            /*
+            console.log('propName: ' + propName); // debug
+            console.log('a[propName]: ' + a[propName]); // debug
+            console.log('b[propName]: ' + b[propName]); // debug
+            console.log('a[propName] < b[propName]: ' + !!(a[propName] < b[propName])); // debug
+            */
+
+            if (!!a[propName] && !!b[propName] && a[propName] !== b[propName]) {
+                if (sortDir === 'desc') {
+                    return a[propName] > b[propName] ? -1 : 1;
+                } else {
+                    return a[propName] < b[propName] ? -1 : 1;
+                }
+            } else {
+                return 0;
+            }
+        }
+
+        function sortData(cacheID) {
+            // Figure out what we're sorting the data by
+            Ledj.cache.sortDataBy = Ledj.defaults.sortDataBy;
+            if (Ledj.cache.jsonConfig[cacheID].hasOwnProperty('sortBy') && typeof Ledj.cache.jsonConfig[cacheID].sortBy === 'string') {
+                // If the sortBy property exists and is a string, we'll assume that it's a valid property name.
+                // If it's not, the data just won't sort properly ( and shouldn't throw an error, see Ledj.dataSortCompareHelper() ).
+                Ledj.cache.sortDataBy = Ledj.cache.jsonConfig[cacheID].sortBy;
+            }
+
+            // Figure out what direction we're sorting the data by
+            Ledj.cache.sortDataDir = Ledj.defaults.sortDataDir;
+            if (Ledj.cache.jsonConfig[cacheID].hasOwnProperty('sortDir')) {
+                if (Ledj.cache.jsonConfig[cacheID].sortDir.toLowerCase() === 'asc' || Ledj.cache.jsonConfig[cacheID].sortDir === 0) {
+                    Ledj.cache.sortDataDir = 'asc';
+                } else if (Ledj.cache.jsonConfig[cacheID].sortDir.toLowerCase() === 'desc' || Ledj.cache.jsonConfig[cacheID].sortDir === 1) {
+                    Ledj.cache.sortDataDir = 'desc';
+                } else {
+                    console.warn('Invalid sort direction "' + Ledj.cache.jsonConfig[cacheID].sortDir + '". Defaulting to "asc (0)".');
+                }
+            }
+
+            // Sort the data
             if (Ledj.cache.jsonData[cacheID]) {
                 if (Array.isArray(Ledj.cache.jsonData[cacheID])) {
-                    Ledj.cache.jsonData[cacheID] = Ledj.cache.jsonData[cacheID].sort(Ledj.dataSortCompareHelper);
-                    /*
-                    _.sortBy(
-                        Ledj.cache.jsonData[cacheID],
-                        (typeof propName === 'string' ? propName.toLowerCase() : propName)
-                    );
-                    */
+                    Ledj.cache.jsonData[cacheID] = Ledj.cache.jsonData[cacheID].sort(dataSortCompareHelper);
                 } else if (_typeof(Ledj.cache.jsonData[cacheID]) === 'object') {
                     for (var item in Ledj.cache.jsonData[cacheID]) {
-                        Ledj.cache.jsonData[cacheID][item].sort(Ledj.dataSortCompareHelper);
-
-                        /*
-                        Ledj.cache.jsonData[cacheID][item] =
-                            _.sortBy(
-                                Ledj.cache.jsonData[cacheID][item],
-                                (typeof propName === 'string' ? propName.toLowerCase() : propName)
-                            );
-                        */
+                        Ledj.cache.jsonData[cacheID][item].sort(dataSortCompareHelper);
                     }
                 } else {
                     console.warn('Could not sort cache.jsonData[' + cacheID + ']');
@@ -497,20 +511,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             } else {
                 console.warn('from Ledj.sortJsonDataBy(): `cache.jsonData[' + cacheID + ']` does not exist.');
             }
-        }
-
-        function dataSortCompareHelper(a, b) {
-            var propName = typeof propName === 'string' ? propName.toLowerCase() : propName;
-            if (!!a[propName] && !!b[propName] && a[propName] !== b[propName]) {
-                return a[propName] > b[propName] ? -1 : 1;
-            } else {
-                return 0;
-            }
-        }
-
-        // todo: do we really need this, which is essentially just an alias for `sortJsonDataBy()`?
-        function sortData(cacheID) {
-            sortJsonDataBy(cacheID);
         }
 
         function getLinkGridFromData(cacheID, objectKey) {
