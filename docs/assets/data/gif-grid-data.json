@@ -5,7 +5,9 @@
     },
     "type": "gif-grid",
     "imgExt": ".gif",
-    "vidExt": ".mp4"
+    "vidExt": ".mp4",
+    "sortBy": "title",
+    "sortDir": "desc"
   },
   "data": [
     {
