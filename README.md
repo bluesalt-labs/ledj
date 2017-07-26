@@ -1,4 +1,4 @@
-# Ledj.js
+# Ledj.js (alpha)
 
 ![Ledj Logo](/docs/assets/images/ledj.png)
 
@@ -7,8 +7,10 @@
    
 > [Examples and Documentation](http://ledj.bluesaltlabs.com)
 
-
+> *beta release coming soon!*
 -----
+
+# Getting Started 
 
 `# todo`
 
@@ -17,10 +19,10 @@
 
 # To Do List
 
-* Add template and code to create a dynamic table.
-* Add template and code to create a GIF grid.
+* Add template and code to create a dynamic table (what did I mean by this?).
+* ~~Add template and code to create a GIF grid.~~
 * Add the ability to expand gifs and images when I get that template working.
-* Consider using SCSS for stylesheets.
+* ~~Consider using SCSS for stylesheets.~~
 * have the ability to specify a different data type for an individual data item for tables?
 * Create a to do list type
     * have the ability to check items off, and specify an API call when an item is checked off?

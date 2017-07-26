@@ -255,18 +255,15 @@
             var propName = (Ledj.cache.sortDataBy === '' ? Ledj.defaults.sortDataBy : Ledj.cache.sortDataBy);
             var sortDir = (Ledj.cache.sortDataDir === '' ? Ledj.defaults.sortDataDir : Ledj.cache.sortDataDir);
 
-            /*
-            console.log('propName: ' + propName); // debug
-            console.log('a[propName]: ' + a[propName]); // debug
-            console.log('b[propName]: ' + b[propName]); // debug
-            console.log('a[propName] < b[propName]: ' + !!(a[propName] < b[propName])); // debug
-            */
-
             if ( !!a[propName] && !!b[propName] && a[propName] !== b[propName]) {
+                // If the value we're sorting by is a string, ignore case
+                var propA = ( typeof a[propName] === 'string' ? a[propName].toLowerCase() : a[propName]);
+                var propB = ( typeof b[propName] === 'string' ? b[propName].toLowerCase() : b[propName]);
+
                 if(sortDir === 'desc') {
-                    return (a[propName] > b[propName] ? -1 : 1);
+                    return (propA > propB ? -1 : 1);
                 } else {
-                    return (a[propName] < b[propName] ? -1 : 1);
+                    return (propA < propB ? -1 : 1);
                 }
             } else {
                 return 0;
