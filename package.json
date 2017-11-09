@@ -1,6 +1,6 @@
 {
   "name": "ledj",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Load Elements Dynamically from JSON - A JavaScript library that creates repeated HTML elements from a JSON file.",
   "main": "/dist/ledj.js",
   "scripts": {
