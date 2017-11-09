@@ -1,4 +1,4 @@
-# Ledj.js (alpha)
+# Ledj.js (beta)
 
 ![Ledj Logo](/docs/assets/images/ledj.png)
 
@@ -7,7 +7,6 @@
    
 > [Examples and Documentation](http://ledj.bluesaltlabs.com)
 
-> *beta release coming soon!*
 -----
 
 # Getting Started 

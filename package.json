@@ -1,8 +1,7 @@
 {
   "name": "ledj",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Load Elements Dynamically from JSON - A JavaScript library that creates repeated HTML elements from a JSON file.",
-  "private": true,
   "main": "/dist/ledj.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -25,7 +24,8 @@
   "author": "BlueSalt Labs",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/bluesalt-labs/ledj/issues"
+    "url": "https://github.com/bluesalt-labs/ledj/issues",
+    "email": "ledj@bluesaltlabs.com"
   },
   "homepage": "http://ledj.bluesaltlabs.com/",
   "dependencies": {},
