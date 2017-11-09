@@ -28,6 +28,9 @@
     "email": "ledj@bluesaltlabs.com"
   },
   "homepage": "http://ledj.bluesaltlabs.com/",
+  "files": [
+    "dist/"
+  ],
   "dependencies": {},
   "devDependencies": {
     "babel-cli": "^6.24.1",
