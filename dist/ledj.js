@@ -221,7 +221,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                 return date.format(dateFormat);
             } else {
                 var d = new Date(dateString);
-                return d.getMonth() + '/' + d.getDate() + '/' + d.getFullYear();
+                return d.getMonth() + 1 + '/' + d.getDate() + '/' + d.getFullYear();
             }
         };
 
