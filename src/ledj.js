@@ -99,7 +99,7 @@
                 return date.format(dateFormat);
             } else {
                 var d = new Date(dateString);
-                return d.getMonth() + '/' + d.getDate() + '/' + d.getFullYear();
+                return (d.getMonth() + 1) + '/' + d.getDate() + '/' + d.getFullYear();
             }
         };
 
