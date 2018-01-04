@@ -3,6 +3,11 @@
     "srcDirs": {
       "Default": "assets/images/"
     },
+    "sortBy": {
+      "prop": "date",
+      "type": "date"
+    },
+    "sortDir": "desc",
     "type": "table",
     "headers": {
       "title": {
