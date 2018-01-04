@@ -117,25 +117,26 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     function define_ledj() {
         var Ledj = {};
 
+        // set Ledj defaults
+        Ledj.defaults = {
+            //sortBy: { prop: 'title', type: 'string' },
+            sortDir: 'asc',
+            selectMultipleTags: true
+        };
+
+        // Initiate cache variables and set to default values
         Ledj.cache = {
+            curCacheID: -1,
             jsonConfig: [],
             jsonData: [],
             jsonUrl: [],
             elementID: [],
-            sortDataBy: '',
-            sortDataDir: '',
-            curCacheID: -1,
+            sortDir: Ledj.defaults.sortDir,
+            selectMultipleTags: Ledj.defaults.selectMultipleTags,
             tagTemplateUsed: false
         };
 
-        // todo: I could set each Ledj.defaults.foo to Ledj.foo and have functions that
-        // todo: set the default on init. Then either the loaded config or just Ledj.foo = bar changes the setting.
-        Ledj.defaults = {
-            sortDataBy: 'title',
-            sortDataDir: 'asc',
-            dateFormat: 'mm/dd/yyyy',
-            selectMultipleTags: true
-        };
+        Ledj.dataObjectTypes = {};
 
         // todo: If I stored all the class and ID names in a config object,
         // todo: I could add functionality to change those class/ID names.
@@ -144,9 +145,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             data: {}
         };
 
-        /*
-        Checks if a specified URL gives a status of 200
-         */
+        // Checks if a specified URL gives a status of 200
         Ledj.urlExists = function (url, callbackSuccess, callbackFail, callbackArg) {
             var http = new XMLHttpRequest();
             http.open('HEAD', url);
@@ -211,18 +210,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
         Ledj.nameToID = function (name) {
             return name.replace(/\\s/g, "-").toLowerCase();
-        };
-
-        Ledj.formatDateString = function (dateString, dateFormat) {
-            // if the moment library is available, use that to format the string.
-            if (!!window.moment) {
-                var date = moment(dateString);
-                var dateFormat = dateFormat ? dateFormat : Ledj.defaults.dateFormat;
-                return date.format(dateFormat);
-            } else {
-                var d = new Date(dateString);
-                return d.getMonth() + 1 + '/' + d.getDate() + '/' + d.getFullYear();
-            }
         };
 
         // Click Event Listener for tag elements (see Ledj.templates.data.tagArray template)
@@ -347,42 +334,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             }
         };
 
-        // todo: make this function more generic somehow ( getHtmlByDataType() )
-        Ledj.getCellContent = function (colConfig, colName, itemData) {
-            var cell = '';
-
-            itemData[colName] = !!itemData[colName] ? itemData[colName] : '';
-
-            switch (colConfig.type.toLowerCase()) {
-                case "url":
-                    cell += Ledj.templates.data.url({ 'text': itemData[colName], 'href': itemData[colConfig.href] });
-                    break;
-                case "image":
-                    cell += Ledj.templates.data.image({ 'src': itemData[colConfig.src], 'alt': itemData[colConfig.alt] });
-                    break;
-                case "date":
-                    var dateFormat = colConfig.hasOwnProperty('dateFormat') ? colConfig.dateFormat : null;
-                    cell += Ledj.templates.data.date({ 'date': itemData[colName], 'dateFormat': dateFormat });
-                    break;
-                case "phone":
-                    cell += Ledj.templates.data.phone({ 'phone_num': itemData[colName] });
-                    break;
-                case "code":
-                    cell += Ledj.templates.data.code({ 'text': itemData[colName] });
-                    break;
-                case "tag-array":
-                case "tagarray":
-                    Ledj.cache.tagTemplateUsed = true; // we're using the tag template, so attach click event listeners
-                    cell += Ledj.templates.data.tagArray({ 'tags': itemData[colName] });
-                    break;
-                case "string":
-                default:
-                    cell += Ledj.templates.data.string({ 'text': itemData[colName] });
-                    break;
-            }
-            return cell;
-        };
-
         Ledj.getImageUrl = function (imageTitle, cacheID, objectKey) {
             var srcDir = '/';
             var ext = Ledj.cache.jsonConfig[cacheID].hasOwnProperty('imgExt') ? Ledj.cache.jsonConfig[cacheID]['imgExt'] : '';
@@ -421,96 +372,163 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             return srcDir + assetTitle + ext;
         };
 
-        /* Private Helper Functions */
-
-        function loadConfigFromUrl(url, callback) {
-            Ledj.getJSONConfig(url, function (err, data) {
-                if (err === null) {
-                    if (data.hasOwnProperty('config') && data.hasOwnProperty('data')) {
-                        Ledj.cache.curCacheID = Ledj.cache.jsonConfig.push(data.config) - 1;
-                        Ledj.cache.jsonData[Ledj.cache.curCacheID] = data.data;
-                        Ledj.cache.jsonUrl[Ledj.cache.curCacheID] = url;
-
-                        callback(Ledj.cache.curCacheID);
-                    } else {
-                        err = 'JSON data must have `config` and `data` properties.';
-                    }
-                }
-
-                if (err !== null) {
-                    console.warn('Config file "' + url + '" could not be retrieved. ' + err);
-                }
-            });
-        }
+        /** Private Helper Functions **/
 
         function loadConfigFromObj(data, callback) {
             if (data.hasOwnProperty('config') && data.hasOwnProperty('data')) {
                 Ledj.cache.curCacheID = Ledj.cache.jsonConfig.push(data.config) - 1;
                 Ledj.cache.jsonData[Ledj.cache.curCacheID] = data.data;
+                if (data.hasOwnProperty('url')) {
+                    Ledj.cache.jsonUrl[Ledj.cache.curCacheID] = data.url;
+                }
 
                 callback(Ledj.cache.curCacheID);
             } else {
-                console.warn('Config object must have `config` and `data` properties.');
+                console.warn('Loaded data must have `config` and `data` properties.');
             }
+        }
+
+        function loadConfigFromUrl(url, callback) {
+            Ledj.getJSONConfig(url, function (err, data) {
+                if (err !== null) {
+                    console.warn('Config file "' + url + '" could not be retrieved. ' + err);
+                    return false;
+                }
+
+                data.url = url;
+                loadConfigFromObj(data, callback);
+            });
+        }
+
+        function convertDataType(data, type) {
+            if (Ledj.dataObjectTypes.hasOwnProperty(type)) {
+                return Ledj.dataObjectTypes[type](data);
+            }
+
+            return data;
         }
 
         function dataSortCompareHelper(a, b) {
-            var propName = Ledj.cache.sortDataBy === '' ? Ledj.defaults.sortDataBy : Ledj.cache.sortDataBy;
-            var sortDir = Ledj.cache.sortDataDir === '' ? Ledj.defaults.sortDataDir : Ledj.cache.sortDataDir;
+            try {
+                if (!!a[Ledj.cache.sortBy.prop] && !!b[Ledj.cache.sortBy.prop]) {
+                    if (Ledj.cache.sortBy.prop && Ledj.cache.sortBy.type) {
+                        a[Ledj.cache.sortBy.prop] = convertDataType(a[Ledj.cache.sortBy.prop], Ledj.cache.sortBy.type);
+                        b[Ledj.cache.sortBy.prop] = convertDataType(b[Ledj.cache.sortBy.prop], Ledj.cache.sortBy.type);
+                    }
+                    // If the value we're sorting by is a string, ignore case
+                    var propA = typeof a[Ledj.cache.sortBy.prop] === 'string' ? a[Ledj.cache.sortBy.prop].toLowerCase() : a[Ledj.cache.sortBy.prop];
+                    var propB = typeof b[Ledj.cache.sortBy.prop] === 'string' ? b[Ledj.cache.sortBy.prop].toLowerCase() : b[Ledj.cache.sortBy.prop];
 
-            if (!!a[propName] && !!b[propName] && a[propName] !== b[propName]) {
-                // If the value we're sorting by is a string, ignore case
-                var propA = typeof a[propName] === 'string' ? a[propName].toLowerCase() : a[propName];
-                var propB = typeof b[propName] === 'string' ? b[propName].toLowerCase() : b[propName];
-
-                if (sortDir === 'desc') {
-                    return propA > propB ? -1 : 1;
-                } else {
-                    return propA < propB ? -1 : 1;
+                    if (a[Ledj.cache.sortBy.prop] !== b[Ledj.cache.sortBy.prop]) {
+                        if (Ledj.cache.sortDir === 'desc') {
+                            return propA > propB ? -1 : 1;
+                        } else {
+                            return propA < propB ? -1 : 1;
+                        }
+                    }
                 }
-            } else {
-                return 0;
+            } catch (e) {}
+
+            return 0;
+        }
+
+        /*
+        Sets the sort by property to value from config or default.
+         */
+        function setSortBy(cacheID) {
+            // Figure out what we're sorting the data by, if at all.
+            // Reset sortBy before starting
+            Ledj.cache.sortBy = null;
+
+            // Try the preferred format first.
+            try {
+                Ledj.cache.jsonConfig[cacheID].sortBy = {
+                    prop: Ledj.cache.jsonConfig[cacheID].sortBy.prop,
+                    type: Ledj.cache.jsonConfig[cacheID].sortBy.type.toLowerCase()
+                };
+            } catch (e) {
+                try {
+                    if (typeof Ledj.cache.jsonConfig[cacheID].sortBy === 'string') {
+                        Ledj.cache.jsonConfig[cacheID].sortBy = {
+                            prop: Ledj.cache.jsonConfig[cacheID].sortBy,
+                            type: null // 'string'?
+                        };
+                    } else if (Array.isArray(Ledj.cache.jsonData[cacheID].sortBy) && Ledj.cache.jsonData[cacheID].sortBy.length > 1) {
+                        // assume that this is in the format [ '{prop}', '{type}' ].
+                        // values after index 0 and 1 will be ignored.
+                        Ledj.cache.jsonConfig[cacheID].sortBy = {
+                            prop: Ledj.cache.jsonConfig[cacheID].sortBy[0],
+                            type: Ledj.cache.jsonConfig[cacheID].sortBy[1].toLowerCase()
+                        };
+                    } else if (_typeof(Ledj.cache.jsonConfig[cacheID].sortBy) === 'object') {
+                        // assume this is in the format { [prop]: '[type]' }.
+                        // values after the first key:value pair will be ignored.
+                        Ledj.cache.jsonData[cacheID].sortBy = {
+                            prop: Object.keys(Ledj.cache.jsonData[cacheID].sortBy)[0],
+                            type: Ledj.cache.jsonData[cacheID].sortBy[0].toLowerCase()
+                        };
+                    }
+                } catch (e) {
+                    // This function couldn't figure out what to sort by, so sorting will not take place.
+                    Ledj.cache.jsonConfig[cacheID].sortBy = null;
+                }
+            } finally {
+                // Set the temporary cache.sortBy and cache.sortDir variables for the compare function
+                Ledj.cache.sortBy = Ledj.cache.jsonConfig[cacheID].sortBy;
             }
         }
 
-        function sortData(cacheID) {
-            // Figure out what we're sorting the data by
-            Ledj.cache.sortDataBy = Ledj.defaults.sortDataBy;
-            if (Ledj.cache.jsonConfig[cacheID].hasOwnProperty('sortBy') && typeof Ledj.cache.jsonConfig[cacheID].sortBy === 'string') {
-                // If the sortBy property exists and is a string, we'll assume that it's a valid property name.
-                // If it's not, the data just won't sort properly ( and shouldn't throw an error, see Ledj.dataSortCompareHelper() ).
-                Ledj.cache.sortDataBy = Ledj.cache.jsonConfig[cacheID].sortBy;
-            }
-
+        /*
+        Sets the sort direction to value from config or default.
+         */
+        function setSortDir(cacheID) {
             // Figure out what direction we're sorting the data by
-            Ledj.cache.sortDataDir = Ledj.defaults.sortDataDir;
             if (Ledj.cache.jsonConfig[cacheID].hasOwnProperty('sortDir')) {
+                // Set the temporary cache.sortDir variables for the compare function
+                Ledj.cache.sortDir = Ledj.cache.jsonConfig[cacheID].sortDir;
+
                 if (Ledj.cache.jsonConfig[cacheID].sortDir.toLowerCase() === 'asc' || Ledj.cache.jsonConfig[cacheID].sortDir === 0) {
-                    Ledj.cache.sortDataDir = 'asc';
+                    Ledj.cache.sortDir = 'asc';
                 } else if (Ledj.cache.jsonConfig[cacheID].sortDir.toLowerCase() === 'desc' || Ledj.cache.jsonConfig[cacheID].sortDir === 1) {
-                    Ledj.cache.sortDataDir = 'desc';
+                    Ledj.cache.sortDir = 'desc';
                 } else {
                     console.warn('Invalid sort direction "' + Ledj.cache.jsonConfig[cacheID].sortDir + '". Defaulting to "asc (0)".');
+                    Ledj.cache.jsonConfig[cacheID].sortDir = Ledj.defaults.sortDir;
                 }
+            } else {
+                Ledj.cache.jsonConfig[cacheID].sortDir = Ledj.defaults.sortDir;
             }
+        }
 
-            // Sort the data
+        /*
+        Sorts the data before template parsing.
+         */
+        function sortData(cacheID) {
             if (Ledj.cache.jsonData[cacheID]) {
-                if (Array.isArray(Ledj.cache.jsonData[cacheID])) {
-                    Ledj.cache.jsonData[cacheID] = Ledj.cache.jsonData[cacheID].sort(dataSortCompareHelper);
-                } else if (_typeof(Ledj.cache.jsonData[cacheID]) === 'object') {
-                    for (var item in Ledj.cache.jsonData[cacheID]) {
-                        Ledj.cache.jsonData[cacheID][item].sort(dataSortCompareHelper);
+                setSortBy(cacheID);
+
+                // Sort the data if a sortBy value has been specified.
+                if (Ledj.cache.sortBy !== null) {
+                    setSortDir(cacheID);
+
+                    if (Array.isArray(Ledj.cache.jsonData[cacheID])) {
+                        Ledj.cache.jsonData[cacheID] = Ledj.cache.jsonData[cacheID].sort(dataSortCompareHelper);
+                    } else if (_typeof(Ledj.cache.jsonData[cacheID]) === 'object') {
+                        for (var item in Ledj.cache.jsonData[cacheID]) {
+                            Ledj.cache.jsonData[cacheID][item].sort(dataSortCompareHelper);
+                        }
+                    } else {
+                        console.warn('Could not sort cache.jsonData[' + cacheID + ']');
                     }
-                } else {
-                    console.warn('Could not sort cache.jsonData[' + cacheID + ']');
-                }
+                } // else, don't sort the data.
             } else {
                 console.warn('from Ledj.sortJsonDataBy(): `cache.jsonData[' + cacheID + ']` does not exist.');
             }
         }
 
         function getLinkGridFromData(cacheID, objectKey) {
+            var childID = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+
             var templateData = {
                 'cacheID': cacheID,
                 'objectKey': objectKey,
@@ -521,31 +539,38 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
             };
 
-            return wrapHtmlInParent(Ledj.templates.linkGrid(templateData), cacheID, objectKey);
+            return wrapHtmlInParent(Ledj.templates.linkGrid(templateData), cacheID, objectKey, childID);
         }
 
         function getTableFromData(cacheID, objectKey) {
+            var childID = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+
             var templateData = {
                 'cacheID': cacheID,
                 'objectKey': objectKey
             };
 
-            return wrapHtmlInParent(Ledj.templates.table(templateData), cacheID, objectKey);
+            return wrapHtmlInParent(Ledj.templates.table(templateData), cacheID, objectKey, childID);
         }
 
         function getGifGridFromData(cacheID, objectKey) {
+            var childID = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+
             var templateData = {
                 'cacheID': cacheID,
                 'objectKey': objectKey
             };
 
-            return wrapHtmlInParent(Ledj.templates.gifGrid(templateData), cacheID, objectKey);
+            return wrapHtmlInParent(Ledj.templates.gifGrid(templateData), cacheID, objectKey, childID);
         }
 
-        function wrapHtmlInParent(processedHTML, cacheID, objectKey) {
+        function wrapHtmlInParent(processedHTML, cacheID) {
+            var objectKey = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+            var childID = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+
             return Ledj.templates.parent({
-                title: getElementTitle(cacheID, objectKey),
-                cacheID: cacheID,
+                title: objectKey ? getElementTitle(cacheID, objectKey) : null,
+                elementID: 'ledj-container-' + cacheID + (childID !== null ? '-' + childID : ''),
                 childHTML: processedHTML
             });
         }
@@ -582,8 +607,18 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                     if (Array.isArray(Ledj.cache.jsonData[cacheID])) {
                         toAppend = functionToUse(cacheID);
                     } else if (_typeof(Ledj.cache.jsonData[cacheID]) === 'object') {
-                        for (var item in Ledj.cache.jsonData[cacheID]) {
-                            toAppend += functionToUse(cacheID, item);
+                        var childToAppend = '';
+
+                        if (Ledj.cache.jsonData[cacheID] > 1) {
+                            var i = 0;
+                            for (var item in Ledj.cache.jsonData[cacheID]) {
+                                childToAppend += functionToUse(cacheID, item, i);
+                                i++;
+                            }
+
+                            toAppend = wrapHtmlInParent(childToAppend, cacheID);
+                        } else {
+                            toAppend = functionToUse(cacheID, Object.keys(Ledj.cache.jsonData[cacheID])[0]);
                         }
                     } else {
                         // todo
@@ -609,7 +644,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
         function getElementTitle(configID, objectKey) {
             if (!!objectKey && objectKey !== '') {
-                var titleTag = 'h2';
+                var titleTag = 'h1';
 
                 if (Ledj.cache.jsonConfig[configID].hasOwnProperty('titleElementLevel') && typeof parseInt(Ledj.cache.jsonConfig[configID].titleElementLevel) === 'number') {
                     titleTag = 'h' + Ledj.cache.jsonConfig[configID].titleElementLevel;
@@ -657,6 +692,20 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         };
 
         /*
+        Adds a new data type with a function for converting it from its json value
+         */
+        Ledj.setDataConvertType = function (typeName, objectType) {
+            Ledj.dataObjectTypes[typeName] = objectType;
+        };
+
+        /*
+        Adds a new config variable to the config defaults
+         */
+        Ledj.addCacheConfigVar = function (varName, varDefault) {
+            Ledj.defaults[varName] = varDefault;
+        };
+
+        /*
         Creates new HTML elements from specified JSON data URL
         and attaches them to the specified DOM element.
         This is the primary method for loading data and attaching elements.
@@ -673,8 +722,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
          */
         Ledj.loadFromObjAndAttachTo = function (jsonData, elementID) {
             loadConfigFromObj(jsonData, function (cacheID) {
-                sortData(cacheID);
-                addElementsTo(cacheID, elementID);
+                sortAndAttachCallback(cacheID, elementID);
             });
         };
 
@@ -765,7 +813,7 @@ Ledj.addTemplate('linkGrid', function (data) {
 
 
 Ledj.addTemplate('parent', function (data) {
-    return '<div class="ledj-container" id="ledj-container-' + data.cacheID + '">\n    ' + (data.title ? data.title : '') + '\n    ' + data.childHTML + '\n</div>';
+    return '<div class="ledj-container" id="' + data.elementID + '">\n    ' + (data.title ? data.title : '') + '\n    ' + data.childHTML + '\n</div>';
 });
 
 /***/ }),
@@ -774,6 +822,42 @@ Ledj.addTemplate('parent', function (data) {
 
 "use strict";
 
+
+// todo: make this function more generic somehow ( getHtmlByDataType() ) so I can move them to the template files.
+Ledj.getCellContent = function (colConfig, colName, itemData) {
+    var cell = '';
+
+    itemData[colName] = !!itemData[colName] ? itemData[colName] : '';
+
+    switch (colConfig.type.toLowerCase()) {
+        case "url":
+            cell += Ledj.templates.data.url({ 'text': itemData[colName], 'href': itemData[colConfig.href] });
+            break;
+        case "image":
+            cell += Ledj.templates.data.image({ 'src': itemData[colConfig.src], 'alt': itemData[colConfig.alt] });
+            break;
+        case "date":
+            var dateFormat = colConfig.hasOwnProperty('dateFormat') ? colConfig.dateFormat : null;
+            cell += Ledj.templates.data.date({ 'date': itemData[colName], 'dateFormat': dateFormat });
+            break;
+        case "phone":
+            cell += Ledj.templates.data.phone({ 'phone_num': itemData[colName] });
+            break;
+        case "code":
+            cell += Ledj.templates.data.code({ 'text': itemData[colName] });
+            break;
+        case "tag-array":
+        case "tagarray":
+            Ledj.cache.tagTemplateUsed = true; // we're using the tag template, so attach click event listeners
+            cell += Ledj.templates.data.tagArray({ 'tags': itemData[colName] });
+            break;
+        case "string":
+        default:
+            cell += Ledj.templates.data.string({ 'text': itemData[colName] });
+            break;
+    }
+    return cell;
+};
 
 Ledj.addTemplate('table', function (data) {
     return '<table class="ledj-table">\n    <thead>\n        <tr>\n        ' + Object.keys(Ledj.cache.jsonConfig[data.cacheID].headers).map(function (headerName) {
@@ -814,8 +898,31 @@ Ledj.addDataTemplate('code', function (data) {
 "use strict";
 
 
+Ledj.addCacheConfigVar('dateFormat', 'mm/dd/yyyy');
+
+Ledj.formatDateString = function (date, dateFormat) {
+    // if the moment library is available, use that to format the string.
+    if (!!window.moment) {
+        var date = moment(date.toString());
+        var dateFormat = dateFormat ? dateFormat : Ledj.defaults.dateFormat;
+        return date.format(dateFormat);
+    } else {
+        var d = new Date(date);
+        return d.getMonth() + 1 + '/' + d.getDate() + '/' + d.getFullYear();
+    }
+};
+
+Ledj.setDataConvertType('date', function (val) {
+    if (!!window.moment) {
+        return moment(val);
+    } else {
+        return new Date(val);
+    }
+});
+
 Ledj.addDataTemplate('date', function (data) {
-  return '<span class="date">' + Ledj.formatDateString(data.date, data.dateFormat) + '</span>';
+    return '<span class="date">' + Ledj.formatDateString(data.date, data.dateFormat) + '</span>';
+    /* todo: don't put the date format in here. figure out a way to make this more generic */
 });
 
 /***/ }),
