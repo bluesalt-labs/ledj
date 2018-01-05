@@ -403,7 +403,7 @@
                     else if(typeof Ledj.cache.jsonData[cacheID] === 'object') {
                         var childToAppend = '';
 
-                        if(Ledj.cache.jsonData[cacheID] > 1) {
+                        if(Object.keys(Ledj.cache.jsonData[cacheID]).length > 1) {
                             var i = 0;
                             for(var item in Ledj.cache.jsonData[cacheID]) {
                                 childToAppend += functionToUse(cacheID, item, i);
