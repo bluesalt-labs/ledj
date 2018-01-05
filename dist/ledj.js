@@ -145,7 +145,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             data: {}
         };
 
-        // Checks if a specified URL gives a status of 200
+        /*
+        Checks if a specified URL gives a status of 200
+         */
         Ledj.urlExists = function (url, callbackSuccess, callbackFail, callbackArg) {
             var http = new XMLHttpRequest();
             http.open('HEAD', url);
@@ -609,7 +611,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                     } else if (_typeof(Ledj.cache.jsonData[cacheID]) === 'object') {
                         var childToAppend = '';
 
-                        if (Ledj.cache.jsonData[cacheID] > 1) {
+                        if (Object.keys(Ledj.cache.jsonData[cacheID]).length > 1) {
                             var i = 0;
                             for (var item in Ledj.cache.jsonData[cacheID]) {
                                 childToAppend += functionToUse(cacheID, item, i);
