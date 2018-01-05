@@ -21,7 +21,8 @@
       },
       "date": {
         "name": "Date Added",
-        "type": "date"
+        "type": "date",
+        "dateFormat": "YYYY-MM-DD hh:mm:ss"
       },
       "tags": {
         "name": "Tags",
