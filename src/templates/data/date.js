@@ -1,4 +1,4 @@
-Ledj.addCacheConfigVar('dateFormat', 'mm/dd/yyyy');
+Ledj.addCacheConfigVar('dateFormat', 'MM/DD/YYYY');
 
 Ledj.formatDateObj = function(d, dateFormat) {
     // if the moment library is available, use that to format the string.
