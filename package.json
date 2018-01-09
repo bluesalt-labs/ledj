@@ -21,7 +21,14 @@
     "type": "git",
     "url": "git+https://github.com/bluesalt-labs/ledj.git"
   },
-  "author": "BlueSalt Labs",
+  "author": "BlueSalt Labs <admin@bluesaltlabs.com> (https://www.bluesaltlabs.com)",
+  "contributors": [
+    {
+      "name": "Luke Sontrop",
+      "email": "luke@bluesaltlabs.com",
+      "url": "https://www.bluesaltlabs.com"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/bluesalt-labs/ledj/issues",
