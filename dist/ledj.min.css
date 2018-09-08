@@ -228,5 +228,19 @@ table.ledj-table tr:last-child td:last-child {
     max-height: 350px; } }
 
 /* End gif-grid styling */
+/* Styling for image-grid */
+.ledj-image-grid {
+  display: inline-block;
+  text-align: center; }
+
+.ledj-image-grid > .image-grid-item {
+  display: inline-block;
+  max-width: 350px;
+  overflow: hidden;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box; }
+
+/* End image-grid styling */
 
 /*# sourceMappingURL=ledj.min.css.map*/

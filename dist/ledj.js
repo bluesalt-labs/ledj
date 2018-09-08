@@ -7,7 +7,7 @@
 		exports["ledj"] = factory();
 	else
 		root["ledj"] = factory();
-})(this, function() {
+})(typeof self !== 'undefined' ? self : this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -89,18 +89,19 @@ __webpack_require__(3);
 __webpack_require__(4);
 __webpack_require__(5);
 __webpack_require__(6);
+__webpack_require__(7);
 
 // Ledj data templates
-__webpack_require__(7);
 __webpack_require__(8);
 __webpack_require__(9);
 __webpack_require__(10);
 __webpack_require__(11);
 __webpack_require__(12);
 __webpack_require__(13);
+__webpack_require__(14);
 
 // Ledj stylesheets
-__webpack_require__(14);
+__webpack_require__(15);
 
 /***/ }),
 /* 1 */
@@ -566,6 +567,18 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             return wrapHtmlInParent(Ledj.templates.gifGrid(templateData), cacheID, objectKey, childID);
         }
 
+        function getImageGridFromData(cacheID, objectKey) {
+            var childID = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+
+            var templateData = {
+                'cacheID': cacheID,
+                'objectKey': objectKey,
+                'itemImageKey': 'filename' // todo set this in json config
+            };
+
+            return wrapHtmlInParent(Ledj.templates.imageGrid(templateData), cacheID, objectKey, childID);
+        }
+
         function wrapHtmlInParent(processedHTML, cacheID) {
             var objectKey = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
             var childID = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
@@ -598,6 +611,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                     case 'gif-grid':
                     case 'gifgrid':
                         functionToUse = getGifGridFromData;
+                        break;
+                    case 'image-grid':
+                    case 'imagegrid':
+                        functionToUse = getImageGridFromData;
                         break;
                     default:
                         console.log('A fallback template is not yet implemented.');
@@ -814,12 +831,25 @@ Ledj.addTemplate('linkGrid', function (data) {
 "use strict";
 
 
+Ledj.addTemplate('imageGrid', function (data) {
+    return '<div class="ledj-image-grid">\n' + (data.objectKey ? Ledj.cache.jsonData[data.cacheID][data.objectKey] : Ledj.cache.jsonData[data.cacheID]).map(function (dataItem) {
+        return '<div class="image-grid-item">\n        <img src="' + Ledj.getImageUrl(dataItem[data.itemImageKey], data.cacheID, data.objectKey) + '" title="' + dataItem[data.itemTitleKey] + '" />\n    </div>';
+    }).join('') + '\n</div>';
+});
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 Ledj.addTemplate('parent', function (data) {
     return '<div class="ledj-container" id="' + data.elementID + '">\n    ' + (data.title ? data.title : '') + '\n    ' + data.childHTML + '\n</div>';
 });
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -872,7 +902,7 @@ Ledj.addTemplate('table', function (data) {
 });
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -883,7 +913,7 @@ Ledj.addTemplate('todoList', function (data) {
 });
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -894,7 +924,7 @@ Ledj.addDataTemplate('code', function (data) {
 });
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -928,7 +958,7 @@ Ledj.addDataTemplate('date', function (data) {
 });
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -939,7 +969,7 @@ Ledj.addDataTemplate('image', function (data) {
 });
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -950,7 +980,7 @@ Ledj.addDataTemplate('phone', function (data) {
 });
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -961,7 +991,7 @@ Ledj.addDataTemplate('string', function (data) {
 });
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -974,7 +1004,7 @@ Ledj.addDataTemplate('tagArray', function (data) {
 });
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -985,7 +1015,7 @@ Ledj.addDataTemplate('url', function (data) {
 });
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

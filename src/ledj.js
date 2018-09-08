@@ -359,6 +359,16 @@
             return wrapHtmlInParent(Ledj.templates.gifGrid(templateData), cacheID, objectKey, childID);
         }
 
+        function getImageGridFromData(cacheID, objectKey, childID = null) {
+            var templateData = {
+                'cacheID': cacheID,
+                'objectKey': objectKey,
+                'itemImageKey': 'filename' // todo set this in json config
+            };
+
+            return wrapHtmlInParent(Ledj.templates.imageGrid(templateData), cacheID, objectKey, childID);
+        }
+
         function wrapHtmlInParent(processedHTML, cacheID, objectKey = null, childID = null) {
             return Ledj.templates.parent({
                 title: ( objectKey ? getElementTitle(cacheID, objectKey) : null ),
@@ -388,6 +398,10 @@
                     case 'gif-grid':
                     case 'gifgrid':
                         functionToUse = getGifGridFromData;
+                        break;
+                    case 'image-grid':
+                    case 'imagegrid':
+                        functionToUse = getImageGridFromData;
                         break;
                     default:
                         console.log('A fallback template is not yet implemented.');

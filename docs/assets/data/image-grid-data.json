@@ -1,0 +1,33 @@
+{
+  "config": {
+    "srcDirs": {
+      "default": "assets/images/"
+    },
+    "type": "image-grid",
+    "imgExt": ".png",
+    "sortBy": "title",
+    "sortDir": "desc"
+  },
+  "data": [
+    {
+      "title": "BlueSalt Labs - Ledj",
+      "filename": "ledj",
+      "tags": []
+    },
+    {
+      "title": "GitHub - BlueSalt Labs",
+      "filename": "bluesalt-labs",
+      "tags": []
+    },
+    {
+      "title": "GitHub - Lukerz8",
+      "filename": "github",
+      "tags": []
+    },
+    {
+      "title": "CodePen - BlueSalt Labs",
+      "filename": "codepen",
+      "tags": []
+    }
+  ]
+}

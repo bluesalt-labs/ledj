@@ -4,6 +4,7 @@ require('./ledj.js');
 // Ledj templates
 require('./templates/gifGrid');
 require('./templates/linkGrid');
+require('./templates/imageGrid');
 require('./templates/parent');
 require('./templates/table');
 require('./templates/todoList');
