@@ -239,7 +239,14 @@ table.ledj-table tr:last-child td:last-child {
   overflow: hidden;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
-  box-sizing: border-box; }
+  box-sizing: border-box;
+  padding: 5px;
+  margin: 4px;
+  border: 1px solid #cccccc; }
+
+.ledj-image-grid > .image-grid-item img {
+  width: 100%;
+  height: auto; }
 
 /* End image-grid styling */
 
